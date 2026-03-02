@@ -1,7 +1,8 @@
 # ========= CH569 USB device demo (lowercase tree) =========
 
 # ---- demo paths ----
-APP      := evt/exam/usbss/usbd/ch372device/user
+# APP      := evt/exam/usbss/usbd/ch372device/user
+APP 	 := evt/exam/usbss/usbd/msc_u-disk/user
 USB20DIR := $(APP)/usb20
 USB30DIR := $(APP)/usb30
 
@@ -51,6 +52,7 @@ USB30_LIB := $(USB30DIR)/libch56x_usb30_device_lib.a
 # ---- sources ----
 SRCS_C := \
   $(APP)/main.c \
+  $(APP)/sw_udisk.c \
   $(USB20DIR)/ch56x_usb20.c \
   $(USB30DIR)/ch56x_usb30.c \
   $(RVMSIS_DIR)/core_riscv.c \
