@@ -31,17 +31,17 @@
 #define UVC_DMA_SIZE 1024*80
 
 /* Global Variable */
-extern __attribute__ ((aligned(16))) UINT8  UVC_DMABuffer[UVC_DMA_SIZE] __attribute__((section(".DMADATA")));
+extern __attribute__ ((aligned(16))) uint8_t  UVC_DMABuffer[UVC_DMA_SIZE] __attribute__((section(".DMADATA")));
 
 /* Function declaration */
 void SCCB_Init(void);
 void SCCB_Start(void);
 void SCCB_Stop(void);
 void SCCB_No_Ack(void);
-UINT8 SCCB_WR_Byte(UINT8 dat);
-UINT8 SCCB_RD_Byte(void);
-UINT8 SCCB_WR_Reg(UINT8 reg,UINT8 data);
-UINT8 SCCB_RD_Reg(UINT8 reg);
+uint8_t SCCB_WR_Byte(uint8_t dat);
+uint8_t SCCB_RD_Byte(void);
+uint8_t SCCB_WR_Reg(uint8_t reg,uint8_t data);
+uint8_t SCCB_RD_Reg(uint8_t reg);
 void dvp_Init(void);
-void Dvp_Row_Col_Set( UINT16 res_width , UINT16 res_height );
+void Dvp_Row_Col_Set( uint16_t res_width , uint16_t res_height );
 #endif /* DVP_DVP_H_ */

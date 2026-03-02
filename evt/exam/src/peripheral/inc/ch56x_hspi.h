@@ -30,8 +30,8 @@ typedef enum
 
 
 
-void HSPI_Mode( UINT8 s,  HSPI_ModeTypeDef i);
-void HSPI_INTCfg( UINT8 s,  UINT8 i );
+void HSPI_Mode( uint8_t s,  HSPI_ModeTypeDef i);
+void HSPI_INTCfg( uint8_t s,  uint8_t i );
 
 
 

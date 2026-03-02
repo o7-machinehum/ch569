@@ -27,60 +27,60 @@ typedef union _BULK_ONLY_CMD
 {
 	struct
 	{
-		UINT32 mCBW_Sig;
-		UINT32 mCBW_Tag;
-		UINT32 mCBW_DataLen;													/* Input: data transmission length */
-		UINT8  mCBW_Flag;														/* Input: transmission direction and other signs */
-		UINT8  mCBW_LUN;
-		UINT8  mCBW_CB_Len;														/* Input: length of command block, valid values are 1 to 16 */
-		UINT8  mCBW_CB_Buf[16];													/* Input: Command block, the buffer is up to 16 bytes */
+		uint32_t mCBW_Sig;
+		uint32_t mCBW_Tag;
+		uint32_t mCBW_DataLen;													/* Input: data transmission length */
+		uint8_t  mCBW_Flag;														/* Input: transmission direction and other signs */
+		uint8_t  mCBW_LUN;
+		uint8_t  mCBW_CB_Len;														/* Input: length of command block, valid values are 1 to 16 */
+		uint8_t  mCBW_CB_Buf[16];													/* Input: Command block, the buffer is up to 16 bytes */
 	} mCBW;																		/* Command block of BulkOnly protocol, input CBW structure */
 	struct
 	{
-		UINT32 mCSW_Sig;
-		UINT32 mCSW_Tag;
-		UINT32 mCSW_Residue;													/* Return: Remaining data length */
-		UINT8  mCSW_Status;														/* Return: command execution result status */
+		uint32_t mCSW_Sig;
+		uint32_t mCSW_Tag;
+		uint32_t mCSW_Residue;													/* Return: Remaining data length */
+		uint8_t  mCSW_Status;														/* Return: command execution result status */
 	} mCSW;																		/* Command status block of BulkOnly protocol, output CSW structure */
 } BULK_ONLY_CMD;
 
 
 /******************************************************************************/
-extern UINT8  gDiskMaxLun;                                                             /* Maximum logical unit number of disk */
-extern UINT8  gDiskCurLun;                                                             /* Current operating logical unit number of the disk */
-extern UINT32 gDiskCapability;                                                         /* Total disk capacity */
-extern UINT32 gDiskPerSecSize;                                                         /* Disk sector size */
-extern UINT8  gDiskBulkInEp;                                                           /* IN endpoint address of USB mass storage device */
-extern UINT8  gDiskBulkInTog;                                                          /* USB mass transfer synchronization flag : 0-31 */
-extern UINT8  gDiskBulkOutEp;                                                          /* OUT endpoint address of USB mass storage device */
-extern UINT8  gDiskBulkOutTog;                                                         /* USB mass transfer synchronization flag : 0-31 */
-extern UINT16 gDiskBulkInEpSize;                                                       /* Maximum packet size of IN endpoint of USB mass storage device */
-extern UINT16 gDiskBulkOutEpSize;                                                      /* The maximum packet size of the OUT endpoint of the USB mass storage device */
-extern UINT8  gDiskInterfNumber;                                                       /* Interface number of USB mass storage device */
-extern UINT8V gDeviceConnectstatus;                                                    /* USB connection status */
-extern UINT8  gDeviceUsbType;                                                          /* 01--USB2.0&1.1  02--USB3.0*/
+extern uint8_t  gDiskMaxLun;                                                             /* Maximum logical unit number of disk */
+extern uint8_t  gDiskCurLun;                                                             /* Current operating logical unit number of the disk */
+extern uint32_t gDiskCapability;                                                         /* Total disk capacity */
+extern uint32_t gDiskPerSecSize;                                                         /* Disk sector size */
+extern uint8_t  gDiskBulkInEp;                                                           /* IN endpoint address of USB mass storage device */
+extern uint8_t  gDiskBulkInTog;                                                          /* USB mass transfer synchronization flag : 0-31 */
+extern uint8_t  gDiskBulkOutEp;                                                          /* OUT endpoint address of USB mass storage device */
+extern uint8_t  gDiskBulkOutTog;                                                         /* USB mass transfer synchronization flag : 0-31 */
+extern uint16_t gDiskBulkInEpSize;                                                       /* Maximum packet size of IN endpoint of USB mass storage device */
+extern uint16_t gDiskBulkOutEpSize;                                                      /* The maximum packet size of the OUT endpoint of the USB mass storage device */
+extern uint8_t  gDiskInterfNumber;                                                       /* Interface number of USB mass storage device */
+extern volatile uint8_t gDeviceConnectstatus;                                                    /* USB connection status */
+extern uint8_t  gDeviceUsbType;                                                          /* 01--USB2.0&1.1  02--USB3.0*/
 
 #define	DEFAULT_MAX_OPERATE_SIZE      	8*1024					/***Default maximum packet size for current operation***/
 #define	MAX_DATA_ADDR	0x20020000
-extern UINT8V U30_TIME_OUT;
-extern UINT8V tx_lmp_port;
-extern UINT8V Hot_ret_flag;
-extern __attribute__ ((aligned(16))) UINT8 pNTFS_BUF[512] __attribute__((section(".DMADATA")));
-extern UINT8 gUdisk_flag;
-extern UINT8 gUdisk_flag1;
-extern UINT16 gUdisk_delay;
+extern volatile uint8_t U30_TIME_OUT;
+extern volatile uint8_t tx_lmp_port;
+extern volatile uint8_t Hot_ret_flag;
+extern __attribute__ ((aligned(16))) uint8_t pNTFS_BUF[512] __attribute__((section(".DMADATA")));
+extern uint8_t gUdisk_flag;
+extern uint8_t gUdisk_flag1;
+extern uint16_t gUdisk_delay;
 
-extern UINT8 MS_U30HOST_CofDescrAnalyse( UINT8 *pbuf );
-extern UINT8 MS_Init(  UINT8 *pbuf );
-extern UINT8 MS_ReadSector( UINT32 StartLba, UINT16 SectCount, PUINT8 DataBuf );
-extern UINT8 MS_WriteSector( UINT32 StartLba, UINT8 SectCount, PUINT8 DataBuf );
+extern uint8_t MS_U30HOST_CofDescrAnalyse( uint8_t *pbuf );
+extern uint8_t MS_Init(  uint8_t *pbuf );
+extern uint8_t MS_ReadSector( uint32_t StartLba, uint16_t SectCount, uint8_t * DataBuf );
+extern uint8_t MS_WriteSector( uint32_t StartLba, uint8_t SectCount, uint8_t * DataBuf );
 
 
-extern UINT8 CHRV3BulkOnlyCmd( UINT8 *DataBuf );
-extern UINT8 MS_U20HOST_BulkOutHandle( UINT8 *pDatBuf, UINT32 *pSize );
-extern UINT8 MS_U20HOST_BulkInHandle( UINT8 *pDatBuf, UINT32 *pSize );
-extern UINT8 MS_U20HOST_CofDescrAnalyse( UINT8 *pbuf );
-extern UINT8 Hot_Reset( UINT8 *pdata );
+extern uint8_t CHRV3BulkOnlyCmd( uint8_t *DataBuf );
+extern uint8_t MS_U20HOST_BulkOutHandle( uint8_t *pDatBuf, uint32_t *pSize );
+extern uint8_t MS_U20HOST_BulkInHandle( uint8_t *pDatBuf, uint32_t *pSize );
+extern uint8_t MS_U20HOST_CofDescrAnalyse( uint8_t *pbuf );
+extern uint8_t Hot_Reset( uint8_t *pdata );
 
 
 

@@ -18,9 +18,9 @@
 
 #define  FREQ_SYS   80000000
 #include "ch56x_common.h"
-UINT8 TxBuff[]="This is a Tx exam\r\n";
-UINT8 RxBuff[100];
-UINT8 trigB;
+uint8_t TxBuff[]="This is a Tx exam\r\n";
+uint8_t RxBuff[100];
+uint8_t trigB;
 
 void UART2_IRQHandler (void) __attribute__((interrupt()));
 /*******************************************************************************
@@ -32,10 +32,10 @@ void UART2_IRQHandler (void) __attribute__((interrupt()));
  *
  * @return   None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-	UINT32 x;
-	UINT32 t = FREQ_SYS;
+	uint32_t x;
+	uint32_t t = FREQ_SYS;
 	
 	x = 10 * t * 2 / 16 / baudrate;
 	x = ( x + 5 ) / 10;
@@ -65,7 +65,7 @@ int main()
 	PRINT("Start @ChipID=%02X\r\n", R8_CHIP_ID );
 
 /* data length variable */
-	UINT8 len;
+	uint8_t len;
 
 /* Configure the serial port */
 	GPIOA_SetBits(GPIO_Pin_3);
@@ -115,7 +115,7 @@ int main()
  */
 void UART2_IRQHandler(void)
 {
-	UINT8 i;
+	uint8_t i;
 	switch( UART2_GetITFlag() )
 	{
 		case UART_II_LINE_STAT:        //line state error

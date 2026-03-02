@@ -12,7 +12,7 @@
 #include "dvp.h"
 #include "uvclib.h"
 void DVP_IRQHandler (void) __attribute__((interrupt("WCH-Interrupt-fast")));
-__attribute__ ((aligned(16))) UINT8	UVC_DMABuffer[UVC_DMA_SIZE] __attribute__((section(".DMADATA")));
+__attribute__ ((aligned(16))) uint8_t	UVC_DMABuffer[UVC_DMA_SIZE] __attribute__((section(".DMADATA")));
 
 /*******************************************************************************
  * @fn     DVP_IRQHandler
@@ -41,8 +41,8 @@ void dvp_Init(void)
     R8_DVP_CR0 |= RB_DVP_D8_MOD | RB_DVP_V_POLAR /*| RB_DVP_RAW_CM*/ /*| RB_DVP_JPEG*/;
     R8_DVP_CR1 &= ~((RB_DVP_ALL_CLR) | RB_DVP_RCV_CLR);
 
-    R32_DVP_DMA_BUF0 = (UINT32)(UINT8 *)Dvp_Recaddr;		//DMA addr0
-	R32_DVP_DMA_BUF1 = (UINT32)(UINT8 *)Dvp_Recaddr+Dvp_DataSize;		//DMA addr1
+    R32_DVP_DMA_BUF0 = (uint32_t)(uint8_t *)Dvp_Recaddr;		//DMA addr0
+	R32_DVP_DMA_BUF1 = (uint32_t)(uint8_t *)Dvp_Recaddr+Dvp_DataSize;		//DMA addr1
 
     /*Interupt Enable*/
 	R8_DVP_INT_EN |= RB_DVP_IE_STP_FRM;                 //Frame end interrupt enable
@@ -65,7 +65,7 @@ void dvp_Init(void)
  *
  * @return   None
  */
-void Dvp_Row_Col_Set( UINT16 res_width , UINT16 res_height )
+void Dvp_Row_Col_Set( uint16_t res_width , uint16_t res_height )
 {
     switch(Formatchange_flag)
     {
@@ -162,9 +162,9 @@ void SCCB_No_Ack(void)
  *            other - fail
  */
 
-UINT8 SCCB_WR_Byte(UINT8 dat)
+uint8_t SCCB_WR_Byte(uint8_t dat)
 {
-	UINT8 j,res;
+	uint8_t j,res;
 
 	for(j=0;j<8;j++) 
 	{
@@ -204,9 +204,9 @@ UINT8 SCCB_WR_Byte(UINT8 dat)
  * @return    Read one byte data
  */
 
-UINT8 SCCB_RD_Byte(void)
+uint8_t SCCB_RD_Byte(void)
 {
-	UINT8 temp=0,j;
+	uint8_t temp=0,j;
 
 	IIC_SDA_IN;		
 
@@ -237,9 +237,9 @@ UINT8 SCCB_RD_Byte(void)
  *            other - fail
  */
 
-UINT8 SCCB_WR_Reg(UINT8 reg,UINT8 data)
+uint8_t SCCB_WR_Reg(uint8_t reg,uint8_t data)
 {
-	UINT8 res=0;
+	uint8_t res=0;
 
 	SCCB_Start(); 				
 	if(SCCB_WR_Byte(SCCB_ID))res=1;	
@@ -259,9 +259,9 @@ UINT8 SCCB_WR_Reg(UINT8 reg,UINT8 data)
  * @return     Camera Register value
  */
 
-UINT8 SCCB_RD_Reg(UINT8 reg)
+uint8_t SCCB_RD_Reg(uint8_t reg)
 {
-	UINT8 val=0;
+	uint8_t val=0;
 	SCCB_Start(); 			
 	SCCB_WR_Byte(SCCB_ID);		
 	mDelayuS(100);

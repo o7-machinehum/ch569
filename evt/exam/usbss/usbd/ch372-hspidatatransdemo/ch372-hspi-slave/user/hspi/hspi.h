@@ -37,24 +37,24 @@
 #define DEF_HSPI_UVC_BPACK_LEN     ( DEF_HSPI_DMA_PACK_LEN * DEF_HSPI_UVC_BPACK_NUM )
 
 /******************************************************************************/
-extern UINT8V  HSPI_Tx_PackCnt;
-extern UINT8V  HSPI_Tx_AddrTog;
-extern UINT8V  HSPI_Rx_PackCnt;
-extern UINT8V  HSPI_Rx_AddrTog;
-extern UINT8V  HSPI_Tx_Status;
-extern UINT32V HSPI_Tx_Data_LoadAddr;
-extern UINT32V HSPI_Tx_Data_DealAddr;
-extern UINT32V HSPI_Tx_Data_RemainLen;
-extern UINT16V HSPI_Tx_LastPackLen;
-extern UINT8V  HSPI_Int_En_Save;
-extern UINT32V HSPI_Rx_Data_LoadAddr;
-extern UINT32V HSPI_Rx_Data_DealAddr;
-extern UINT32V HSPI_Rx_Data_RemainLen;
-extern UINT8V  HSPI_Rx_Notice_Status;
-extern UINT16V USB3_2_Switchover;
+extern volatile uint8_t  HSPI_Tx_PackCnt;
+extern volatile uint8_t  HSPI_Tx_AddrTog;
+extern volatile uint8_t  HSPI_Rx_PackCnt;
+extern volatile uint8_t  HSPI_Rx_AddrTog;
+extern volatile uint8_t  HSPI_Tx_Status;
+extern volatile uint32_t HSPI_Tx_Data_LoadAddr;
+extern volatile uint32_t HSPI_Tx_Data_DealAddr;
+extern volatile uint32_t HSPI_Tx_Data_RemainLen;
+extern volatile uint16_t HSPI_Tx_LastPackLen;
+extern volatile uint8_t  HSPI_Int_En_Save;
+extern volatile uint32_t HSPI_Rx_Data_LoadAddr;
+extern volatile uint32_t HSPI_Rx_Data_DealAddr;
+extern volatile uint32_t HSPI_Rx_Data_RemainLen;
+extern volatile uint8_t  HSPI_Rx_Notice_Status;
+extern volatile uint16_t USB3_2_Switchover;
 
-extern UINT32V Pack_Send_Num;
-extern UINT32V Pack_Recv_Num;
+extern volatile uint32_t Pack_Send_Num;
+extern volatile uint32_t Pack_Recv_Num;
 
 /******************************************************************************/
 extern void HSPI_GPIO_Init( void );

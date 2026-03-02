@@ -21,21 +21,21 @@
 
 #define UVC_HEADERSIZE  16
 /* Global Variable */
-extern UINT8V Get_Curr[26];
-extern UINT8V Formatchange_flag;
-extern UINT16V Resolution_width;
-extern UINT16V Resolution_height;
-extern UINT16V Dvp_DataSize;
-extern PUINT8 Dvp_Recaddr;
+extern volatile uint8_t Get_Curr[26];
+extern volatile uint8_t Formatchange_flag;
+extern volatile uint16_t Resolution_width;
+extern volatile uint16_t Resolution_height;
+extern volatile uint16_t Dvp_DataSize;
+extern uint8_t * Dvp_Recaddr;
 
-extern const UINT16 ov2640_JPEGframe_resolution_USB20[5][2];
-extern const UINT16 ov2640_JPEGframe_resolution_USB30[5][2];
-extern const UINT16 ov2640_YUVframe_resolution_USB20[5][2];
-extern const UINT16 ov2640_YUVframe_resolution_USB30[5][2];
+extern const uint16_t ov2640_JPEGframe_resolution_USB20[5][2];
+extern const uint16_t ov2640_JPEGframe_resolution_USB30[5][2];
+extern const uint16_t ov2640_YUVframe_resolution_USB20[5][2];
+extern const uint16_t ov2640_YUVframe_resolution_USB30[5][2];
 
 
 /* Function declaration */
-UINT16 UVC_NonStandardReq(UINT8 **pDescr);
+uint16_t UVC_NonStandardReq(uint8_t **pDescr);
 void ClearError(void);
 void SS_CtrlCamera(void);
 void DVP_Hander(void);

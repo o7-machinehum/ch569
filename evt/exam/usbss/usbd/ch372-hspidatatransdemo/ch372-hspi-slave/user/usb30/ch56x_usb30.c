@@ -11,27 +11,27 @@
 #include "ch56x_usb30.h"
 #include "main.h"
 #include "ch56xusb30_lib.h"/* Global Variable */
-UINT8V        Tx_Lmp_Port = 0;
-UINT8V        Link_Sta = 0;
-static UINT32 SetupLen = 0;
-static UINT8  SetupReqCode = 0;
-static PUINT8 pDescr;
+volatile uint8_t        Tx_Lmp_Port = 0;
+volatile uint8_t        Link_Sta = 0;
+static uint32_t SetupLen = 0;
+static uint8_t  SetupReqCode = 0;
+static uint8_t * pDescr;
 
-UINT32V Endp1_Up_LastPackNum = 0x00;                                            /* The number of packets uploaded by endpoint 1 */
-UINT32V Endp1_Up_LastPackLen = 0x00;                                            /* The length of the last packet uploaded by endpoint 1 */
-UINT32V Endp1_Up_Status = 0x00;                                                 /* Endpoint 1 upload status: 0: free; 1: Uploading; */
-UINT32V Endp1_Down_LastPackNum = 0x00;                                          /* The number of packets last downloaded by endpoint 1 */
-UINT32V Endp1_Down_LastPackLen = 0x00;                                          /* The length of the last packet transmitted by endpoint 1 */
-UINT32V Endp1_Down_Status = 0x00;                                               /* Endpoint 1 download status: 0: download; 1: Stop downloading; */
-UINT32V Endp1_Down_IdleCount = 0x00;                                            /* Endpoint 1 downlink idle timing; */
-UINT8V  USB_Down_StopFlag = 0x00;                                               /* USB Download pause flag(USB Received a non-full packet,must wait until the HSPI is sent before continuing to download) */
-UINT8V  HSPI_RX_StopFlag = 0x00;                                                /* HSPI Receive pause flag(HSPI Received a non-full packet,You must wait for the USB upload to complete before continuing to receive) */
+volatile uint32_t Endp1_Up_LastPackNum = 0x00;                                            /* The number of packets uploaded by endpoint 1 */
+volatile uint32_t Endp1_Up_LastPackLen = 0x00;                                            /* The length of the last packet uploaded by endpoint 1 */
+volatile uint32_t Endp1_Up_Status = 0x00;                                                 /* Endpoint 1 upload status: 0: free; 1: Uploading; */
+volatile uint32_t Endp1_Down_LastPackNum = 0x00;                                          /* The number of packets last downloaded by endpoint 1 */
+volatile uint32_t Endp1_Down_LastPackLen = 0x00;                                          /* The length of the last packet transmitted by endpoint 1 */
+volatile uint32_t Endp1_Down_Status = 0x00;                                               /* Endpoint 1 download status: 0: download; 1: Stop downloading; */
+volatile uint32_t Endp1_Down_IdleCount = 0x00;                                            /* Endpoint 1 downlink idle timing; */
+volatile uint8_t  USB_Down_StopFlag = 0x00;                                               /* USB Download pause flag(USB Received a non-full packet,must wait until the HSPI is sent before continuing to download) */
+volatile uint8_t  HSPI_RX_StopFlag = 0x00;                                                /* HSPI Receive pause flag(HSPI Received a non-full packet,You must wait for the USB upload to complete before continuing to receive) */
 
-__attribute__((aligned(16))) UINT8 endp0RTbuff[512] __attribute__((section(".DMADATA")));  //Endpoint 0 data transceiving buffer
-__attribute__((aligned(16))) UINT8 endp1RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 1 data transceiving buffer
+__attribute__((aligned(16))) uint8_t endp0RTbuff[512] __attribute__((section(".DMADATA")));  //Endpoint 0 data transceiving buffer
+__attribute__((aligned(16))) uint8_t endp1RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 1 data transceiving buffer
 
 /* Device Descriptor */
-const UINT8 SS_DeviceDescriptor[ ] =
+const uint8_t SS_DeviceDescriptor[ ] =
     {
         0x12, // bLength
         0x01, // DEVICE descriptor type
@@ -54,7 +54,7 @@ const UINT8 SS_DeviceDescriptor[ ] =
 };
 
 /* Configuration Descriptor */
-const UINT8 SS_ConfigDescriptor[ ] =
+const uint8_t SS_ConfigDescriptor[ ] =
 {
         0x09, // length of this descriptor
         0x02, // CONFIGURATION (2)
@@ -109,7 +109,7 @@ const UINT8 SS_ConfigDescriptor[ ] =
 };
 
 /* Language Descriptor */
-const UINT8 StringLangID[ ] =
+const uint8_t StringLangID[ ] =
 {
         0x04, // this descriptor length
         0x03, // descriptor type
@@ -118,7 +118,7 @@ const UINT8 StringLangID[ ] =
 };
 
 /* Manufacturer Descriptor */
-const UINT8 StringVendor[ ] =
+const uint8_t StringVendor[ ] =
 {
         0x08, // length of this descriptor
         0x03,
@@ -131,7 +131,7 @@ const UINT8 StringVendor[ ] =
 };
 
 /* Product Descriptor */
-const UINT8 StringProduct[ ] =
+const uint8_t StringProduct[ ] =
 {
         38,         //38 bytes
         0x03,       //0x03
@@ -156,7 +156,7 @@ const UINT8 StringProduct[ ] =
 };
 
 /* Serial Descriptor */
-UINT8 StringSerial[ ] =
+uint8_t StringSerial[ ] =
 {
         0x16, // length of this descriptor
         0x03,
@@ -182,7 +182,7 @@ UINT8 StringSerial[ ] =
         0x00,
 };
 
-const UINT8 OSStringDescriptor[ ] =
+const uint8_t OSStringDescriptor[ ] =
 {
         0x12, // length of this descriptor
         0x03,
@@ -204,7 +204,7 @@ const UINT8 OSStringDescriptor[ ] =
         0x00
 };
 
-const UINT8 BOSDescriptor[ ] =
+const uint8_t BOSDescriptor[ ] =
 {
         0x05, // length of this descriptor
         0x0f, // CONFIGURATION (2)
@@ -234,7 +234,7 @@ const UINT8 BOSDescriptor[ ] =
         0x07
 };
 
-const UINT8 MSOS20DescriptorSet[ ] =
+const uint8_t MSOS20DescriptorSet[ ] =
 {
         // Microsoft OS 2.0 Descriptor Set Header
         0x0A, 0x00,             // wLength - 10 bytes
@@ -262,7 +262,7 @@ const UINT8 MSOS20DescriptorSet[ ] =
         0x01, 0x00, 0x00, 0x00 // PropertyData - 0x00000001
 };
 
-const UINT8 PropertyHeader[ ] =
+const uint8_t PropertyHeader[ ] =
 {
         0x8e, 0x00, 0x00, 0x00, 0x00, 01, 05, 00, 01, 00,
         0x84, 0x00, 0x00, 0x00,
@@ -280,13 +280,13 @@ const UINT8 PropertyHeader[ ] =
         0x7d, 0x00, 0x00, 0x00
 };
 
-const UINT8 CompactId[ ] =
+const uint8_t CompactId[ ] =
 {
         0x28, 0x00, 0x00, 0x00, 0x00, 0x01, 0x04, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
         0x57, 0x49, 0x4e, 0x55, 0x53, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-UINT8 GetStatus[ ] =
+uint8_t GetStatus[ ] =
 {
         0x01, 0x00
 };
@@ -300,7 +300,7 @@ UINT8 GetStatus[ ] =
  */
 void USB30D_init( FunctionalState sta )
 {
-    UINT16 i, s;
+    uint16_t i, s;
     if( sta )
     {
         s = USB30_Device_Init( );
@@ -311,9 +311,9 @@ void USB30D_init( FunctionalState sta )
         }
         USBSS->UEP_CFG = EP0_R_EN | EP0_T_EN | EP1_R_EN | EP1_T_EN ; // set end point rx/tx enable
 
-        USBSS->UEP0_DMA = (UINT32)(UINT8 *)endp0RTbuff;
-        USBSS->UEP1_TX_DMA = (UINT32)(UINT8 *)DEF_ENDP1_TX_DMA_ADDR;
-        USBSS->UEP1_RX_DMA = (UINT32)(UINT8 *)DEF_ENDP1_RX_DMA_ADDR;
+        USBSS->UEP0_DMA = (uint32_t)(uint8_t *)endp0RTbuff;
+        USBSS->UEP1_TX_DMA = (uint32_t)(uint8_t *)DEF_ENDP1_TX_DMA_ADDR;
+        USBSS->UEP1_RX_DMA = (uint32_t)(uint8_t *)DEF_ENDP1_RX_DMA_ADDR;
 
         USB30_OUT_Set( ENDP_1, ACK, DEF_ENDP1_OUT_BURST_LEVEL );             // endpoint1 receive setting
 
@@ -335,14 +335,14 @@ void USB30D_init( FunctionalState sta )
  *
  * @return  Length
  */
-UINT16 USB30_NonStandardReq( void )
+uint16_t USB30_NonStandardReq( void )
 {
-    UINT8 endp_dir;
+    uint8_t endp_dir;
 
     SetupReqCode = UsbSetupBuf->bRequest;
     SetupLen = UsbSetupBuf->wLength;
     endp_dir = UsbSetupBuf->bRequestType & 0x80;
-    UINT16 len = 0;
+    uint16_t len = 0;
 #if 0
     printf("NS:%02x %02x %02x %02x %02x %02x %02x %02x\n", endp0RTbuff[0], endp0RTbuff[1],
             endp0RTbuff[2], endp0RTbuff[3], endp0RTbuff[4], endp0RTbuff[5],
@@ -362,7 +362,7 @@ UINT16 USB30_NonStandardReq( void )
                     {
                         SetupLen = SIZE_PropertyHeader;
                     }
-                    pDescr = (PUINT8)PropertyHeader;
+                    pDescr = (uint8_t *)PropertyHeader;
                     break;
                 default:
                     SetupReqCode = INVALID_REQ_CODE;
@@ -392,11 +392,11 @@ UINT16 USB30_NonStandardReq( void )
  *
  * @return  Length
  */
-UINT16 USB30_StandardReq( void )
+uint16_t USB30_StandardReq( void )
 {
     SetupReqCode = UsbSetupBuf->bRequest;
     SetupLen = UsbSetupBuf->wLength;
-    UINT16 len = 0;
+    uint16_t len = 0;
 #if 0
     printf("S:%02x %02x %02x %02x %02x %02x %02x %02x\n", endp0RTbuff[0], endp0RTbuff[1],
             endp0RTbuff[2], endp0RTbuff[3], endp0RTbuff[4], endp0RTbuff[5],
@@ -417,17 +417,17 @@ UINT16 USB30_StandardReq( void )
                     case USB_DESCR_TYP_DEVICE:
                         if( SetupLen > SIZE_DEVICE_DESC )
                             SetupLen = SIZE_DEVICE_DESC;
-                        pDescr = (PUINT8)SS_DeviceDescriptor;
+                        pDescr = (uint8_t *)SS_DeviceDescriptor;
                         break;
                     case USB_DESCR_TYP_CONFIG:
                         if( SetupLen > SIZE_CONFIG_DESC )
                             SetupLen = SIZE_CONFIG_DESC;
-                        pDescr = (PUINT8)SS_ConfigDescriptor;
+                        pDescr = (uint8_t *)SS_ConfigDescriptor;
                         break;
                     case USB_DESCR_TYP_BOS:
                         if( SetupLen > SIZE_BOS_DESC )
                             SetupLen = SIZE_BOS_DESC;
-                        pDescr = (PUINT8)BOSDescriptor;
+                        pDescr = (uint8_t *)BOSDescriptor;
                         break;
                     case USB_DESCR_TYP_STRING:
                         switch(UsbSetupBuf->wValueL)
@@ -435,27 +435,27 @@ UINT16 USB30_StandardReq( void )
                             case USB_DESCR_LANGID_STRING:
                                 if(SetupLen > SIZE_STRING_LANGID)
                                     SetupLen = SIZE_STRING_LANGID;
-                                pDescr = (PUINT8)StringLangID;
+                                pDescr = (uint8_t *)StringLangID;
                                 break;
                             case USB_DESCR_VENDOR_STRING:
                                 if(SetupLen > SIZE_STRING_VENDOR)
                                     SetupLen = SIZE_STRING_VENDOR;
-                                pDescr = (PUINT8)StringVendor;
+                                pDescr = (uint8_t *)StringVendor;
                                 break;
                             case USB_DESCR_PRODUCT_STRING:
                                 if(SetupLen > SIZE_STRING_PRODUCT)
                                     SetupLen = SIZE_STRING_PRODUCT;
-                                pDescr = (PUINT8)StringProduct;
+                                pDescr = (uint8_t *)StringProduct;
                                 break;
                             case USB_DESCR_SERIAL_STRING:
                                 if(SetupLen > SIZE_STRING_SERIAL)
                                     SetupLen = SIZE_STRING_SERIAL;
-                                pDescr = (PUINT8)StringSerial;
+                                pDescr = (uint8_t *)StringSerial;
                                 break;
                             case USB_DESCR_OS_STRING:
                                 if(SetupLen > SIZE_STRING_OS)
                                     SetupLen = SIZE_STRING_OS;
-                                pDescr = (PUINT8)OSStringDescriptor;
+                                pDescr = (uint8_t *)OSStringDescriptor;
                                 break;
                             default:
                                 len = USB_DESCR_UNSUPPORTED;     //Unsupported descriptor
@@ -511,9 +511,9 @@ UINT16 USB30_StandardReq( void )
  *
  * @return  Send length
  */
-UINT16 EP0_IN_Callback( void )
+uint16_t EP0_IN_Callback( void )
 {
-    UINT16 len = 0;
+    uint16_t len = 0;
     switch( SetupReqCode )
     {
         case USB_GET_DESCRIPTOR:
@@ -533,9 +533,9 @@ UINT16 EP0_IN_Callback( void )
  *
  * @return  Length
  */
-UINT16 EP0_OUT_Callback( void )
+uint16_t EP0_OUT_Callback( void )
 {
-    UINT16 len;
+    uint16_t len;
     return len;
 }
 
@@ -734,10 +734,10 @@ void LINK_IRQHandler( void ) //USBSS link interrupt service
 void EP1_IN_Callback( void )
 {
     /* Endpoint 1 upload processing */
-    static UINT32 remanlen;
-    UINT32 len;
-    UINT8  nump;
-    UINT32 offset;
+    static uint32_t remanlen;
+    uint32_t len;
+    uint8_t  nump;
+    uint32_t offset;
 
     /* Batch transmission mode processing */
     /* Get the remaining number of packets to be sent */
@@ -881,11 +881,11 @@ void EP1_IN_Callback( void )
 void EP1_OUT_Callback( void )
 {
     /* Endpoint 1 download processing */
-    UINT16 rx_len;
-    UINT8  nump;
-    UINT8  status;
-    static UINT32 remanlen;
-    UINT16 packnum;
+    uint16_t rx_len;
+    uint8_t  nump;
+    uint8_t  status;
+    static uint32_t remanlen;
+    uint16_t packnum;
 
     /* Obtain the number of received packets */
     USB30_OUT_Status( ENDP_1, &nump, &rx_len, &status );
@@ -1099,6 +1099,6 @@ void EP7_OUT_Callback( void )
  *
  * @return   None
  */
-void USB30_ITP_Callback( UINT32 ITPCounter )
+void USB30_ITP_Callback( uint32_t ITPCounter )
 {
 }

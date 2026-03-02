@@ -24,10 +24,10 @@
 #define DUG_FUNC_EN    0
 
 /* Global Variable */
-UINT8V U30_Check_Time = 0;
+volatile uint8_t U30_Check_Time = 0;
 volatile DevInfo g_DevInfo;
-extern UINT8V g_DeviceConnectstatus;
-extern UINT8V g_DeviceUsbType;
+extern volatile uint8_t g_DeviceConnectstatus;
+extern volatile uint8_t g_DeviceUsbType;
 
 /* Function  */
 void TMR0_IRQHandler( void ) __attribute__((interrupt("WCH-Interrupt-fast")));
@@ -68,10 +68,10 @@ void TMR0_IRQHandler( void )
  *
  * @return    None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-	UINT32 x;
-	UINT32 t = FREQ_SYS;
+	uint32_t x;
+	uint32_t t = FREQ_SYS;
 
 	x = 10 * t * 2 / 16 / baudrate;
 	x = ( x + 5 ) / 10;
@@ -93,7 +93,7 @@ void DebugInit(UINT32 baudrate)
  */
 int main( void )
 {
-    UINT8 ret;
+    uint8_t ret;
     SystemInit(FREQ_SYS);
     Delay_Init(FREQ_SYS);
     DebugInit(115200);
@@ -184,7 +184,7 @@ int main( void )
  */
 void para_init(void)
 {
-    UINT8 i;
+    uint8_t i;
     for(i=0;i<8;i++)
     {
         g_DevInfo.InSeqNum[i]= 0;
@@ -204,17 +204,17 @@ void para_init(void)
 void U30_BulkTest(void)
 {
 #if BULK_IN
-    UINT8 rcv_num;
+    uint8_t rcv_num;
 
 #else
-    UINT8   nump,send_num;
+    uint8_t   nump,send_num;
 #endif
     para_init();
     while(1)
     {
 #if BULK_IN
 //===========================IN===========================================================
-       USBSSH->UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;                                  //The buffer needs to be reassigned in burst mode
+       USBSSH->UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;                                  //The buffer needs to be reassigned in burst mode
        rcv_num  = g_DevInfo.InMaxBurstSize[ENDP_2] ;                                     //Number of packets to be fetched by the host
        USBSS_INTransaction(g_DevInfo.InSeqNum[ENDP_2], &rcv_num, ENDP_2 );         //Get data from endpoint 2
 
@@ -223,7 +223,7 @@ void U30_BulkTest(void)
 
 #else
 //===========================OUT========================================================
-       USBSSH->UH_TX_DMA = (UINT32)(UINT8 *)endpTXbuff;                                  //The buffer needs to be reassigned in burst mode
+       USBSSH->UH_TX_DMA = (uint32_t)(uint8_t *)endpTXbuff;                                  //The buffer needs to be reassigned in burst mode
        send_num = g_DevInfo.OutMaxBurstSize[ENDP_2] ;                                    //Number of packets to be sent by the host
        nump = USBSS_OUTTransaction( g_DevInfo.OutSeqNum[ENDP_2] ,send_num ,ENDP_2 ,1024);
 

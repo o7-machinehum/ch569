@@ -13,40 +13,40 @@
 
 
 /* Global Variable */
-__attribute__ ((aligned(16))) UINT8 YUV2_addr[1024 * 16] __attribute__((section(".DMADATA")));
+__attribute__ ((aligned(16))) uint8_t YUV2_addr[1024 * 16] __attribute__((section(".DMADATA")));
 
-static UINT32V class=0;
-static UINT32V UVC_DVP;
-static UINT8V  Totalcnt=0;
-static UINT16V packnum;
-static UINT8V lastFrame = 0;
-static UINT32V UVC_MBuf_PackCount = 0x00;                                              /* UVC Data Microbuffer Packet Count*/
-static UINT8V  UVC_MFrame_PackCount = 0x00;                                            /* UVC Microframe packet count */
-static UINT32V UVC_MFrame_PackTotalNum = 0x00;                                         /* UVC Total number of current micro frames */
-static UINT32V UVC_MFrame_LastPackLen = 0x00;                                          /* UVC The packet length at the end of the current microframe */
-static UINT32V UVC_MFrame_ValidFlag = 0x00;                                            /* UVC Valid flag of microframe data(0:invalid; 1£ºvalid;) */
-UINT16V Resolution_width = 0;
-UINT16V Resolution_height = 0;
+static volatile uint32_t class=0;
+static volatile uint32_t UVC_DVP;
+static volatile uint8_t  Totalcnt=0;
+static volatile uint16_t packnum;
+static volatile uint8_t lastFrame = 0;
+static volatile uint32_t UVC_MBuf_PackCount = 0x00;                                              /* UVC Data Microbuffer Packet Count*/
+static volatile uint8_t  UVC_MFrame_PackCount = 0x00;                                            /* UVC Microframe packet count */
+static volatile uint32_t UVC_MFrame_PackTotalNum = 0x00;                                         /* UVC Total number of current micro frames */
+static volatile uint32_t UVC_MFrame_LastPackLen = 0x00;                                          /* UVC The packet length at the end of the current microframe */
+static volatile uint32_t UVC_MFrame_ValidFlag = 0x00;                                            /* UVC Valid flag of microframe data(0:invalid; 1£ºvalid;) */
+volatile uint16_t Resolution_width = 0;
+volatile uint16_t Resolution_height = 0;
 
 /*UVC Frame header structure definition*/
 typedef struct __attribute__((packed))
  {
-    UINT8 len;
-    UINT8 tog;
-    UINT32 Frequeny;
-    UINT32 Clock;
-    UINT16 count;
-    UINT32 reallen;
+    uint8_t len;
+    uint8_t tog;
+    uint32_t Frequeny;
+    uint32_t Clock;
+    uint16_t count;
+    uint32_t reallen;
  }Picture;
 Picture MJPEG,YUV2;
 
 typedef struct __attribute__((packed))
 {
-    UINT32 Length[ 2 ];                                           /* UVC Buffer effective data length */
-    UINT8  FullFlag[ 2 ];                                         /* UVC Buffer full flag: 0-full 1-not full  */
-    UINT8  LoadNum;                                               /* UVC Buffer Load Number*/
-    UINT8  DealNum;                                               /* UVC Buffer processing number */
-    UINT8  RemainCount;                                           /* UVC Buffer Remaining Count */
+    uint32_t Length[ 2 ];                                           /* UVC Buffer effective data length */
+    uint8_t  FullFlag[ 2 ];                                         /* UVC Buffer full flag: 0-full 1-not full  */
+    uint8_t  LoadNum;                                               /* UVC Buffer Load Number*/
+    uint8_t  DealNum;                                               /* UVC Buffer processing number */
+    uint8_t  RemainCount;                                           /* UVC Buffer Remaining Count */
 }UVC_BUF_INFO;
 volatile UVC_BUF_INFO UVC_BufInfo;
 
@@ -54,7 +54,7 @@ volatile UVC_BUF_INFO UVC_BufInfo;
  * Video Streaming Interface Control Request Descriptor.
  * Before you turn on the camera, the host will issue the setting descriptor.
  */
-UINT8V Get_Curr[26]=
+volatile uint8_t Get_Curr[26]=
 {
     0x00, 0x00,
     0x01,
@@ -73,7 +73,7 @@ UINT8V Get_Curr[26]=
  * Resolution settings supported by USB3.0 and 2.0 UVC. If you want to change the resolution,
  *  you also need to change the corresponding resolution in the USB configuration descriptor.
  */
-const UINT16 frame_resolution[5][2]=
+const uint16_t frame_resolution[5][2]=
 {
     0x320,0x258,    //800*600
     0x140,0x0f0,    //320*240
@@ -89,7 +89,7 @@ const UINT16 frame_resolution[5][2]=
  * 8000 - Number of microframes in one second.
  * 8000/(frame rate) = YUV_Totalcount. You need to ensure that the calculated number must be an integer(YUV_Totalcount).
  */
-const UINT8 YUV_Totalcount[5]=
+const uint8_t YUV_Totalcount[5]=
 {
     120,   // 66.6fps    8000/120
     10,    // 800fps     8000/10
@@ -105,7 +105,7 @@ const UINT8 YUV_Totalcount[5]=
  *
  * @return  None
  */
-void Switch_Resolution( UINT8 frameindex )
+void Switch_Resolution( uint8_t frameindex )
 {
     Resolution_width  = frame_resolution[frameindex-1][0];
     Resolution_height = frame_resolution[frameindex-1][1];
@@ -120,7 +120,7 @@ void Switch_Resolution( UINT8 frameindex )
  */
 void FillYUVdata( void )
 {
-    UINT16 i;
+    uint16_t i;
     for ( i = 0; i < 1024 * 16; i += 4 ) //yuv data
     {
         YUV2_addr[i] =   0x23;
@@ -165,7 +165,7 @@ void CtrlCamera(){
     {
         /* Fill frame header data */
         MJPEG.Clock = 0x0136E5;
-        MJPEG.Frequeny = ~((*(UINT32V *)(0xe000f004)));
+        MJPEG.Frequeny = ~((*(volatile uint32_t *)(0xe000f004)));
         MJPEG.count=0x04DD;
         MJPEG.len=0x0c;
         MJPEG.tog = 0x8c;
@@ -209,7 +209,7 @@ void CtrlCamera_Hs(){
     {
         UVC_SourceClock(1);
         MJPEG.Clock = 0;
-        MJPEG.Frequeny = ~((*(UINT32V *)(0xe000f004)));
+        MJPEG.Frequeny = ~((*(volatile uint32_t *)(0xe000f004)));
         MJPEG.count = 0;
         MJPEG.len = 0x0c;
         MJPEG.tog = 0x8c;
@@ -244,7 +244,7 @@ void Endp1_ITPHander(void)
     /* Here, preset the amount of data to be sent for this microframe,
      * and then at Endp1_ Hander transfers the remaining data of this microframe.
     */
-    UINT8 seq;
+    uint8_t seq;
 
     UVC_MFrame_PackCount = 0x00;
     UVC_MBuf_PackCount = 0x00;
@@ -275,8 +275,8 @@ void Endp1_ITPHander(void)
         UVC_BufInfo.FullFlag[1] = 0x00;
         UVC_BufInfo.Length[1] = (Resolution_width * Resolution_height * 2 / YUV_Totalcount[Get_Curr[3] - 1] ) +12;
 
-        USBSS->UEP1_TX_DMA = (UINT32)(UINT8 *)YUV2_addr;
-        memcpy( (UINT8 *)( YUV2_addr ),  (uint8_t *)&YUV2, 12 );//Copy 12 byte packet header
+        USBSS->UEP1_TX_DMA = (uint32_t)(uint8_t *)YUV2_addr;
+        memcpy( (uint8_t *)( YUV2_addr ),  (uint8_t *)&YUV2, 12 );//Copy 12 byte packet header
         seq = UVC_MFrame_PackCount;
         if( (UVC_MFrame_PackTotalNum >= BURSTMAXSIZE))
         {
@@ -307,8 +307,8 @@ void Endp1_ITPHander(void)
             UVC_MFrame_LastPackLen = 1024;
         }
 
-        USBSS->UEP1_TX_DMA = (UINT32)(UINT8 *)YUV2_addr;
-        memcpy( (UINT8 *)( YUV2_addr ),  (uint8_t *)&YUV2, 12 );
+        USBSS->UEP1_TX_DMA = (uint32_t)(uint8_t *)YUV2_addr;
+        memcpy( (uint8_t *)( YUV2_addr ),  (uint8_t *)&YUV2, 12 );
         seq = UVC_MFrame_PackCount;
         if( (UVC_MFrame_PackTotalNum >= BURSTMAXSIZE) )
         {
@@ -338,8 +338,8 @@ void Endp1_Hander(void)
      * Check for incomplete data in ITP interrupts.
     */
 
-     UINT8 nump;
-     UINT8 seq;
+     uint8_t nump;
+     uint8_t seq;
      USB30_IN_ClearIT(1);
      nump = USB30_IN_Nump( 1 );
      if( UVC_MFrame_ValidFlag )
@@ -370,7 +370,7 @@ void Endp1_Hander(void)
          UVC_MFrame_PackCount += nump;
          if( UVC_MFrame_PackCount < UVC_MFrame_PackTotalNum )
          {
-             USBSS->UEP1_TX_DMA = (UINT32)(UINT8 *)(YUV2_addr+12);
+             USBSS->UEP1_TX_DMA = (uint32_t)(uint8_t *)(YUV2_addr+12);
              packnum = UVC_MFrame_PackTotalNum - UVC_MFrame_PackCount;
              seq = UVC_MFrame_PackCount;
              if( packnum >= BURSTMAXSIZE )
@@ -399,31 +399,31 @@ void Endp1_Hander(void)
  */
 void Endp1_ISOHander_Hs(void)
 {
-    static UINT32 send_num = 0;
-    static UINT8 togGG = 0;
+    static uint32_t send_num = 0;
+    static uint8_t togGG = 0;
 
     if(send_num >= PACKSIZE_3)
     {
         if(togGG == 2)
         {
             togGG = 1;
-            R32_UEP1_TX_DMA = (UINT32)(UINT8 *)(YUV2_addr+1024);
+            R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)(YUV2_addr+1024);
             R16_UEP1_T_LEN = 1024;
         }
         else if(togGG == 1)
         {
             togGG = 0 ;
-            R32_UEP1_TX_DMA = (UINT32)(UINT8 *)(YUV2_addr+1024);
+            R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)(YUV2_addr+1024);
             R16_UEP1_T_LEN = 1024;
 
             send_num -= 1024*3-12;
         }
         else if(togGG == 0)
         {
-            memcpy( (UINT8 *)( YUV2_addr ),  (uint8_t *)&YUV2, 12 );
+            memcpy( (uint8_t *)( YUV2_addr ),  (uint8_t *)&YUV2, 12 );
             YUV2.tog &= ~(1<<1);
             togGG = 2;
-            R32_UEP1_TX_DMA = (UINT32)(UINT8 *)YUV2_addr;
+            R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)YUV2_addr;
             R16_UEP1_T_LEN = 1024;
         }
     }
@@ -432,13 +432,13 @@ void Endp1_ISOHander_Hs(void)
         if(togGG == 2)
         {
             togGG = 1;
-            R32_UEP1_TX_DMA = (UINT32)(UINT8 *)(YUV2_addr+1024);
+            R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)(YUV2_addr+1024);
             R16_UEP1_T_LEN = 1024;
         }
         else if(togGG == 1)
         {
             togGG = 0 ;
-            R32_UEP1_TX_DMA = (UINT32)(UINT8 *)(YUV2_addr+1024);
+            R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)(YUV2_addr+1024);
             R16_UEP1_T_LEN = send_num - 1024*2 +12;
 
             send_num = Resolution_width * Resolution_height * 2;
@@ -447,10 +447,10 @@ void Endp1_ISOHander_Hs(void)
         {
             YUV2.tog |= 0x02;
             YUV2.tog ^= 0x01;
-            memcpy( (UINT8 *)( YUV2_addr ),  (uint8_t *)&YUV2, 12 );
+            memcpy( (uint8_t *)( YUV2_addr ),  (uint8_t *)&YUV2, 12 );
             YUV2.tog &= ~(1<<1);
             togGG = 2;
-            R32_UEP1_TX_DMA = (UINT32)(UINT8 *)YUV2_addr;
+            R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)YUV2_addr;
             R16_UEP1_T_LEN = 1024;
         }
     }
@@ -459,7 +459,7 @@ void Endp1_ISOHander_Hs(void)
         if(togGG == 1)
         {
             togGG = 0 ;
-            R32_UEP1_TX_DMA = (UINT32)(UINT8 *)(YUV2_addr+1024);
+            R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)(YUV2_addr+1024);
             R16_UEP1_T_LEN = send_num - 1024*1 + 12;
 
             send_num = Resolution_width * Resolution_height * 2;
@@ -468,11 +468,11 @@ void Endp1_ISOHander_Hs(void)
         {
             YUV2.tog |= 0x02;
             YUV2.tog ^= 0x01;
-            memcpy( (UINT8 *)( YUV2_addr ),  (uint8_t *)&YUV2, 12 );
+            memcpy( (uint8_t *)( YUV2_addr ),  (uint8_t *)&YUV2, 12 );
             YUV2.tog &= ~(1<<1);
 
             togGG = 1;
-            R32_UEP1_TX_DMA = (UINT32)(UINT8 *)YUV2_addr;
+            R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)YUV2_addr;
             R16_UEP1_T_LEN = 1024;
         }
     }
@@ -480,11 +480,11 @@ void Endp1_ISOHander_Hs(void)
     {
         YUV2.tog |= 0x02;
         YUV2.tog ^= 0x01;
-        memcpy( (UINT8 *)( YUV2_addr ),  (uint8_t *)&YUV2, 12 );
+        memcpy( (uint8_t *)( YUV2_addr ),  (uint8_t *)&YUV2, 12 );
         YUV2.tog &= ~(1<<1);
 
         togGG = 0;
-        R32_UEP1_TX_DMA = (UINT32)(UINT8 *)YUV2_addr;
+        R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)YUV2_addr;
         R16_UEP1_T_LEN = send_num+12;
 
         send_num = Resolution_width * Resolution_height * 2;

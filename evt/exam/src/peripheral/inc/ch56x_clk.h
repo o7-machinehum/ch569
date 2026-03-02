@@ -32,7 +32,7 @@ enum
 
 
 void SystemInit(uint32_t systemclck);			/* System clock initialization */
-UINT32 GetSysClock( void );						/* Get the current system clock */
+uint32_t GetSysClock( void );						/* Get the current system clock */
 
 	
 	 

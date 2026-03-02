@@ -19,8 +19,8 @@
 #include "ch56x_common.h"
 #define  FREQ_SYS   80000000
 
- UINT8 spiBuff[]={1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6};
- UINT8 spiBuffrev[16];
+ uint8_t spiBuff[]={1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6};
+ uint8_t spiBuffrev[16];
 
 /*******************************************************************************
  * @fn        DebugInit
@@ -31,10 +31,10 @@
  *
  * @return    None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-	UINT32 x;
-	UINT32 t = FREQ_SYS;
+	uint32_t x;
+	uint32_t t = FREQ_SYS;
 	
 	x = 10 * t * 2 / 16 / baudrate;
 	x = ( x + 5 ) / 10;
@@ -56,7 +56,7 @@ void DebugInit(UINT32 baudrate)
  */
 int main()
 {  
-	UINT8 i;
+	uint8_t i;
 
 	SystemInit(FREQ_SYS);
     Delay_Init(FREQ_SYS);

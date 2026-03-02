@@ -36,7 +36,7 @@
 #define SETUP_3		0x80
 
 
-void BUS8_Init(UINT8 addroe, UINT8 width, UINT8 hold, UINT8 setup);
+void BUS8_Init(uint8_t addroe, uint8_t width, uint8_t hold, uint8_t setup);
 
 
 	 

@@ -37,8 +37,8 @@ extern "C" {
 #define LINK_STA_1  (1<<0)
 #define LINK_STA_3  (1<<2)
 /* Global Variable */
-extern __attribute__ ((aligned(16))) UINT8  endp0RTbuff[512] __attribute__((section(".DMADATA")));
-extern __attribute__ ((aligned(16))) UINT8  HIDbuff[1024*ENDP_INTERRUPT_BURST_LEVEL] __attribute__((section(".DMADATA")));
+extern __attribute__ ((aligned(16))) uint8_t  endp0RTbuff[512] __attribute__((section(".DMADATA")));
+extern __attribute__ ((aligned(16))) uint8_t  HIDbuff[1024*ENDP_INTERRUPT_BURST_LEVEL] __attribute__((section(".DMADATA")));
 
 
 /* Function declaration */

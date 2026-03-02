@@ -58,7 +58,7 @@ void PWMX_CycleCfg( PWMX_CycleTypeDef cyc );		                   //PWM output wa
 #define PWM3_ActDataWidth( d )		(R8_PWM3_DATA = d)					//PWM3 effective data pulse width
 
 //Duty cycle = data valid width/waveform period
-void PWMX_ACTOUT( UINT8 ch, UINT8 da, PWMX_PolarTypeDef pr, UINT8 s);	//PWM0-3 output waveform configuration
+void PWMX_ACTOUT( uint8_t ch, uint8_t da, PWMX_PolarTypeDef pr, uint8_t s);	//PWM0-3 output waveform configuration
 
 
 		 

@@ -53,9 +53,9 @@ void PWMX_CycleCfg( PWMX_CycleTypeDef cyc )
  *					DISABLE - turn off PWM
  * @return   None
  */
-void PWMX_ACTOUT( UINT8 ch, UINT8 da, PWMX_PolarTypeDef pr, UINT8 s)
+void PWMX_ACTOUT( uint8_t ch, uint8_t da, PWMX_PolarTypeDef pr, uint8_t s)
 {
-    UINT8 i;
+    uint8_t i;
 
     if(s == DISABLE)	R8_PWM_CTRL_MOD &= ~(ch);                        //Determine whether the PWM output is enabled
     else
@@ -63,7 +63,7 @@ void PWMX_ACTOUT( UINT8 ch, UINT8 da, PWMX_PolarTypeDef pr, UINT8 s)
 
     	(pr)?(R8_PWM_CTRL_MOD|=(ch<<4)):(R8_PWM_CTRL_MOD&=~(ch<<4));     //PWM output polarity control 1: Default high level, low active; 0: Default low level, high active
         for(i=0; i<4; i++){
-            if((ch>>i)&1)		*((PUINT8V)((&R8_PWM0_DATA)+i)) = da;
+            if((ch>>i)&1)		*((volatile uint8_t *)((&R8_PWM0_DATA)+i)) = da;
         }
         R8_PWM_CTRL_MOD |= (ch);
     }

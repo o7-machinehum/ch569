@@ -23,13 +23,13 @@
 #define BURSTMAXSIZE    12
 
 /* Global Variable */
-extern UINT8V Get_Curr[26];
-extern UINT16V Resolution_width;
-extern UINT16V Resolution_height;
+extern volatile uint8_t Get_Curr[26];
+extern volatile uint16_t Resolution_width;
+extern volatile uint16_t Resolution_height;
 
 /* Function declaration */
 void FillYUVdata( void );
-UINT16 UVC_NonStandardReq(UINT8 **pDescr);
+uint16_t UVC_NonStandardReq(uint8_t **pDescr);
 void ClearError();
 void CtrlCamera();
 void DVP_Hander(void);
@@ -38,6 +38,6 @@ void Endp1_Hander(void);
 void Endp1_ISOHander_Hs(void);
 void Endp1_Hander_Hs(void);
 void CtrlCamera_Hs();
-void Switch_Resolution( UINT8 frameindex );
+void Switch_Resolution( uint8_t frameindex );
 
 #endif /* UVC_UVCLIB_H_ */

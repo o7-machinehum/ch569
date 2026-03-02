@@ -27,17 +27,17 @@
 #define SIZE_GetStatus				 2
 
 /* Global Variable */
-extern const UINT8 DeviceDescriptor[SIZE_DEVICE_DESC];
-extern const UINT8 ConfigDescriptor[SIZE_CONFIG_DESC];
-extern const UINT8 OSStringDescriptor[SIZE_STRING_OS];
-extern const UINT8 BOSDescriptor[SIZE_BOS_DESC];
-extern const UINT8 StringLangID [SIZE_STRING_LANGID];
-extern const UINT8 StringVendor [SIZE_STRING_VENDOR];
-extern const UINT8 StringProduct[SIZE_STRING_PRODUCT];
-extern UINT8 StringSerial [SIZE_STRING_SERIAL];
-extern UINT8 GetStatus[SIZE_GetStatus];
-extern const UINT8 PropertyHeader[SIZE_PropertyHeader];
-extern const UINT8 CompactId[SIZE_CompactId];
-extern const UINT8 MSOS20DescriptorSet[SIZE_MSOS20DescriptorSet];
+extern const uint8_t DeviceDescriptor[SIZE_DEVICE_DESC];
+extern const uint8_t ConfigDescriptor[SIZE_CONFIG_DESC];
+extern const uint8_t OSStringDescriptor[SIZE_STRING_OS];
+extern const uint8_t BOSDescriptor[SIZE_BOS_DESC];
+extern const uint8_t StringLangID [SIZE_STRING_LANGID];
+extern const uint8_t StringVendor [SIZE_STRING_VENDOR];
+extern const uint8_t StringProduct[SIZE_STRING_PRODUCT];
+extern uint8_t StringSerial [SIZE_STRING_SERIAL];
+extern uint8_t GetStatus[SIZE_GetStatus];
+extern const uint8_t PropertyHeader[SIZE_PropertyHeader];
+extern const uint8_t CompactId[SIZE_CompactId];
+extern const uint8_t MSOS20DescriptorSet[SIZE_MSOS20DescriptorSet];
 
 #endif /* USB30_USB30_DESC_H_ */

@@ -19,17 +19,17 @@
 #define UART_TIMEOUT  1000
 
 /* Global Variable */
-__attribute__ ((aligned(16))) UINT8 Receive_Uart_Buf[UART_REV_LEN] __attribute__((section(".DMADATA")));//uart receive buffer
+__attribute__ ((aligned(16))) uint8_t Receive_Uart_Buf[UART_REV_LEN] __attribute__((section(".DMADATA")));//uart receive buffer
 
-volatile UINT16 Uart_Input_Point = 0;       //Circular buffer write pointer
-volatile UINT16 Uart_Output_Point = 0;      //Loop buffer fetch pointer
-volatile UINT16 UartByteCount = 0;          //The number of bytes remaining to be fetched in the current buffer
-volatile UINT16 USBByteCount = 0;           //Data received by USB endpoint
-volatile UINT16 USBBufOutPoint = 0;         //Get data pointer
-volatile UINT8  UploadPoint2_Busy  = 0;     //Upload whether the endpoint is busy
-volatile UINT8  DownloadPoint2_Busy  = 0;   //Download whether the endpoint is busy
-volatile UINT16 Uart_Timecount = 0;         //Timeout processing calculation time
-volatile UINT16 Uart_Sendlenth = 0;         //USB upload data length
+volatile uint16_t Uart_Input_Point = 0;       //Circular buffer write pointer
+volatile uint16_t Uart_Output_Point = 0;      //Loop buffer fetch pointer
+volatile uint16_t UartByteCount = 0;          //The number of bytes remaining to be fetched in the current buffer
+volatile uint16_t USBByteCount = 0;           //Data received by USB endpoint
+volatile uint16_t USBBufOutPoint = 0;         //Get data pointer
+volatile uint8_t  UploadPoint2_Busy  = 0;     //Upload whether the endpoint is busy
+volatile uint8_t  DownloadPoint2_Busy  = 0;   //Download whether the endpoint is busy
+volatile uint16_t Uart_Timecount = 0;         //Timeout processing calculation time
+volatile uint16_t Uart_Sendlenth = 0;         //USB upload data length
 /* Function declaration */
 void TMR2_IRQHandler (void) __attribute__((interrupt()));
 void UART2_IRQHandler (void) __attribute__((interrupt("WCH-Interrupt-fast")));
@@ -43,10 +43,10 @@ void UART2_IRQHandler (void) __attribute__((interrupt("WCH-Interrupt-fast")));
  *
  * @return    None
  */
-void CDC_Uart_Init( UINT32 baudrate )
+void CDC_Uart_Init( uint32_t baudrate )
 {
-    UINT32 x;
-    UINT32 t = FREQ_SYS;
+    uint32_t x;
+    uint32_t t = FREQ_SYS;
     x = 10 * t * 2 / 16 / baudrate;
     x = ( x + 5 ) / 10;
     R8_UART2_DIV = 1;
@@ -152,7 +152,7 @@ void U30_CDC_UartRx_Deal( void )
  */
 void U20_CDC_UartRx_Deal( void )
 {
-    UINT16 i= 0;
+    uint16_t i= 0;
     if(!UploadPoint2_Busy)
     {
         Uart_Sendlenth = UartByteCount;
@@ -198,7 +198,7 @@ void U20_CDC_UartRx_Deal( void )
  */
 void U30_CDC_UartTx_Deal( void )
 {
-    static UINT16 i = 0;
+    static uint16_t i = 0;
 
     if(USBByteCount)//If there is any remaining data to be downloaded, it will be sent through the uart
     {
@@ -212,7 +212,7 @@ void U30_CDC_UartTx_Deal( void )
         {
             USBBufOutPoint = 0;
             DownloadPoint2_Busy = 1;
-            USBSS->UEP2_RX_DMA  = (UINT32)(UINT8 *)endp2Rxbuff;
+            USBSS->UEP2_RX_DMA  = (uint32_t)(uint8_t *)endp2Rxbuff;
             USB30_OUT_ClearIT(ENDP_2);
             USB30_OUT_Set( ENDP_2 , ACK , 1 );
             USB30_Send_ERDY( ENDP_2 | OUT , 1 );
@@ -229,7 +229,7 @@ void U30_CDC_UartTx_Deal( void )
  */
 void U20_CDC_UartTx_Deal( void )
 {
-    static UINT16 i = 0;
+    static uint16_t i = 0;
     if(USBByteCount)
     {
         UART2_SendString(&endp2Rxbuff[USBBufOutPoint++],1);
@@ -237,7 +237,7 @@ void U20_CDC_UartTx_Deal( void )
         USBByteCount--;
         if(USBByteCount==0){
             USBBufOutPoint = 0;
-            R32_UEP2_RX_DMA = (UINT32)(UINT8 *)endp2Rxbuff;
+            R32_UEP2_RX_DMA = (uint32_t)(uint8_t *)endp2Rxbuff;
             R8_UEP2_RX_CTRL = (R8_UEP2_RX_CTRL &~RB_UEP_RRES_MASK)|UEP_R_RES_ACK;
         }
     }
@@ -291,8 +291,8 @@ void CDC_Variable_Clear(void){
  */
 void UART2_IRQHandler(void)
 {
-    UINT8 i,rec_length;
-    UINT8 rec[7] = {0};
+    uint8_t i,rec_length;
+    uint8_t rec[7] = {0};
 
     switch( UART2_GetITFlag() )
     {

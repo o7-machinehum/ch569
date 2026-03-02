@@ -25,7 +25,7 @@
  *
  * @return   None
  */
-void ECDC_Init( UINT8 ecdcmode, UINT8 clkmode, UINT8 keylen, PUINT32 pkey, PUINT32 pcount )
+void ECDC_Init( uint8_t ecdcmode, uint8_t clkmode, uint8_t keylen, uint32_t * pkey, uint32_t * pcount )
 {
 	R8_ECDC_INT_FG |= 0xFF;
 	R16_ECEC_CTRL = 0;
@@ -56,7 +56,7 @@ void ECDC_Init( UINT8 ecdcmode, UINT8 clkmode, UINT8 keylen, PUINT32 pkey, PUINT
  
  * @return   None
  */
-void ECDC_SetKey( PUINT32 pkey, UINT8 keylen )
+void ECDC_SetKey( uint32_t * pkey, uint8_t keylen )
 {
 	keylen = keylen&0x03;
 
@@ -84,7 +84,7 @@ void ECDC_SetKey( PUINT32 pkey, UINT8 keylen )
  *
  * @return   None
  */
-void ECDC_SetCount( PUINT32 pcount )
+void ECDC_SetCount( uint32_t * pcount )
 {
 	R32_ECDC_IV_31T0 = *pcount++;
 	R32_ECDC_IV_63T32 = *pcount++;
@@ -109,7 +109,7 @@ void ECDC_SetCount( PUINT32 pcount )
  *
  * @return   None
  */
-void ECDC_Excute( UINT8 excutemode, UINT8 endianmode )
+void ECDC_Excute( uint8_t excutemode, uint8_t endianmode )
 {
 	R16_ECEC_CTRL &= 0xDF71;
 	R16_ECEC_CTRL |= excutemode;
@@ -129,7 +129,7 @@ void ECDC_Excute( UINT8 excutemode, UINT8 endianmode )
  *
  * @return   None
  */
-void ECDC_SingleRegister( PUINT32 pWdatbuff, PUINT32 pRdatbuff )
+void ECDC_SingleRegister( uint32_t * pWdatbuff, uint32_t * pRdatbuff )
 {
 	R32_ECDC_SGSD_127T96 = pWdatbuff[3];			//low address
 	R32_ECDC_SGSD_95T64 = pWdatbuff[2];
@@ -154,7 +154,7 @@ void ECDC_SingleRegister( PUINT32 pWdatbuff, PUINT32 pRdatbuff )
  * 		   ram_len -  length
  * @return   None
  **/
-void ECDC_SelfDMA( UINT32 ram_addr, UINT32 ram_len )
+void ECDC_SelfDMA( uint32_t ram_addr, uint32_t ram_len )
 {
 	R32_ECDC_SRAM_ADDR = ram_addr;
 	R32_ECDC_SRAM_LEN = ram_len;                    //start converting
@@ -172,7 +172,7 @@ void ECDC_SelfDMA( UINT32 ram_addr, UINT32 ram_len )
  *
  * @return   None
  */
-void ECDC_RloadCount( UINT8 excutemode, UINT8 endianmode, PUINT32 pcount )
+void ECDC_RloadCount( uint8_t excutemode, uint8_t endianmode, uint32_t * pcount )
 {
 	R16_ECEC_CTRL &= 0xDFF9;       //second position third position 0
 	ECDC_SetCount(pcount);

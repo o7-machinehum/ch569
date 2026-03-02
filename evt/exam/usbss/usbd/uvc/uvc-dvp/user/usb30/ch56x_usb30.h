@@ -29,10 +29,10 @@ extern "C" {
 #define LINK_STA_1  (1<<0)
 #define LINK_STA_3  (1<<2)
 /* Global Variable */
-extern __attribute__ ((aligned(16))) UINT8 endp0RTbuff[512] __attribute__((section(".DMADATA")));
-extern __attribute__ ((aligned(16))) UINT8 endp1RTbuff[1024] __attribute__((section(".DMADATA")));
+extern __attribute__ ((aligned(16))) uint8_t endp0RTbuff[512] __attribute__((section(".DMADATA")));
+extern __attribute__ ((aligned(16))) uint8_t endp1RTbuff[1024] __attribute__((section(".DMADATA")));
 
-extern UINT8V Link_sta;
+extern volatile uint8_t Link_sta;
 /* Function declaration */
 void USB30D_init(FunctionalState sta);
 void TMR0_IRQHandler() __attribute__((interrupt("WCH-Interrupt-fast")));

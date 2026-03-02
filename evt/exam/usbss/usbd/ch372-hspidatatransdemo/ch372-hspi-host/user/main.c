@@ -24,9 +24,9 @@
 #define  UART1_BAUD     115200
 
 /******************************************************************************/
-UINT32V Dbg_Idle_TimeCount = 0x00;
-UINT64V Dbg_HSPI_Tx_TLen = 0x00;
-UINT64V Dbg_HSPI_Rx_TLen = 0x00;
+volatile uint32_t Dbg_Idle_TimeCount = 0x00;
+volatile uint64_t Dbg_HSPI_Tx_TLen = 0x00;
+volatile uint64_t Dbg_HSPI_Rx_TLen = 0x00;
 /*******************************************************************************
  * @fn        DebugInit
  *
@@ -36,10 +36,10 @@ UINT64V Dbg_HSPI_Rx_TLen = 0x00;
  *
  * @return    None
  */
-void DebugInit( UINT32 baudrate )
+void DebugInit( uint32_t baudrate )
 {
-	UINT32 x;
-	UINT32 t = FREQ_SYS;
+	uint32_t x;
+	uint32_t t = FREQ_SYS;
 	x = 10 * t * 2 / 16 / baudrate;
 	x = ( x + 5 ) / 10;
 	R8_UART1_DIV = 1;
@@ -68,7 +68,7 @@ int main( void )
 	PRINT( "CH56x USB3.0 & USB2.0 device test(80MHz) !\n" );
     HSPI_GPIO_Init( );                                                          /* GPIO initialization related to HSPI interface */
     GPIO_Init( );                                                               /* Hardware related GPIO initialization */
-    DUG_PRINTF( "CH56x HSPI Test@120MHZ_V1.%d\n", (UINT16)DEF_PROG_VERSION - 0x01 );
+    DUG_PRINTF( "CH56x HSPI Test@120MHZ_V1.%d\n", (uint16_t)DEF_PROG_VERSION - 0x01 );
     DUG_PRINTF( "Edit Date and Time is: "__DATE__"  " __TIME__"\n" );
 
     /* Timer initialization */

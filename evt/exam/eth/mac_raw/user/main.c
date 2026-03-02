@@ -19,7 +19,7 @@ MAC RAW example, demonstrating that MAC RAW receives and sends data.
 
 extern volatile uint8_t LinkSta;
 uint8_t MACAddr[6];                         //MAC address
-UINT8 ARPPackage[]=
+uint8_t ARPPackage[]=
 {
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff,     /* destination MAC address */
     0x84, 0xc2, 0xe4, 0x01, 0x02, 0x03,     /* source MAC address */
@@ -73,10 +73,10 @@ UINT8 ARPPackage[]=
  *
  * @return  None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-    UINT32 x;
-    UINT32 t = FREQ_SYS;
+    uint32_t x;
+    uint32_t t = FREQ_SYS;
 
     x = 10 * t * 2 / 16 / baudrate;
     x = (x + 5) / 10;

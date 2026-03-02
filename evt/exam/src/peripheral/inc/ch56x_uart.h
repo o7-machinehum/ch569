@@ -47,9 +47,9 @@ typedef enum
  
 /****************** UART0 */ 
 void UART0_DefInit( void );	 							/* Serial port default initialization configuration */
-void UART0_BaudRateCfg( UINT32 baudrate );	 			/* Serial port baud rate configuration */
+void UART0_BaudRateCfg( uint32_t baudrate );	 			/* Serial port baud rate configuration */
 void UART0_ByteTrigCfg( UARTByteTRIGTypeDef b );        /* Serial byte trigger interrupt configuration */
-void UART0_INTCfg( UINT8 s,  UINT8 i );		            /* Serial port interrupt configuration */
+void UART0_INTCfg( uint8_t s,  uint8_t i );		            /* Serial port interrupt configuration */
 void UART0_Reset( void );								/* Serial port software reset */
 
 #define UART0_CLR_RXFIFO()       (R8_UART0_FCR |= RB_FCR_RX_FIFO_CLR)          /* Clear the current receive FIFO */
@@ -61,16 +61,16 @@ void UART0_Reset( void );								/* Serial port software reset */
 #define UART0_GetMSRSTA()       (R8_UART0_MSR)          /* Get the current flow control status, only applicable to UART0 */
 
 #define	UART0_SendByte(b)		(R8_UART0_THR = b)		/* Serial port single byte transmission */
-void UART0_SendString( PUINT8 buf, UINT16 l );			/* Serial multi-byte transmission */
+void UART0_SendString( uint8_t * buf, uint16_t l );			/* Serial multi-byte transmission */
 #define	UART0_RecvByte()		( R8_UART0_RBR )        /* Serial port read single byte */
-UINT16 UART0_RecvString( PUINT8 buf );					/* Serial port read multibyte */
+uint16_t UART0_RecvString( uint8_t * buf );					/* Serial port read multibyte */
 
       
 /****************** UART1 */ 	 
 void UART1_DefInit( void );	 							/* Serial port default initialization configuration */
-void UART1_BaudRateCfg( UINT32 baudrate );	 			/* Serial port baud rate configuration */
+void UART1_BaudRateCfg( uint32_t baudrate );	 			/* Serial port baud rate configuration */
 void UART1_ByteTrigCfg( UARTByteTRIGTypeDef b );        /* Serial byte trigger interrupt configuration */
-void UART1_INTCfg( UINT8 s,  UINT8 i );		            /* Serial port interrupt configuration */
+void UART1_INTCfg( uint8_t s,  uint8_t i );		            /* Serial port interrupt configuration */
 void UART1_Reset( void );								/* Serial port software reset */
 
 #define UART1_CLR_RXFIFO()       (R8_UART1_FCR |= RB_FCR_RX_FIFO_CLR)          /* Clear the current receive FIFO */
@@ -81,17 +81,17 @@ void UART1_Reset( void );								/* Serial port software reset */
 #define UART1_GetLinSTA()       (R8_UART1_LSR)          /* Get the current communication status */
 
 #define	UART1_SendByte(b)		(R8_UART1_THR = b)		/* Serial port single byte transmission */
-void UART1_SendString( PUINT8 buf, UINT16 l );			/* Serial multi-byte transmission */
+void UART1_SendString( uint8_t * buf, uint16_t l );			/* Serial multi-byte transmission */
 #define	UART1_RecvByte()		( R8_UART1_RBR )        /* Serial port read single byte */
-UINT16 UART1_RecvString( PUINT8 buf );					/* Serial port read multibyte */
+uint16_t UART1_RecvString( uint8_t * buf );					/* Serial port read multibyte */
 
 
 
 /****************** UART2 */ 
 void UART2_DefInit( void );	 							/* Serial port default initialization configuration */
-void UART2_BaudRateCfg( UINT32 baudrate );	 			/* Serial port baud rate configuration */
+void UART2_BaudRateCfg( uint32_t baudrate );	 			/* Serial port baud rate configuration */
 void UART2_ByteTrigCfg( UARTByteTRIGTypeDef b );        /* Serial byte trigger interrupt configuration */
-void UART2_INTCfg( UINT8 s,  UINT8 i );		            /* Serial port interrupt configuration */
+void UART2_INTCfg( uint8_t s,  uint8_t i );		            /* Serial port interrupt configuration */
 void UART2_Reset( void );								/* Serial port software reset */
 
 #define UART2_CLR_RXFIFO()       (R8_UART2_FCR |= RB_FCR_RX_FIFO_CLR)          /* Clear the current receive FIFO */
@@ -102,16 +102,16 @@ void UART2_Reset( void );								/* Serial port software reset */
 #define UART2_GetLinSTA()       (R8_UART2_LSR)          /* Get the current communication status */
 
 #define	UART2_SendByte(b)		(R8_UART2_THR = b)		/* Serial port single byte transmission */
-void UART2_SendString( PUINT8 buf, UINT16 l );			/* Serial multi-byte transmission */
+void UART2_SendString( uint8_t * buf, uint16_t l );			/* Serial multi-byte transmission */
 #define	UART2_RecvByte()		( R8_UART2_RBR )        /* Serial port read single byte */
-UINT16 UART2_RecvString( PUINT8 buf );					/* Serial port read multibyte */
+uint16_t UART2_RecvString( uint8_t * buf );					/* Serial port read multibyte */
 
 
 /****************** UART3 */ 
 void UART3_DefInit( void );	 							/* Serial port default initialization configuration */
-void UART3_BaudRateCfg( UINT32 baudrate );	 			/* Serial port baud rate configuration */
+void UART3_BaudRateCfg( uint32_t baudrate );	 			/* Serial port baud rate configuration */
 void UART3_ByteTrigCfg( UARTByteTRIGTypeDef b );        /* Serial byte trigger interrupt configuration */
-void UART3_INTCfg( UINT8 s,  UINT8 i );		            /* Serial port interrupt configuration */
+void UART3_INTCfg( uint8_t s,  uint8_t i );		            /* Serial port interrupt configuration */
 void UART3_Reset( void );								/* Serial port software reset */
 
 #define UART3_CLR_RXFIFO()       (R8_UART3_FCR |= RB_FCR_RX_FIFO_CLR)          /* Clear the current receive FIFO */
@@ -122,9 +122,9 @@ void UART3_Reset( void );								/* Serial port software reset */
 #define UART3_GetLinSTA()       (R8_UART3_LSR)          /* Get the current communication status */
 
 #define	UART3_SendByte(b)		(R8_UART3_THR = b)		/* Serial port single byte transmission */
-void UART3_SendString( PUINT8 buf, UINT16 l );			/* Serial multi-byte transmission */
+void UART3_SendString( uint8_t * buf, uint16_t l );			/* Serial multi-byte transmission */
 #define	UART3_RecvByte()		( R8_UART3_RBR )        /* Serial port read single byte */
-UINT16 UART3_RecvString( PUINT8 buf );					/* Serial port read multibyte */
+uint16_t UART3_RecvString( uint8_t * buf );					/* Serial port read multibyte */
 
 	 
 	 

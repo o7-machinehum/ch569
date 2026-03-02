@@ -27,7 +27,7 @@
  *
  * @return   None
  */
-void HSPI_Mode( UINT8 s,  HSPI_ModeTypeDef i)
+void HSPI_Mode( uint8_t s,  HSPI_ModeTypeDef i)
 {
 	R8_HSPI_CFG &= ~RB_HSPI_MSK_SIZE;   //Restore default mode 8bit mode
 
@@ -62,7 +62,7 @@ void HSPI_Mode( UINT8 s,  HSPI_ModeTypeDef i)
  *
  * @return   None
  */
-void HSPI_INTCfg( UINT8 s,  UINT8 i )
+void HSPI_INTCfg( uint8_t s,  uint8_t i )
 {
     if(s){
     	R8_HSPI_INT_EN |= i;

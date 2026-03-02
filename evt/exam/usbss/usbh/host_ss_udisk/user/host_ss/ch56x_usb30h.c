@@ -14,17 +14,17 @@
 #include "ch56x_udisk.h"
 /* Function */
 void LINK_IRQHandler( void ) __attribute__((interrupt("WCH-Interrupt-fast")));
-void Analysis_Descr(UINT8 *pdesc, UINT16 l);
+void Analysis_Descr(uint8_t *pdesc, uint16_t l);
 
 /* Global define */
 #define pSetupreq    ((PUSB_SETUP_REQ)endpTXbuff)
 
 /* Global Variable */
-__attribute__ ((aligned(16))) UINT8 endpRXbuff[512] __attribute__((section(".DMADATA"))); //data recive buffer
-__attribute__ ((aligned(16))) UINT8 endpTXbuff[512] __attribute__((section(".DMADATA"))); //data send buffer
-UINT8V tx_lmp_port = 0;
-UINT8V device_link_status = 0;              //USBSS link flag
-UINT8V config_value = 0;
+__attribute__ ((aligned(16))) uint8_t endpRXbuff[512] __attribute__((section(".DMADATA"))); //data recive buffer
+__attribute__ ((aligned(16))) uint8_t endpTXbuff[512] __attribute__((section(".DMADATA"))); //data send buffer
+volatile uint8_t tx_lmp_port = 0;
+volatile uint8_t device_link_status = 0;              //USBSS link flag
+volatile uint8_t config_value = 0;
 extern volatile DevInfo g_DevInfo;
 
 const uint8_t get_dev_descriptor[] =
@@ -118,13 +118,13 @@ const uint8_t set_feature_U2[] =
  *
  * @return    None
  */
-UINT16 USB30HOST_INTransaction(UINT8 seq_num,UINT8 *recv_packnum ,UINT8 endp_num,UINT16 *status)
+uint16_t USB30HOST_INTransaction(uint8_t seq_num,uint8_t *recv_packnum ,uint8_t endp_num,uint16_t *status)
 {
-    UINT8  packnum = 0;
-    UINT8  nump = 0;
-    UINT16 len;
-    UINT16 num =0;
-    UINT32 i = 0;
+    uint8_t  packnum = 0;
+    uint8_t  nump = 0;
+    uint16_t len;
+    uint16_t num =0;
+    uint32_t i = 0;
 
     num = USB30H_IN_Data(seq_num, recv_packnum, endp_num );
     mDelayuS(200);
@@ -180,11 +180,11 @@ UINT16 USB30HOST_INTransaction(UINT8 seq_num,UINT8 *recv_packnum ,UINT8 endp_num
  *
  * @return    Number of unsent packets remaining
  */
-UINT8 USB30HOST_OUTTransaction(UINT8 seq_num,UINT8 send_packnum ,UINT8 endp_num,UINT32 txlen)
+uint8_t USB30HOST_OUTTransaction(uint8_t seq_num,uint8_t send_packnum ,uint8_t endp_num,uint32_t txlen)
 {
-    UINT8  sta;
-    UINT8  packnump;
-    UINT32 i;
+    uint8_t  sta;
+    uint8_t  packnump;
+    uint32_t i;
 
     sta = USB30H_OUT_Data(seq_num, send_packnum, endp_num, txlen);
     switch(sta&0x07)
@@ -239,17 +239,17 @@ UINT8 USB30HOST_OUTTransaction(UINT8 seq_num,UINT8 send_packnum ,UINT8 endp_num,
  *            bit0~11 - The data stage is device-to-host, and the data length is returned by the device.
  *                      The data stage is host-to-device, and the status value is returned by the device
  */
-UINT16 USB30HOST_CtrlTransaciton(UINT8 *databuf)
+uint16_t USB30HOST_CtrlTransaciton(uint8_t *databuf)
 {
 
-    UINT8   *pBuf;
-    UINT8   seq_num =0;
-    UINT8   req_nump = 1;
-    UINT16  ReLen;
-    UINT16  txlen=0;
-    UINT16  len = 0;
-    UINT16  trans_len = 0;
-    UINT32  i=0;
+    uint8_t   *pBuf;
+    uint8_t   seq_num =0;
+    uint8_t   req_nump = 1;
+    uint16_t  ReLen;
+    uint16_t  txlen=0;
+    uint16_t  len = 0;
+    uint16_t  trans_len = 0;
+    uint32_t  i=0;
 
     pBuf = databuf;
     ReLen = pSetupreq->wLength;
@@ -258,7 +258,7 @@ UINT16 USB30HOST_CtrlTransaciton(UINT8 *databuf)
     {
       while(ReLen)
       {
-          USBSSH->UH_RX_DMA = (UINT32)pBuf + trans_len ;
+          USBSSH->UH_RX_DMA = (uint32_t)pBuf + trans_len ;
           len = USB30H_IN_Data( seq_num, &req_nump, 0 );                 // req_nump=1, endp=0
           mDelayuS(50);
           switch( len & 0x7000 )
@@ -300,7 +300,7 @@ UINT16 USB30HOST_CtrlTransaciton(UINT8 *databuf)
     {
       while(ReLen)
       {
-         USBSSH->UH_TX_DMA = (UINT32)pBuf  + trans_len;
+         USBSSH->UH_TX_DMA = (uint32_t)pBuf  + trans_len;
          txlen = (ReLen > USBSS_ENDP0_MAXSIZE) ? USBSS_ENDP0_MAXSIZE : ReLen;
          len = USB30H_OUT_Data( seq_num, req_nump, 0 ,txlen);      // nump =1, endp=0
          switch(len & 0x07)
@@ -345,9 +345,9 @@ UINT16 USB30HOST_CtrlTransaciton(UINT8 *databuf)
  *
  * @return    len
  */
-UINT16 GetDEV_Descriptor(void)
+uint16_t GetDEV_Descriptor(void)
 {
-  UINT16 len;
+  uint16_t len;
   memcpy( endpTXbuff , get_dev_descriptor , 8);
   USB30H_Send_Setup( 8 );
   len = USB30HOST_CtrlTransaciton(endpRXbuff);
@@ -362,10 +362,10 @@ UINT16 GetDEV_Descriptor(void)
  *
  * @return    len
  */
-UINT16 GetConfig_Descriptor(void)
+uint16_t GetConfig_Descriptor(void)
 {
-  UINT16 reallen;
-  UINT16 len;
+  uint16_t reallen;
+  uint16_t len;
 
   memcpy( endpTXbuff , get_cfg_descriptor , 8);
   USB30H_Send_Setup( 8 );
@@ -393,7 +393,7 @@ UINT16 GetConfig_Descriptor(void)
  *
  * @return    None
  */
-void Set_Address(UINT8 addr)
+void Set_Address(uint8_t addr)
 {
   memcpy( endpTXbuff , set_address , 8);
   pSetupreq->wValue = addr;
@@ -425,7 +425,7 @@ void Set_IsochDelay(void)
  */
 void Set_Sel(void)
 {
-    UINT8 buf[6];
+    uint8_t buf[6];
     buf[0] = 0x5f;buf[1] = 0x0a;buf[2] = 0x54;
     buf[3] = 0x08;buf[4] = 0xff;buf[5] = 0x07;
     memcpy( endpTXbuff , set_sel , 8);
@@ -446,7 +446,7 @@ void Set_Sel(void)
  */
 void SetFeatureU1(void)
 {
-  UINT8 buf[8] = {0x00,0x03,0x30,0x00,0x00,0x00,0x00,0x00};
+  uint8_t buf[8] = {0x00,0x03,0x30,0x00,0x00,0x00,0x00,0x00};
 
   memcpy( endpTXbuff , buf , 8);
   USB30H_Send_Setup( 8 );
@@ -463,7 +463,7 @@ void SetFeatureU1(void)
  */
 void SetFeatureU2(void)
 {
-  UINT8 buf[8] = {0x00,0x03,0x31,0x00,0x00,0x00,0x00,0x00};
+  uint8_t buf[8] = {0x00,0x03,0x31,0x00,0x00,0x00,0x00,0x00};
   memcpy( endpTXbuff , buf , 8);
   USB30H_Send_Setup( 8 );
 
@@ -495,11 +495,11 @@ void Set_Configuration(void)
  *
  * @return    None
  */
-void Analysis_Descr(UINT8 *pdesc, UINT16 l)
+void Analysis_Descr(uint8_t *pdesc, uint16_t l)
 {
-    UINT8 in_endp_num = 0;
-    UINT8 out_endp_num = 0;
-    UINT16 i;
+    uint8_t in_endp_num = 0;
+    uint8_t out_endp_num = 0;
+    uint16_t i;
     for(i=0;i<l;i++)                                                //Analysis Descriptor
     {
         if((pdesc[i]==0x09)&&(pdesc[i+1]==0x02))
@@ -533,9 +533,9 @@ void Analysis_Descr(UINT8 *pdesc, UINT16 l)
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 USB30HOST_ClearEndpStall( UINT8 endp )
+uint8_t USB30HOST_ClearEndpStall( uint8_t endp )
 {
-    UINT8  setup_buf[8];
+    uint8_t  setup_buf[8];
     setup_buf[0] = 0x02;
     setup_buf[1] = 0x01;
     setup_buf[2] = 0X00;
@@ -560,9 +560,9 @@ UINT8 USB30HOST_ClearEndpStall( UINT8 endp )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 USB30HSOT_Enumerate_Hotrst( UINT8 *pbuf )
+uint8_t USB30HSOT_Enumerate_Hotrst( uint8_t *pbuf )
 {
-    UINT8 status;
+    uint8_t status;
 
     USB30H_Set_Address( 0 );
     mDelaymS(1);
@@ -626,7 +626,7 @@ void USB30Host_Enum(void)
  *
  * @return    None
  */
-void USB30_link_status(UINT8 s)
+void USB30_link_status(uint8_t s)
 {
     if(s)
     {    //Successfully connected to the device
@@ -650,7 +650,7 @@ void USB30_link_status(UINT8 s)
 void LINK_IRQHandler (void)         //USBSSH interrupt service
 {
 
-    UINT32 temp = 0;
+    uint32_t temp = 0;
     temp = USBSS->LINK_ERR_STATUS;
     if( USBSSH->LINK_INT_FLAG & LINK_INACT_FLAG )
     {

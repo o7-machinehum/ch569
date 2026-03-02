@@ -28,15 +28,15 @@
 #define DVP_Work_Mode    JPEG_MODE
 //#define DVP_Work_Mode    RGB565_MODE
 
-UINT32 JPEG_DVPDMAaddr0 = 0x20020000;
-UINT32 JPEG_DVPDMAaddr1 = 0x20020000 + OV2640_JPEG_WIDTH;
+uint32_t JPEG_DVPDMAaddr0 = 0x20020000;
+uint32_t JPEG_DVPDMAaddr1 = 0x20020000 + OV2640_JPEG_WIDTH;
 
-UINT32 RGB565_DVPDMAaddr0 = 0x20020000;
-UINT32 RGB565_DVPDMAaddr1 = 0x20020000 + RGB565_COL_NUM;
+uint32_t RGB565_DVPDMAaddr0 = 0x20020000;
+uint32_t RGB565_DVPDMAaddr1 = 0x20020000 + RGB565_COL_NUM;
 
-volatile UINT32 frame_cnt = 0; //frame count
-volatile UINT32 addr_cnt = 0;
-volatile UINT32 href_cnt = 0; //row count
+volatile uint32_t frame_cnt = 0; //frame count
+volatile uint32_t addr_cnt = 0;
+volatile uint32_t href_cnt = 0; //row count
 
 void DVP_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 
@@ -49,10 +49,10 @@ void DVP_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
  *
  * @return   None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-    UINT32 x;
-    UINT32 t = FREQ_SYS;
+    uint32_t x;
+    uint32_t t = FREQ_SYS;
 
     x = 10 * t * 2 / 16 / baudrate;
     x = (x + 5) / 10;
@@ -75,7 +75,7 @@ void DebugInit(UINT32 baudrate)
  * @return  none
  */
 
-void UART1_Send_Byte(UINT8 Data)
+void UART1_Send_Byte(uint8_t Data)
 {
     while(R8_UART1_TFC == UART_FIFO_SIZE);
     R8_UART1_THR = Data;
@@ -190,14 +190,14 @@ void DVP_IRQHandler(void)
 
         //Use a serial port camera to display JPEG pictures in real time
         {
-            UINT32 i;
-            UINT8  val;
+            uint32_t i;
+            uint8_t  val;
 
             href_cnt = href_cnt * OV2640_JPEG_WIDTH;
 
             for(i = 0; i < href_cnt; i++)
             {
-                val = *(UINT8 *)(0x20020000 + i);
+                val = *(uint8_t *)(0x20020000 + i);
                 UART1_Send_Byte(val);
             }
         }

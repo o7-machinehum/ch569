@@ -17,20 +17,20 @@
 #define HPSI_DMA_RX_Addr1          HPSI_DMA_RX_Addr0 + DEF_HSPI_DMA_PACK_LEN    /* HSPI receive DMA1 address */
 
 
-volatile UINT8  HSPI_Tx_PackCnt = 0x00;											/* HSPI Send packet count */
-volatile UINT8  HSPI_Tx_AddrTog = 0x00;                                         /* HSPI Send packet address synchronization count */
-volatile UINT8  HSPI_Tx_Status = 0x00;                                          /* HSPI Send Status */
-volatile UINT8  HSPI_Tx_ErrFlag = 0x00;                                         /* HSPI Send error flag */
-volatile UINT8  HSPI_Tx_BurstPackNum = 0x00;                                    /* HSPI Number of burst packets sent this time */
-volatile UINT8  HSPI_Rx_PackCnt = 0x00;											/* HSPI Received packet count */
-volatile UINT8  HSPI_Rx_AddrTog = 0x00;                                         /* HSPI Receive packet address synchronization count */
-volatile UINT8  HSPI_Rx_ErrFlag = 0x00;                                         /* HSPI Receive error flag */
-volatile UINT32 HSPI_Test_PackCount = 0x00;
-volatile UINT32 DATA_TotalLen = 0x00;                                           /* Total data length */
-volatile UINT32 DATA_SendLen = 0x00;                                            /* Data sent length */
-volatile UINT32 DATA_Last_PackLen = 0x00;                                       /* Packet sending length at the end of data */
-volatile UINT32 Pack_Send_Num = 0x00;
-volatile UINT32 Pack_Recv_Num = 0x00;
+volatile uint8_t  HSPI_Tx_PackCnt = 0x00;											/* HSPI Send packet count */
+volatile uint8_t  HSPI_Tx_AddrTog = 0x00;                                         /* HSPI Send packet address synchronization count */
+volatile uint8_t  HSPI_Tx_Status = 0x00;                                          /* HSPI Send Status */
+volatile uint8_t  HSPI_Tx_ErrFlag = 0x00;                                         /* HSPI Send error flag */
+volatile uint8_t  HSPI_Tx_BurstPackNum = 0x00;                                    /* HSPI Number of burst packets sent this time */
+volatile uint8_t  HSPI_Rx_PackCnt = 0x00;											/* HSPI Received packet count */
+volatile uint8_t  HSPI_Rx_AddrTog = 0x00;                                         /* HSPI Receive packet address synchronization count */
+volatile uint8_t  HSPI_Rx_ErrFlag = 0x00;                                         /* HSPI Receive error flag */
+volatile uint32_t HSPI_Test_PackCount = 0x00;
+volatile uint32_t DATA_TotalLen = 0x00;                                           /* Total data length */
+volatile uint32_t DATA_SendLen = 0x00;                                            /* Data sent length */
+volatile uint32_t DATA_Last_PackLen = 0x00;                                       /* Packet sending length at the end of data */
+volatile uint32_t Pack_Send_Num = 0x00;
+volatile uint32_t Pack_Recv_Num = 0x00;
 
 
 /*******************************************************************************
@@ -61,7 +61,7 @@ void HSPI_GPIO_Init( void )
 *******************************************************************************/
 void HSPI_Init( void )
 {
-    UINT16 i;
+    uint16_t i;
 
     /* Configure working mode */
     R8_HSPI_CFG &= ~( RB_HSPI_MODE | RB_HSPI_MSK_SIZE );
@@ -156,9 +156,9 @@ void HSPI_Init( void )
 void HSPI_IRQHandler( void ) __attribute__((interrupt("WCH-Interrupt-fast")));
 void HSPI_IRQHandler( void )
 {
-    UINT32V i,j;
-    UINT32V addr;
-    UINT32V packnum;
+    volatile uint32_t i,j;
+    volatile uint32_t addr;
+    volatile uint32_t packnum;
 
     if( R8_HSPI_INT_FLAG & RB_HSPI_IF_T_DONE )        /* Single packet transmission completion interrupt */
     {
@@ -187,7 +187,7 @@ void HSPI_IRQHandler( void )
         if( R8_HSPI_RTX_STATUS & RB_HSPI_CRC_ERR )
 		{  
 			/* CRC Verification error */
-			DUG_PRINTF("CRC Err:%d\r\n",(UINT16)HSPI_Rx_PackCnt);
+			DUG_PRINTF("CRC Err:%d\r\n",(uint16_t)HSPI_Rx_PackCnt);
 			
 			/* Reset DMA address and clear relevant variables */
             R32_HSPI_RX_ADDR0 = HPSI_DMA_RX_Addr0;
@@ -204,7 +204,7 @@ void HSPI_IRQHandler( void )
 		else if( R8_HSPI_RTX_STATUS & RB_HSPI_NUM_MIS )
 		{  
 			/* Receive serial number does not match */
-            DUG_PRINTF("NUM_MIS Err:%d\r\n",(UINT16)HSPI_Rx_PackCnt);
+            DUG_PRINTF("NUM_MIS Err:%d\r\n",(uint16_t)HSPI_Rx_PackCnt);
 
             R32_HSPI_RX_ADDR0 = HPSI_DMA_RX_Addr0;
             R32_HSPI_RX_ADDR1 = HPSI_DMA_RX_Addr1;
@@ -323,8 +323,8 @@ void HSPI_IRQHandler( void )
 *******************************************************************************/
 void BULKMode_HSPI_Test( void )
 {
-    UINT32 i,j;
-    UINT32 addr;
+    uint32_t i,j;
+    uint32_t addr;
 
     HSPI_Init( );
 
@@ -341,7 +341,7 @@ void BULKMode_HSPI_Test( void )
     {
         for( j = 0; j < 1024; j++ )
         {
-            *(UINT8 *)( addr + j ) = (UINT8)j;
+            *(uint8_t *)( addr + j ) = (uint8_t)j;
         }
         addr += 1024;
     }
@@ -354,8 +354,8 @@ void BULKMode_HSPI_Test( void )
     DATA_SendLen = 0x00;
     DATA_Last_PackLen = DATA_TotalLen % DEF_HSPI_DMA_PACK_LEN;
 
-    PRINT("Pic_TotalLen: %x\n", (UINT32)DATA_TotalLen );
-    PRINT("Pic_Last_PackLen: %x\n", (UINT32)DATA_Last_PackLen );
+    PRINT("Pic_TotalLen: %x\n", (uint32_t)DATA_TotalLen );
+    PRINT("Pic_Last_PackLen: %x\n", (uint32_t)DATA_Last_PackLen );
 
     /* Custom bytes BIT0-BIT12 length; BIT13: end Package  */
     R32_HSPI_UDF0 = DEF_HSPI_DMA_PACK_LEN;

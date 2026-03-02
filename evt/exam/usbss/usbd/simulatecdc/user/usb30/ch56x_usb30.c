@@ -15,20 +15,20 @@
 #include "cdc.h"
 
 /* Global Variable */
-UINT8V Tx_Lmp_Port = 0;
-UINT8V Link_Sta = 0;
-UINT32V vitrul_buad  = 115200;
-static UINT32 SetupLen = 0;
-static UINT8 SetupReqCode = 0;
-static PUINT8 pDescr;
-__attribute__ ((aligned(16))) UINT8 endp0RTbuff[512]  __attribute__((section(".DMADATA"))); //Endpoint 0 data receiving and sending buffer
-__attribute__ ((aligned(16))) UINT8 endp1RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 1 data receiving and sending buffer
-__attribute__ ((aligned(16))) UINT8 endp2Rxbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 2 data receiving and sending buffer
-__attribute__ ((aligned(16))) UINT8 endp2Txbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 2 data receiving and sending buffer
+volatile uint8_t Tx_Lmp_Port = 0;
+volatile uint8_t Link_Sta = 0;
+volatile uint32_t vitrul_buad  = 115200;
+static uint32_t SetupLen = 0;
+static uint8_t SetupReqCode = 0;
+static uint8_t * pDescr;
+__attribute__ ((aligned(16))) uint8_t endp0RTbuff[512]  __attribute__((section(".DMADATA"))); //Endpoint 0 data receiving and sending buffer
+__attribute__ ((aligned(16))) uint8_t endp1RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 1 data receiving and sending buffer
+__attribute__ ((aligned(16))) uint8_t endp2Rxbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 2 data receiving and sending buffer
+__attribute__ ((aligned(16))) uint8_t endp2Txbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 2 data receiving and sending buffer
 
 
 /*Superspeed device descriptor*/
-const UINT8 SS_DeviceDescriptor[] =
+const uint8_t SS_DeviceDescriptor[] =
 {
     0x12,   // bLength
     0x01,   // DEVICE descriptor type
@@ -51,7 +51,7 @@ const UINT8 SS_DeviceDescriptor[] =
 };
 
 /*Superspeed Configuration Descriptor*/
-const UINT8 SS_ConfigDescriptor[] =
+const uint8_t SS_ConfigDescriptor[] =
 {
      0x09,   // length of this descriptor
      0x02,   // CONFIGURATION (2)
@@ -156,7 +156,7 @@ const UINT8 SS_ConfigDescriptor[] =
 };
 
 /*String Descriptor Lang ID*/
-const UINT8 StringLangID[] =
+const uint8_t StringLangID[] =
 {
     0x04,   // this descriptor length
     0x03,   // descriptor type
@@ -165,7 +165,7 @@ const UINT8 StringLangID[] =
 };
 
 /*String Descriptor Vendor*/
-const UINT8 StringVendor[] =
+const uint8_t StringVendor[] =
 {
     0x08,   // length of this descriptor
     0x03,
@@ -179,7 +179,7 @@ const UINT8 StringVendor[] =
 
 
 /*String Descriptor Product*/
-const UINT8 StringProduct[]=
+const uint8_t StringProduct[]=
 {
     38,         //38 bytes in length
     0x03,       //Type code
@@ -204,7 +204,7 @@ const UINT8 StringProduct[]=
 };
 
 /*String Descriptor Serial*/
-UINT8 StringSerial[] =
+uint8_t StringSerial[] =
 {
     0x16,   // length of this descriptor
     0x03,
@@ -230,7 +230,7 @@ UINT8 StringSerial[] =
     0x00,
 };
 
-const UINT8 OSStringDescriptor[] =
+const uint8_t OSStringDescriptor[] =
 {
     0x12,   // length of this descriptor
     0x03,
@@ -252,7 +252,7 @@ const UINT8 OSStringDescriptor[] =
     0x00
 };
 
-const UINT8 BOSDescriptor[] =
+const uint8_t BOSDescriptor[] =
 {
     0x05,   // length of this descriptor
     0x0f,   // CONFIGURATION (2)
@@ -290,14 +290,14 @@ const UINT8 BOSDescriptor[] =
  * @return  None
  */
 void USB30D_init(FunctionalState sta) {
-    UINT16 i,s;
+    uint16_t i,s;
     if (sta) {
         USB30_Device_Init();
 
-        USBSS->UEP0_DMA     = (UINT32)(UINT8 *)endp0RTbuff;
-        USBSS->UEP1_TX_DMA  = (UINT32)(UINT8 *)endp1RTbuff;
-        USBSS->UEP2_TX_DMA  = (UINT32)(UINT8 *)endp2Txbuff;
-        USBSS->UEP2_RX_DMA  = (UINT32)(UINT8 *)endp2Rxbuff;
+        USBSS->UEP0_DMA     = (uint32_t)(uint8_t *)endp0RTbuff;
+        USBSS->UEP1_TX_DMA  = (uint32_t)(uint8_t *)endp1RTbuff;
+        USBSS->UEP2_TX_DMA  = (uint32_t)(uint8_t *)endp2Txbuff;
+        USBSS->UEP2_RX_DMA  = (uint32_t)(uint8_t *)endp2Rxbuff;
 
         USBSS->UEP_CFG = EP0_R_EN | EP0_T_EN | EP1_T_EN | EP2_R_EN | EP2_T_EN;// set end point rx/tx enable
 
@@ -320,8 +320,8 @@ void USB30D_init(FunctionalState sta) {
  *
  * @return  Length
  */
-UINT16 USB30_NonStandardReq() {
-    UINT16 len = 0;
+uint16_t USB30_NonStandardReq() {
+    uint16_t len = 0;
 
     SetupReqCode = UsbSetupBuf->bRequest;
     SetupLen = UsbSetupBuf->wLength;
@@ -333,7 +333,7 @@ UINT16 USB30_NonStandardReq() {
             break;
         /*  Read the current serial port configuration  */
         case 0x21:
-            *(UINT32  *)&endp0RTbuff[50] = vitrul_buad;
+            *(uint32_t  *)&endp0RTbuff[50] = vitrul_buad;
             endp0RTbuff[54]=0x00;endp0RTbuff[55]=0x00;endp0RTbuff[56]=0x08;
             SetupLen = 7;
             break;
@@ -361,8 +361,8 @@ UINT16 USB30_NonStandardReq() {
  *
  * @return  Length
  */
-UINT16 USB30_StandardReq() {
-    UINT16 len = 0;
+uint16_t USB30_StandardReq() {
+    uint16_t len = 0;
 
     SetupReqCode = UsbSetupBuf->bRequest;
     SetupLen = UsbSetupBuf->wLength;
@@ -379,44 +379,44 @@ UINT16 USB30_StandardReq() {
                     case USB_DESCR_TYP_DEVICE:
                         if (SetupLen > SIZE_DEVICE_DESC)
                             SetupLen = SIZE_DEVICE_DESC;
-                        pDescr = (PUINT8) SS_DeviceDescriptor;
+                        pDescr = (uint8_t *) SS_DeviceDescriptor;
                         break;
                     case USB_DESCR_TYP_CONFIG:
                         if (SetupLen > SIZE_CONFIG_DESC)
                             SetupLen = SIZE_CONFIG_DESC;
-                        pDescr = (PUINT8) SS_ConfigDescriptor;
+                        pDescr = (uint8_t *) SS_ConfigDescriptor;
                         break;
                     case USB_DESCR_TYP_BOS:
                         if (SetupLen > SIZE_BOS_DESC)
                             SetupLen = SIZE_BOS_DESC;
-                        pDescr = (PUINT8) BOSDescriptor;
+                        pDescr = (uint8_t *) BOSDescriptor;
                         break;
                     case USB_DESCR_TYP_STRING:
                         switch (UsbSetupBuf->wValueL) {
                             case USB_DESCR_LANGID_STRING:
                                 if (SetupLen > SIZE_STRING_LANGID)
                                     SetupLen = SIZE_STRING_LANGID;
-                                pDescr = (PUINT8) StringLangID;
+                                pDescr = (uint8_t *) StringLangID;
                                 break;
                             case USB_DESCR_VENDOR_STRING:
                                 if (SetupLen > SIZE_STRING_VENDOR)
                                     SetupLen = SIZE_STRING_VENDOR;
-                                pDescr = (PUINT8) StringVendor;
+                                pDescr = (uint8_t *) StringVendor;
                                 break;
                             case USB_DESCR_PRODUCT_STRING:
                                 if (SetupLen > SIZE_STRING_PRODUCT)
                                     SetupLen = SIZE_STRING_PRODUCT;
-                                pDescr = (PUINT8) StringProduct;
+                                pDescr = (uint8_t *) StringProduct;
                                 break;
                             case USB_DESCR_SERIAL_STRING:
                                 if (SetupLen > SIZE_STRING_SERIAL)
                                     SetupLen = SIZE_STRING_SERIAL;
-                                pDescr = (PUINT8) StringSerial;
+                                pDescr = (uint8_t *) StringSerial;
                                 break;
                             case USB_DESCR_OS_STRING:
                                 if (SetupLen > SIZE_STRING_OS)
                                     SetupLen = SIZE_STRING_OS;
-                                pDescr = (PUINT8) OSStringDescriptor;
+                                pDescr = (uint8_t *) OSStringDescriptor;
                                 break;
                             default:
                                 len = USB_DESCR_UNSUPPORTED;
@@ -480,8 +480,8 @@ UINT16 USB30_StandardReq() {
  *
  * @return  Send length
  */
-UINT16 EP0_IN_Callback(void) {
-    UINT16 len = 0;
+uint16_t EP0_IN_Callback(void) {
+    uint16_t len = 0;
     switch (SetupReqCode) {
         case USB_GET_DESCRIPTOR:
             len = SetupLen >= ENDP0_MAXPACK ? ENDP0_MAXPACK : SetupLen;
@@ -500,14 +500,14 @@ UINT16 EP0_IN_Callback(void) {
  *
  * @return  Length
  */
-UINT16 EP0_OUT_Callback() {
-    UINT32 baudrate;
+uint16_t EP0_OUT_Callback() {
+    uint32_t baudrate;
 
     /* save bauds */
     baudrate = endp0RTbuff[ 0 ];
-    baudrate += ((UINT32)endp0RTbuff[ 1 ] << 8 );
-    baudrate += ((UINT32)endp0RTbuff[ 2 ] << 16 );
-    baudrate += ((UINT32)endp0RTbuff[ 3 ] << 24 );
+    baudrate += ((uint32_t)endp0RTbuff[ 1 ] << 8 );
+    baudrate += ((uint32_t)endp0RTbuff[ 2 ] << 16 );
+    baudrate += ((uint32_t)endp0RTbuff[ 3 ] << 24 );
 
     vitrul_buad = baudrate;
 
@@ -720,9 +720,9 @@ void LINK_IRQHandler() //USBSS link interrupt service
  */
 void EP2_OUT_Callback()
 {
-     UINT16 rx_len;
-     UINT8 nump;
-     UINT8 status;
+     uint16_t rx_len;
+     uint8_t nump;
+     uint8_t status;
      USB30_OUT_Status(ENDP_2,&nump,&rx_len,&status);
 
      USBByteCount = rx_len;
@@ -741,7 +741,7 @@ void EP2_OUT_Callback()
  */
 void EP2_IN_Callback()
 {
-    UINT8 nump;
+    uint8_t nump;
     USB30_IN_ClearIT( ENDP_2 );
     USB30_IN_Set( ENDP_2 , ENABLE , NRDY , 0 , 0);
     UploadPoint2_Busy = 0;
@@ -825,7 +825,7 @@ void EP7_OUT_Callback()
  *
  * @return  None
  */
-void  USB30_ITP_Callback(UINT32 ITPCounter)
+void  USB30_ITP_Callback(uint32_t ITPCounter)
 {
 
 }

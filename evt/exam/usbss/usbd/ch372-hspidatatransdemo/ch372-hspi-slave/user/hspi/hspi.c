@@ -12,25 +12,25 @@
 /******************************************************************************/
 #include "main.h"
 #include "ch56x_usb30.h"/******************************************************************************/
-UINT8V  HSPI_Tx_PackCnt = 0x00;                                                 /* HSPI Send packet count */
-UINT8V  HSPI_Tx_AddrTog = 0x00;                                                 /* HSPI Send packet address synchronization count */
-UINT8V  HSPI_Tx_Status = 0x00;                                                  /* HSPI Send status */
-UINT8V  HSPI_Tx_ErrFlag = 0x00;                                                 /* HSPI Send error flag*/
-UINT8V  HSPI_Tx_BurstPackNum = 0x00;                                            /* HSPI Number of burst packets sent this time */
-UINT8V  HSPI_Rx_PackCnt = 0x00;                                                 /* HSPI Received packet count */
-UINT8V  HSPI_Rx_AddrTog = 0x00;                                                 /* HSPI Receive packet address synchronization count */
-UINT8V  HSPI_Rx_ErrFlag = 0x00;                                                 /* HSPI Receive error flag */
-UINT32V HSPI_Tx_Data_LoadAddr = 0x00;                                           /* HSPI Send data load pointer address*/
-UINT32V HSPI_Tx_Data_DealAddr = 0x00;                                           /* HSPI Send data processing pointer address */
-UINT32V HSPI_Tx_Data_RemainLen = 0x00;                                          /* HSPI Remaining length of sending data */
-UINT16V HSPI_Tx_LastPackLen = 0x00;                                             /* HSPI Send burst end packet length */
-UINT8V  HSPI_Int_En_Save = 0x00;                                                /* HSPI Interrupt enable save */
-UINT32V HSPI_Rx_Data_LoadAddr = 0x00;                                           /* HSPI Receive data loading pointer address */
-UINT32V HSPI_Rx_Data_DealAddr = 0x00;                                           /* HSPI Receive data processing pointer address */
-UINT32V HSPI_Rx_Data_RemainLen = 0x00;                                          /* HSPI Remaining length of received data */
-UINT8V  HSPI_Rx_Notice_Status = 0x00;                                           /* HSPI Receive notification status */
-UINT8V  USB_Stop_UpFlag = 0x00;                                                 /* USB Stop uploading flag */
-UINT16V USB3_2_Switchover = 0x00;                                               /* USB mode switch */
+volatile uint8_t  HSPI_Tx_PackCnt = 0x00;                                                 /* HSPI Send packet count */
+volatile uint8_t  HSPI_Tx_AddrTog = 0x00;                                                 /* HSPI Send packet address synchronization count */
+volatile uint8_t  HSPI_Tx_Status = 0x00;                                                  /* HSPI Send status */
+volatile uint8_t  HSPI_Tx_ErrFlag = 0x00;                                                 /* HSPI Send error flag*/
+volatile uint8_t  HSPI_Tx_BurstPackNum = 0x00;                                            /* HSPI Number of burst packets sent this time */
+volatile uint8_t  HSPI_Rx_PackCnt = 0x00;                                                 /* HSPI Received packet count */
+volatile uint8_t  HSPI_Rx_AddrTog = 0x00;                                                 /* HSPI Receive packet address synchronization count */
+volatile uint8_t  HSPI_Rx_ErrFlag = 0x00;                                                 /* HSPI Receive error flag */
+volatile uint32_t HSPI_Tx_Data_LoadAddr = 0x00;                                           /* HSPI Send data load pointer address*/
+volatile uint32_t HSPI_Tx_Data_DealAddr = 0x00;                                           /* HSPI Send data processing pointer address */
+volatile uint32_t HSPI_Tx_Data_RemainLen = 0x00;                                          /* HSPI Remaining length of sending data */
+volatile uint16_t HSPI_Tx_LastPackLen = 0x00;                                             /* HSPI Send burst end packet length */
+volatile uint8_t  HSPI_Int_En_Save = 0x00;                                                /* HSPI Interrupt enable save */
+volatile uint32_t HSPI_Rx_Data_LoadAddr = 0x00;                                           /* HSPI Receive data loading pointer address */
+volatile uint32_t HSPI_Rx_Data_DealAddr = 0x00;                                           /* HSPI Receive data processing pointer address */
+volatile uint32_t HSPI_Rx_Data_RemainLen = 0x00;                                          /* HSPI Remaining length of received data */
+volatile uint8_t  HSPI_Rx_Notice_Status = 0x00;                                           /* HSPI Receive notification status */
+volatile uint8_t  USB_Stop_UpFlag = 0x00;                                                 /* USB Stop uploading flag */
+volatile uint16_t USB3_2_Switchover = 0x00;                                               /* USB mode switch */
 
 /*******************************************************************************
 * Function Name  : HSPI_GPIO_Init
@@ -60,7 +60,7 @@ void HSPI_GPIO_Init( void )
 *******************************************************************************/
 void HSPI_Init( void )
 {
-    UINT16 i;
+    uint16_t i;
 
     /* Configure working mode */
     R8_HSPI_CFG &= ~( RB_HSPI_MODE | RB_HSPI_MSK_SIZE );
@@ -167,10 +167,10 @@ void HSPI_Init( void )
 void HSPI_IRQHandler( void ) __attribute__((interrupt("WCH-Interrupt-fast")));
 void HSPI_IRQHandler( void )
 {
-    UINT32V i,j;
-    UINT32V addr;
-    UINT32V packnum;
-    UINT32V len ;
+    volatile uint32_t i,j;
+    volatile uint32_t addr;
+    volatile uint32_t packnum;
+    volatile uint32_t len ;
     if( R8_HSPI_INT_FLAG & RB_HSPI_IF_T_DONE )
     {
         /* Single packet transmission completion interrupt */
@@ -262,7 +262,7 @@ void HSPI_IRQHandler( void )
         {
             /* CRC Verification error */
 #if( DEF_FUN_DEBUG_EN == 0x01 )
-            DUG_PRINTF("CRC Err: %d\r\n",(UINT16)HSPI_Rx_PackCnt);
+            DUG_PRINTF("CRC Err: %d\r\n",(uint16_t)HSPI_Rx_PackCnt);
             DUG_PRINTF("R8_HSPI_RX_SC:%d\r\n",R8_HSPI_RX_SC);
 #endif
             R32_HSPI_RX_ADDR0 = DEF_HPSI_DMA_RX_ADDR0;
@@ -281,7 +281,7 @@ void HSPI_IRQHandler( void )
         {
             /* Receive serial number does not match */
 #if( DEF_FUN_DEBUG_EN == 0x01 )
-            DUG_PRINTF("NUM_MIS Err: %d\r\n",(UINT16)HSPI_Rx_PackCnt);
+            DUG_PRINTF("NUM_MIS Err: %d\r\n",(uint16_t)HSPI_Rx_PackCnt);
             DUG_PRINTF("R8_HSPI_RX_SC:%d\r\n",R8_HSPI_RX_SC);
 #endif
             R32_HSPI_RX_ADDR0 = DEF_HPSI_DMA_RX_ADDR0;
@@ -378,11 +378,11 @@ void HSPI_IRQHandler( void )
 *******************************************************************************/
 void HSPI_usb30_IN_handle( void )
 {
-    UINT32 len;
-    UINT32 remanlen;
-    UINT32 packnum;
-    UINT32 packlen;
-    UINT32 offset;
+    uint32_t len;
+    uint32_t remanlen;
+    uint32_t packnum;
+    uint32_t packlen;
+    uint32_t offset;
     /* HSPI data is uploaded and processed through USB endpoint */
     if( Endp1_Up_Status == 0x00 )
     {
@@ -476,11 +476,11 @@ void HSPI_usb30_IN_handle( void )
 *******************************************************************************/
 void HSPI_usb30_OUT_handle( void )
 {
-    UINT32 len;
-    UINT32 remanlen;
-    UINT32 packnum;
-    UINT32 packlen;
-    UINT32 offset;
+    uint32_t len;
+    uint32_t remanlen;
+    uint32_t packnum;
+    uint32_t packlen;
+    uint32_t offset;
     /*************************************************************************/
     /* USB endpoint downloading data sent through HSPI interface */
     R8_HSPI_INT_EN = 0x00;
@@ -553,11 +553,11 @@ void HSPI_usb30_OUT_handle( void )
 *******************************************************************************/
 void HSPI_usb20_IN_handle( void )
 {
-    UINT32 len;
-    UINT32 remanlen;
-    UINT32 packnum;
-    UINT32 packlen;
-    UINT32 offset;
+    uint32_t len;
+    uint32_t remanlen;
+    uint32_t packnum;
+    uint32_t packlen;
+    uint32_t offset;
     /*************************************************************************/
     /* HSPI data is uploaded and processed through USB endpoint */
     if( Endp1_Up_Status == 0x00 )
@@ -644,11 +644,11 @@ void HSPI_usb20_IN_handle( void )
 *******************************************************************************/
 void HSPI_usb20_OUT_handle( void )
 {
-    UINT32 len;
-    UINT32 remanlen;
-    UINT32 packnum;
-    UINT32 packlen;
-    UINT32 offset;
+    uint32_t len;
+    uint32_t remanlen;
+    uint32_t packnum;
+    uint32_t packlen;
+    uint32_t offset;
     /*************************************************************************/
     /* USB endpoint downloading data sent through HSPI interface */
     R8_HSPI_INT_EN = 0x00;
@@ -681,7 +681,7 @@ void HSPI_usb20_OUT_handle( void )
                 HSPI_Tx_Data_LoadAddr = DEF_HPSI_DMA_TX_ADDR0;
                 HSPI_Tx_Data_DealAddr = DEF_HPSI_DMA_TX_ADDR0;
 
-                R32_UEP1_RX_DMA = (UINT32)(UINT8 *)HSPI_Tx_Data_LoadAddr;
+                R32_UEP1_RX_DMA = (uint32_t)(uint8_t *)HSPI_Tx_Data_LoadAddr;
                 /* Notify the computer to continue downloading N packets of data */
                 R8_UEP1_RX_CTRL ^= RB_UEP_R_TOG_1;
                 R8_UEP1_RX_CTRL = (R8_UEP1_RX_CTRL & ~RB_UEP_RRES_MASK) | UEP_R_RES_ACK;
@@ -711,13 +711,13 @@ void HSPI_usb20_OUT_handle( void )
 *******************************************************************************/
 void HSPI_DataTrans( void )
 {
-    UINT32 i,j;
-    UINT32 addr;
-    UINT32 len;
-    UINT32 remanlen;
-    UINT32 packnum;
-    UINT32 packlen;
-    UINT32 offset;
+    uint32_t i,j;
+    uint32_t addr;
+    uint32_t len;
+    uint32_t remanlen;
+    uint32_t packnum;
+    uint32_t packlen;
+    uint32_t offset;
 
     HSPI_Init( );                                                             	/* HSPI Interface initialization */
     /************************************************************************/
@@ -751,10 +751,10 @@ void HSPI_DataTrans( void )
 *******************************************************************************/
 void HSPI_Tx_Data_Deal( void )
 {
-    UINT32V remanlen;
-    UINT32V len;
-    UINT32V packlen;
-    UINT32V i;
+    volatile uint32_t remanlen;
+    volatile uint32_t len;
+    volatile uint32_t packlen;
+    volatile uint32_t i;
 
     /* Judge whether there is data to be sent through HSPI */
     remanlen = HSPI_Tx_Data_RemainLen;

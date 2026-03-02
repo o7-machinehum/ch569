@@ -20,10 +20,10 @@
  * @return  0 - Success
  *          1 - Err
  */
-UINT8 OV2640_Init(void)
+uint8_t OV2640_Init(void)
 {
-	UINT16 i=0;
-	UINT16 reg;
+	uint16_t i=0;
+	uint16_t reg;
 
 	/*PA17:RESET  PA23:PWDN*/
 	R32_PA_DIR |= (1<<17)|(1<<23);
@@ -66,9 +66,9 @@ UINT8 OV2640_Init(void)
  * @param   None
  * @return  None
  */
-void OV2640_Format_Mode( UINT8 choice )
+void OV2640_Format_Mode( uint8_t choice )
 {
-    UINT16 i = 0;
+    uint16_t i = 0;
 
     SCCB_WR_Reg(0xff, 0x01);
     SCCB_WR_Reg(0x12, 0x80);
@@ -102,7 +102,7 @@ void OV2640_Format_Mode( UINT8 choice )
  *
  * @return  None
  */
-void OV2640_Speed_Mode( UINT8 format )
+void OV2640_Speed_Mode( uint8_t format )
 {
     switch( format ){
         case FORMAT_MJPEG:
@@ -121,7 +121,7 @@ void OV2640_Speed_Mode( UINT8 format )
  *
  * @return  None
  */
-void OV2640_Change_Resolution( UINT8 formatindex,UINT8 frameindex )
+void OV2640_Change_Resolution( uint8_t formatindex,uint8_t frameindex )
 {
     switch( formatindex ){
         case FORMAT_MJPEG:
@@ -155,7 +155,7 @@ void OV2640_Change_Resolution( UINT8 formatindex,UINT8 frameindex )
 }
 
 /* Start Camera list of initialization configuration registers */
-const static UINT8 OV2640_AUTOEXPOSURE_LEVEL[5][8]=
+const static uint8_t OV2640_AUTOEXPOSURE_LEVEL[5][8]=
 {
 	{
 		0xFF,0x01,
@@ -198,10 +198,10 @@ const static UINT8 OV2640_AUTOEXPOSURE_LEVEL[5][8]=
  *
  * @return   None
  */
-void OV2640_Auto_Exposure(UINT8 level)
+void OV2640_Auto_Exposure(uint8_t level)
 {
-	UINT8 i;
-	UINT8 *p=(UINT8*)OV2640_AUTOEXPOSURE_LEVEL[level];
+	uint8_t i;
+	uint8_t *p=(uint8_t*)OV2640_AUTOEXPOSURE_LEVEL[level];
 	for(i=0;i<4;i++)
 	{
 		SCCB_WR_Reg(p[i*2],p[i*2+1]);
@@ -222,11 +222,11 @@ void OV2640_Auto_Exposure(UINT8 level)
  *
  * @return   None
  */
-void OV2640_Light_Mode(UINT8 mode)
+void OV2640_Light_Mode(uint8_t mode)
 {
-	UINT8 regccval=0X5E;//Sunny
-	UINT8 regcdval=0X41;
-	UINT8 regceval=0X54;
+	uint8_t regccval=0X5E;//Sunny
+	uint8_t regcdval=0X41;
+	uint8_t regceval=0X54;
 	switch(mode)
 	{
 		case 0://auto
@@ -271,9 +271,9 @@ void OV2640_Light_Mode(UINT8 mode)
  *
  * @return   None
  */
-void OV2640_Color_Saturation(UINT8 sat)
+void OV2640_Color_Saturation(uint8_t sat)
 {
-	UINT8 reg7dval=((sat+2)<<4)|0X08;
+	uint8_t reg7dval=((sat+2)<<4)|0X08;
 	SCCB_WR_Reg(0XFF,0X00);
 	SCCB_WR_Reg(0X7C,0X00);
 	SCCB_WR_Reg(0X7D,0X02);
@@ -297,7 +297,7 @@ void OV2640_Color_Saturation(UINT8 sat)
  *
  * @return   None
  */
-void OV2640_Brightness(UINT8 bright)
+void OV2640_Brightness(uint8_t bright)
 {
   SCCB_WR_Reg(0xff, 0x00);
   SCCB_WR_Reg(0x7c, 0x00);
@@ -322,10 +322,10 @@ void OV2640_Brightness(UINT8 bright)
  *
  * @return   None
  */
-void OV2640_Contrast(UINT8 contrast)
+void OV2640_Contrast(uint8_t contrast)
 {
-	UINT8 reg7d0val=0X20;//The default is normal mode
-	UINT8 reg7d1val=0X20;
+	uint8_t reg7d0val=0X20;//The default is normal mode
+	uint8_t reg7d1val=0X20;
   	switch(contrast)
 	{
 		case 0://-2
@@ -372,11 +372,11 @@ void OV2640_Contrast(UINT8 contrast)
  *
  * @return   None
  */
-void OV2640_Special_Effects(UINT8 eft)
+void OV2640_Special_Effects(uint8_t eft)
 {
-	UINT8 reg7d0val=0X00;//The default is normal mode
-	UINT8 reg7d1val=0X80;
-	UINT8 reg7d2val=0X80;
+	uint8_t reg7d0val=0X00;//The default is normal mode
+	uint8_t reg7d1val=0X80;
+	uint8_t reg7d2val=0X80;
 	switch(eft)
 	{
 		case 1://negative film
@@ -426,9 +426,9 @@ void OV2640_Special_Effects(UINT8 eft)
  *
  * @return   None
  */
-void OV2640_Color_Bar(UINT8 sw)
+void OV2640_Color_Bar(uint8_t sw)
 {
-	UINT8 reg;
+	uint8_t reg;
 	SCCB_WR_Reg(0XFF,0X01);
 	reg=SCCB_RD_Reg(0X12);
 	reg&=~(1<<1);
@@ -446,11 +446,11 @@ void OV2640_Color_Bar(UINT8 sw)
  *
  * @return   None
  */
-void OV2640_Window_Set(UINT16 sx,UINT16 sy,UINT16 width,UINT16 height)
+void OV2640_Window_Set(uint16_t sx,uint16_t sy,uint16_t width,uint16_t height)
 {
-	UINT16 endx;
-	UINT16 endy;
-	UINT8 temp;
+	uint16_t endx;
+	uint16_t endy;
+	uint8_t temp;
 	endx=sx+width/2;	//V*2
  	endy=sy+height/2;
 
@@ -480,11 +480,11 @@ void OV2640_Window_Set(UINT16 sx,UINT16 sy,UINT16 width,UINT16 height)
  * @return   0 - Success
  *           1 - Error
  */
-UINT8 OV2640_OutSize_Set(UINT16 width,UINT16 height)
+uint8_t OV2640_OutSize_Set(uint16_t width,uint16_t height)
 {
-	UINT16 outh;
-	UINT16 outw;
-	UINT8 temp;
+	uint16_t outh;
+	uint16_t outw;
+	uint8_t temp;
 	if(width%4)return 1;
 	if(height%4)return 2;
 	outw=width/4;
@@ -510,11 +510,11 @@ UINT8 OV2640_OutSize_Set(UINT16 width,UINT16 height)
  *
  * @return   None
  */
-UINT8 OV2640_ImageWin_Set(UINT16 offx,UINT16 offy,UINT16 width,UINT16 height)
+uint8_t OV2640_ImageWin_Set(uint16_t offx,uint16_t offy,uint16_t width,uint16_t height)
 {
-	UINT16 hsize;
-	UINT16 vsize;
-	UINT8 temp;
+	uint16_t hsize;
+	uint16_t vsize;
+	uint8_t temp;
 	if(width%4)return 1;
 	if(height%4)return 2;
 	hsize=width/4;
@@ -546,9 +546,9 @@ UINT8 OV2640_ImageWin_Set(UINT16 offx,UINT16 offy,UINT16 width,UINT16 height)
  * @return   0 - Success
  *           1 - Error
  */
-UINT8 OV2640_ImageSize_Set(UINT16 width,UINT16 height)
+uint8_t OV2640_ImageSize_Set(uint16_t width,uint16_t height)
 {
-	UINT8 temp;
+	uint8_t temp;
 	SCCB_WR_Reg(0XFF,0X00);
 	SCCB_WR_Reg(0XE0,0X04);
 	SCCB_WR_Reg(0XC0,(width)>>3&0XFF);
@@ -572,7 +572,7 @@ UINT8 OV2640_ImageSize_Set(UINT16 width,UINT16 height)
  * @return    none
  */
 
-void ov2640_speed_ctrl(UINT8 pclkdiv, UINT8 clkdiv)
+void ov2640_speed_ctrl(uint8_t pclkdiv, uint8_t clkdiv)
 {
 	SCCB_WR_Reg(0XFF,0X00);
 	SCCB_WR_Reg(0XD3,pclkdiv);	//Set PCLK frequency division

@@ -23,18 +23,18 @@
 #define MODIFY             1
 #define ERASE              1
 
-__attribute__ ((aligned(16))) UINT8 Fat_Buffer[512*16] __attribute__((section(".DMADATA"))); //Data sending/receiving buffer of endpoint1
+__attribute__ ((aligned(16))) uint8_t Fat_Buffer[512*16] __attribute__((section(".DMADATA"))); //Data sending/receiving buffer of endpoint1
 
 /*******************************************************************************
  * @fn       Fat_Init
  *
  * @return   None
  */
- UINT8 Fat_Init( void )
+ uint8_t Fat_Init( void )
  {
-    UINT8  i,s,c,count;
+    uint8_t  i,s,c,count;
 
-    UINT32 temp32;
+    uint32_t temp32;
 
     i = CHRV3LibInit();
 
@@ -117,7 +117,7 @@ __attribute__ ((aligned(16))) UINT8 Fat_Buffer[512*16] __attribute__((section(".
     if( i != ERR_SUCCESS ) return i;
 
 
-    i = sprintf( (PCHAR)Fat_Buffer,"Note: \xd\xa这个程序是以字节为单位进行U盘文件读写,简单演示功能。\xd\xa");
+    i = sprintf( (char *)Fat_Buffer,"Note: \xd\xa这个程序是以字节为单位进行U盘文件读写,简单演示功能。\xd\xa");
     for(c=0; c<10; c++)
     {
         mCmdParam.ByteWrite.mByteCount = i;                          /* Specify the number of bytes written this time */
@@ -128,7 +128,7 @@ __attribute__ ((aligned(16))) UINT8 Fat_Buffer[512*16] __attribute__((section(".
             printf("write error:%02x\n",s);
             return s;
         }
-        printf("成功写入 %02X次\r\n",(UINT16)c);
+        printf("成功写入 %02X次\r\n",(uint16_t)c);
     }
     /* Read the first N bytes of the file */
     count = 10;                                                      //Set the total length to read 100 bytes

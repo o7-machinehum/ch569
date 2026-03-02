@@ -23,13 +23,13 @@
  * @return    CMD_SUCCESS
  *            OP_FAILED
  */
-UINT8 SDReadOCR( PSD_PARAMETER pEMMCPara )
+uint8_t SDReadOCR( PSD_PARAMETER pEMMCPara )
 {
-	UINT8  i;
-	UINT32 cmd_arg_val;
-	UINT16 cmd_set_val;
-	UINT8  sta = 0;
-	UINT32 cmd_rsp_val;                 //command returned value
+	uint8_t  i;
+	uint32_t cmd_arg_val;
+	uint16_t cmd_set_val;
+	uint8_t  sta = 0;
+	uint32_t cmd_rsp_val;                 //command returned value
 
 	for(i=0; i<100; i++)
 	{
@@ -96,11 +96,11 @@ UINT8 SDReadOCR( PSD_PARAMETER pEMMCPara )
  * @return    OP_SUCCESS
  *            OP_FAILED
  */
-UINT8 SDSetRCA( PSD_PARAMETER pEMMCPara )
+uint8_t SDSetRCA( PSD_PARAMETER pEMMCPara )
 {
-	UINT32 cmd_arg_val;
-	UINT16 cmd_set_val;
-	UINT8  sta;
+	uint32_t cmd_arg_val;
+	uint16_t cmd_set_val;
+	uint8_t  sta;
 
 	cmd_arg_val = 0;
 	cmd_set_val = RB_EMMC_CKIDX |
@@ -130,12 +130,12 @@ UINT8 SDSetRCA( PSD_PARAMETER pEMMCPara )
  * @return    OP_SUCCESS
  *            OP_FAILED
  */
-UINT8 SDReadCSD( PSD_PARAMETER pEMMCPara )
+uint8_t SDReadCSD( PSD_PARAMETER pEMMCPara )
 {
-	UINT32 cmd_arg_val;
-	UINT16 cmd_set_val;
-	UINT8  sta;
-	UINT32 disk_block_num = 0;
+	uint32_t cmd_arg_val;
+	uint16_t cmd_set_val;
+	uint8_t  sta;
+	uint32_t disk_block_num = 0;
 
 	cmd_arg_val = pEMMCPara->EMMC_RCA<<16;
 	cmd_set_val = 0 |
@@ -187,11 +187,11 @@ UINT8 SDReadCSD( PSD_PARAMETER pEMMCPara )
  * @return    OP_SUCCESS
  *            OP_FAILED
  */
-UINT8 SDSetBusWidth(PSD_PARAMETER pEMMCPara, UINT8 bus_mode)
+uint8_t SDSetBusWidth(PSD_PARAMETER pEMMCPara, uint8_t bus_mode)
 {
-	UINT32 cmd_arg_val;
-	UINT16 cmd_set_val;
-	UINT8  sta;
+	uint32_t cmd_arg_val;
+	uint16_t cmd_set_val;
+	uint8_t  sta;
 
     cmd_arg_val = (pEMMCPara->EMMC_RCA)<<16;
     cmd_set_val = RB_EMMC_CKIDX |            //The command index of the verification response
@@ -236,11 +236,11 @@ UINT8 SDSetBusWidth(PSD_PARAMETER pEMMCPara, UINT8 bus_mode)
  * @return    OP_SUCCESS
  *            OP_FAILED
  */
-UINT8 SD_ReadSCR(PSD_PARAMETER pEMMCPara, PUINT8 pRdatbuf)
+uint8_t SD_ReadSCR(PSD_PARAMETER pEMMCPara, uint8_t * pRdatbuf)
 {
-    UINT32 cmd_arg_val;
-    UINT16 cmd_set_val,t;
-    UINT8  sta;
+    uint32_t cmd_arg_val;
+    uint16_t cmd_set_val,t;
+    uint8_t  sta;
 
     cmd_arg_val = (pEMMCPara->EMMC_RCA)<<16;
     cmd_set_val = RB_EMMC_CKIDX |               //The command index of the verification response
@@ -257,7 +257,7 @@ UINT8 SD_ReadSCR(PSD_PARAMETER pEMMCPara, PUINT8 pRdatbuf)
 
     if(sta == CMD_SUCCESS)
     {
-        R32_EMMC_DMA_BEG1 = (UINT32)pRdatbuf;
+        R32_EMMC_DMA_BEG1 = (uint32_t)pRdatbuf;
         R32_EMMC_TRAN_MODE = 0;
         R32_EMMC_BLOCK_CFG = 8 << 16 | 1;        //The number of data bytes received per block | Set the number of blocks to receive and start the transfer
 
@@ -300,17 +300,17 @@ UINT8 SD_ReadSCR(PSD_PARAMETER pEMMCPara, PUINT8 pRdatbuf)
  * @return    OP_SUCCESS
  *            OP_FAILED
  */
-UINT8 SDCardReadOneSec( PSD_PARAMETER pEMMCPara, PUINT8 pRdatbuf, UINT32 Lbaaddr )
+uint8_t SDCardReadOneSec( PSD_PARAMETER pEMMCPara, uint8_t * pRdatbuf, uint32_t Lbaaddr )
 {
-	UINT32 cmd_arg_val;
-	UINT16 cmd_set_val;
+	uint32_t cmd_arg_val;
+	uint16_t cmd_set_val;
 
 	if(Lbaaddr > (pEMMCPara->EMMCSecNum))
 	    return  OP_INVALID_ADD;
 
     while(!(R32_EMMC_STATUS & (1<<17)));
 
-    R32_EMMC_DMA_BEG1 = (UINT32)pRdatbuf;
+    R32_EMMC_DMA_BEG1 = (uint32_t)pRdatbuf;
     R32_EMMC_TRAN_MODE = 0;
     R32_EMMC_BLOCK_CFG = (pEMMCPara->EMMCSecSize)<<16 | 1;
 
@@ -347,11 +347,11 @@ UINT8 SDCardReadOneSec( PSD_PARAMETER pEMMCPara, PUINT8 pRdatbuf, UINT32 Lbaaddr
  * @return    OP_SUCCESS
  *            OP_FAILED
  */
-UINT8 SDCardWriteONESec( PSD_PARAMETER pEMMCPara,  PUINT8 pWdatbuf, UINT32 Lbaaddr )
+uint8_t SDCardWriteONESec( PSD_PARAMETER pEMMCPara,  uint8_t * pWdatbuf, uint32_t Lbaaddr )
 {
-	UINT32 cmd_arg_val;
-	UINT16 cmd_set_val;
-	UINT8  sta;
+	uint32_t cmd_arg_val;
+	uint16_t cmd_set_val;
+	uint8_t  sta;
 
 	if(Lbaaddr > (pEMMCPara->EMMCSecNum))
 	    return  OP_INVALID_ADD;
@@ -379,7 +379,7 @@ UINT8 SDCardWriteONESec( PSD_PARAMETER pEMMCPara,  PUINT8 pWdatbuf, UINT32 Lbaad
 
 	//DAT
 	R32_EMMC_TRAN_MODE = RB_EMMC_DMA_DIR|(1<<6);
-	R32_EMMC_DMA_BEG1 = (UINT32)pWdatbuf;
+	R32_EMMC_DMA_BEG1 = (uint32_t)pWdatbuf;
 	R32_EMMC_BLOCK_CFG = (pEMMCPara->EMMCSecSize)<<16 | 1;
 
 	while(1)

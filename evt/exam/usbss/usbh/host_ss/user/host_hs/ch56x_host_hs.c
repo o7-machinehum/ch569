@@ -10,22 +10,22 @@
 *******************************************************************************/
 #include "ch56x_common.h"
 #include "ch56x_host_hs.h"
-__attribute__ ((aligned(4))) const UINT8  GetDevDescrptor[]={USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_DEVICE, 0x00, 0x00, sizeof( USB_DEV_DESCR ), 0x00};
-__attribute__ ((aligned(4))) const UINT8  GetConfigDescrptor[]= {USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_CONFIG, 0x00, 0x00, 0x04, 0x00};
-__attribute__ ((aligned(4))) const UINT8  SetAddress[]={USB_REQ_TYP_OUT, USB_SET_ADDRESS, USB_DEVICE_ADDR, 0x00, 0x00, 0x00, 0x00, 0x00};
-__attribute__ ((aligned(4))) const UINT8  SetConfig[]={USB_REQ_TYP_OUT, USB_SET_CONFIGURATION, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-__attribute__ ((aligned(4))) const UINT8  Clear_EndpStall[]={USB_REQ_RECIP_INTERF, USB_SET_INTERFACE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+__attribute__ ((aligned(4))) const uint8_t  GetDevDescrptor[]={USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_DEVICE, 0x00, 0x00, sizeof( USB_DEV_DESCR ), 0x00};
+__attribute__ ((aligned(4))) const uint8_t  GetConfigDescrptor[]= {USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_CONFIG, 0x00, 0x00, 0x04, 0x00};
+__attribute__ ((aligned(4))) const uint8_t  SetAddress[]={USB_REQ_TYP_OUT, USB_SET_ADDRESS, USB_DEVICE_ADDR, 0x00, 0x00, 0x00, 0x00, 0x00};
+__attribute__ ((aligned(4))) const uint8_t  SetConfig[]={USB_REQ_TYP_OUT, USB_SET_CONFIGURATION, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+__attribute__ ((aligned(4))) const uint8_t  Clear_EndpStall[]={USB_REQ_RECIP_INTERF, USB_SET_INTERFACE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 
-extern __attribute__ ((aligned(16))) UINT8 endpRXbuff[4096] __attribute__((section(".DMADATA")));
-extern __attribute__ ((aligned(16))) UINT8 endpTXbuff[4096] __attribute__((section(".DMADATA")));
+extern __attribute__ ((aligned(16))) uint8_t endpRXbuff[4096] __attribute__((section(".DMADATA")));
+extern __attribute__ ((aligned(16))) uint8_t endpTXbuff[4096] __attribute__((section(".DMADATA")));
 
 /*global define */
 #define pSetupReq    ((PUSB_SETUP_REQ)endpTXbuff)
 
 /*global variable */
 DEV_INFO_Typedef g_U20DevInfo;
-UINT8 U20_Endp0MaxSize = 0;
+uint8_t U20_Endp0MaxSize = 0;
 
 /*******************************************************************************
  * @fn        user2mem_copy
@@ -38,13 +38,13 @@ UINT8 U20_Endp0MaxSize = 0;
  *
  * @return    None
  */
-void CopySetupReqPkg( const UINT8 *pReqPkt )
+void CopySetupReqPkg( const uint8_t *pReqPkt )
 {
-    UINT8 i;
+    uint8_t i;
 
     for ( i = 0; i != sizeof( USB_SETUP_REQ ); i ++ )
     {
-        ((PUINT8)pSetupReq)[ i ] = *pReqPkt;
+        ((uint8_t *)pSetupReq)[ i ] = *pReqPkt;
         pReqPkt++;
     }
 }
@@ -58,7 +58,7 @@ void CopySetupReqPkg( const UINT8 *pReqPkt )
  */
 void SetBusReset( void )
 {
-    UINT16 i;
+    uint16_t i;
 
     R8_UHOST_CTRL = RB_UH_BUS_RESET;
     for(i = 0;i<150;i++)
@@ -91,8 +91,8 @@ void USBHS_Host_Init(FunctionalState sta)
         R8_USB_DEV_AD = 0;
         R8_UHOST_CTRL = 0;
 
-        R32_UH_TX_DMA = (UINT32)(UINT8 *)endpTXbuff;
-        R32_UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;
+        R32_UH_TX_DMA = (uint32_t)(uint8_t *)endpTXbuff;
+        R32_UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;
 
         R16_UH_RX_MAX_LEN = U20_MAXPACKET_LEN;
         R8_UH_EP_MOD = RB_UH_TX_EN | RB_UH_RX_EN ;
@@ -120,11 +120,11 @@ void USBHS_Host_Init(FunctionalState sta)
  *            ERR_USB_DISCON
  *            ERR_USB_CONNECT
  */
-UINT8 USBHS_Transact( UINT8 endp_pid, UINT8 toggle,UINT32 timeout)
+uint8_t USBHS_Transact( uint8_t endp_pid, uint8_t toggle,uint32_t timeout)
 {
-    UINT8 TransRetry=0;
-    UINT8  r;
-    UINT16  i;
+    uint8_t TransRetry=0;
+    uint8_t  r;
+    uint16_t  i;
     R8_UH_TX_CTRL = R8_UH_RX_CTRL = toggle ;
     do
     {
@@ -198,15 +198,15 @@ UINT8 USBHS_Transact( UINT8 endp_pid, UINT8 toggle,UINT32 timeout)
  *
  * @return    None
  */
-UINT8 USBHS_HostCtrlTransfer(UINT8 *databuf,PUINT16 len)
+uint8_t USBHS_HostCtrlTransfer(uint8_t *databuf,uint16_t * len)
 {
-   UINT8   ret;
-   UINT8   stageFlag = 0;
-   UINT8   tog = 1;
-   UINT16  rxlen = 0;
-   UINT16  ReLen;
-   PUINT16 pLen;
-   PUINT8  pBuf;
+   uint8_t   ret;
+   uint8_t   stageFlag = 0;
+   uint8_t   tog = 1;
+   uint16_t  rxlen = 0;
+   uint16_t  ReLen;
+   uint16_t * pLen;
+   uint8_t *  pBuf;
 
    pBuf = databuf;
    pLen = len;
@@ -227,7 +227,7 @@ UINT8 USBHS_HostCtrlTransfer(UINT8 *databuf,PUINT16 len)
           while(ReLen)
           {
               DelayUs( 100 );
-              R32_UH_RX_DMA = (UINT32)pBuf + *pLen;
+              R32_UH_RX_DMA = (uint32_t)pBuf + *pLen;
               ret = USBHS_Transact( (USB_PID_IN<<4)|ENDP_0, tog<<3 ,200000);
               if(ret != ERR_SUCCESS)              return ret;
 
@@ -244,7 +244,7 @@ UINT8 USBHS_HostCtrlTransfer(UINT8 *databuf,PUINT16 len)
          while(ReLen)
          {
               DelayUs( 100 );
-              R32_UH_TX_DMA= (UINT32)pBuf + *pLen;
+              R32_UH_TX_DMA= (uint32_t)pBuf + *pLen;
               R16_UH_TX_LEN = (ReLen > U20_Endp0MaxSize)? U20_Endp0MaxSize : ReLen;
 
               ret = USBHS_Transact( (USB_PID_OUT<<4)|ENDP_0, tog<<3, 200000 );
@@ -278,9 +278,9 @@ UINT8 USBHS_HostCtrlTransfer(UINT8 *databuf,PUINT16 len)
  * @return    ERR_SUCCESS
  *            ERR_USB_TRANSFER
  */
-UINT8 USBHS_Host_Enum( UINT8 *Databuf )
+uint8_t USBHS_Host_Enum( uint8_t *Databuf )
 {
-   UINT8 ret;
+   uint8_t ret;
 
    ret = CtrlGetDevDescr( Databuf );
    if(ret != ERR_SUCCESS)
@@ -325,10 +325,10 @@ UINT8 USBHS_Host_Enum( UINT8 *Databuf )
  *            ERR_USB_BUF_OVER
  *            ERR_USB_TRANSFER
  */
-UINT8 CtrlGetDevDescr(UINT8 *databuf)
+uint8_t CtrlGetDevDescr(uint8_t *databuf)
 {
-    UINT8 ret;
-    UINT16 len;
+    uint8_t ret;
+    uint16_t len;
     U20_Endp0MaxSize = DEFAULT_ENDP0_SIZE ;
     CopySetupReqPkg( GetDevDescrptor );
     pSetupReq->wLength = DEFAULT_ENDP0_SIZE;
@@ -362,10 +362,10 @@ UINT8 CtrlGetDevDescr(UINT8 *databuf)
  *            ERR_USB_BUF_OVER
  *            ERR_USB_TRANSFER
  */
-UINT8 CtrlGetConfigDescr(UINT8 *databuf)
+uint8_t CtrlGetConfigDescr(uint8_t *databuf)
 {
-    UINT8 ret;
-    UINT16 reallen,len;
+    uint8_t ret;
+    uint16_t reallen,len;
 
     CopySetupReqPkg( GetConfigDescrptor );
     ret = USBHS_HostCtrlTransfer( databuf, &len );
@@ -395,9 +395,9 @@ UINT8 CtrlGetConfigDescr(UINT8 *databuf)
  * @return    ERR_SUCCESS
  *            ERR_USB_TRANSFER
  */
-UINT8 CtrlSetAddress( UINT8 addr )
+uint8_t CtrlSetAddress( uint8_t addr )
 {
-    UINT32 rxlen;
+    uint32_t rxlen;
 
     CopySetupReqPkg( SetAddress );
     pSetupReq->wValue = addr;
@@ -418,9 +418,9 @@ UINT8 CtrlSetAddress( UINT8 addr )
  * @return    ERR_SUCCESS
  *            ERR_USB_TRANSFER
  */
-UINT8 CtrlSetConfig(UINT8 cfg_val)
+uint8_t CtrlSetConfig(uint8_t cfg_val)
 {
-    UINT8 ret;
+    uint8_t ret;
 
     CopySetupReqPkg( SetConfig );
     pSetupReq->wValue = cfg_val;
@@ -439,7 +439,7 @@ UINT8 CtrlSetConfig(UINT8 cfg_val)
  *
  * @return    None
  */
-void USBHS_CurrentAddr( UINT8 addr )
+void USBHS_CurrentAddr( uint8_t addr )
 {
     R8_USB_DEV_AD = addr;           // SET ADDRESS
 }
@@ -455,9 +455,9 @@ void USBHS_CurrentAddr( UINT8 addr )
  *
  * @return    None
  */
-void USBHS_Analysis_Descr( pDEV_INFO_Typedef pusbdev,PUINT8 pdesc, UINT16 l)
+void USBHS_Analysis_Descr( pDEV_INFO_Typedef pusbdev,uint8_t * pdesc, uint16_t l)
 {
-    UINT16 i,EndPMaxSize;
+    uint16_t i,EndPMaxSize;
     for(i=0;i<l;i++)                                                //Analysis Descriptor
     {
      if((pdesc[i]==0x09)&&(pdesc[i+1]==0x02))
@@ -472,7 +472,7 @@ void USBHS_Analysis_Descr( pDEV_INFO_Typedef pusbdev,PUINT8 pdesc, UINT16 l)
                  printf("endpIN:%02x \n",pdesc[i+2]&0x0f);
                  pusbdev->DevEndp.InEndpNum = pdesc[i+2]&0x0f;
                  pusbdev->DevEndp.InEndpCount++;
-                 EndPMaxSize = ((UINT16)pdesc[i+5]<<8)|pdesc[i+4];
+                 EndPMaxSize = ((uint16_t)pdesc[i+5]<<8)|pdesc[i+4];
                  pusbdev->DevEndp.InEndpMaxSize = EndPMaxSize;
                  printf("In_endpmaxsize:%02x \n",EndPMaxSize);
             }
@@ -481,7 +481,7 @@ void USBHS_Analysis_Descr( pDEV_INFO_Typedef pusbdev,PUINT8 pdesc, UINT16 l)
                 printf("endpOUT:%02x \n",pdesc[i+2]&0x0f);
                 pusbdev->DevEndp.OutEndpNum = pdesc[i+2]&0x0f;
                 pusbdev->DevEndp.OutEndpCount++;
-                EndPMaxSize =((UINT16)pdesc[i+5]<<8)|pdesc[i+4];
+                EndPMaxSize =((uint16_t)pdesc[i+5]<<8)|pdesc[i+4];
                 pusbdev->DevEndp.OutEndpMaxSize = EndPMaxSize;
                 printf("Out_endpmaxsize:%02x \n",EndPMaxSize);
             }

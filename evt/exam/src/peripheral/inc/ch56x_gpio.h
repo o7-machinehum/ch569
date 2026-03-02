@@ -89,8 +89,8 @@ typedef enum
 	MCO_2d5 = 0xC,
 }MCOMode;
 
-void GPIOA_ModeCfg( UINT32 pin, GPIOModeTypeDef mode );				/* GPIOA port pin mode configuration */
-void GPIOB_ModeCfg( UINT32 pin, GPIOModeTypeDef mode );				/* GPIOB port pin mode configuration */
+void GPIOA_ModeCfg( uint32_t pin, GPIOModeTypeDef mode );				/* GPIOA port pin mode configuration */
+void GPIOB_ModeCfg( uint32_t pin, GPIOModeTypeDef mode );				/* GPIOB port pin mode configuration */
 #define	GPIOA_ResetBits( pin )			(R32_PA_CLR |= pin)			/* GPIOA port pin output set low */
 #define	GPIOA_SetBits( pin )			(R32_PA_OUT |= pin)			/* GPIOA port pin output set high */
 #define	GPIOB_ResetBits( pin )			(R32_PB_CLR |= pin)			/* GPIOB port pin output set low */
@@ -102,8 +102,8 @@ void GPIOB_ModeCfg( UINT32 pin, GPIOModeTypeDef mode );				/* GPIOB port pin mod
 #define	GPIOA_ReadPortPin( pin )		(R32_PA_PIN&pin)			/* GPIOA port pin status, 0-pin low level, (!0)-pin high level */
 #define	GPIOB_ReadPortPin( pin )		(R32_PB_PIN&pin)			/* GPIOB port pin status, 0-pin low level, (!0)-pin high level */
 
-void GPIOA_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode );			/* GPIOA pin interrupt mode configuration */
-void GPIOB_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode );			/* GPIOB pin interrupt mode configuration */
+void GPIOA_ITModeCfg( uint32_t pin, GPIOITModeTpDef mode );			/* GPIOA pin interrupt mode configuration */
+void GPIOB_ITModeCfg( uint32_t pin, GPIOITModeTpDef mode );			/* GPIOB pin interrupt mode configuration */
 #define	GPIOA_ReadITFlagPort()			(R8_GPIO_INT_FLAG)				/* Read GPIOA port interrupt flag status */
 #define	GPIOB_ReadITFlagPort()			(R8_GPIO_INT_FLAG)				/* Read GPIOB port interrupt flag status */
 
@@ -132,8 +132,8 @@ void GPIOB_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode );			/* GPIOB pin interru
 
 
 
-void GPIOPinRemap( UINT8 s, UINT16 perph );				/* Peripheral Function Pin Mapping */
-void GPIOMco( UINT8 s, UINT16 freq );                     /* MCO function */
+void GPIOPinRemap( uint8_t s, uint16_t perph );				/* Peripheral Function Pin Mapping */
+void GPIOMco( uint8_t s, uint16_t freq );                     /* MCO function */
 
 
 

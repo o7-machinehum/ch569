@@ -13,21 +13,21 @@
 #include "ch56x_usb30.h"
 #include "ch56xusb30_lib.h"
 /* Global Variable */
-UINT16V  U20_EndpnMaxSize = 512;
-UINT16V  SetupReqLen=0;            //Host request data length
-UINT16V  SetupLen = 0;             //Data length actually sent or received in data phase
-UINT32V seq_num = 0;
+volatile uint16_t  U20_EndpnMaxSize = 512;
+volatile uint16_t  SetupReqLen=0;            //Host request data length
+volatile uint16_t  SetupLen = 0;             //Data length actually sent or received in data phase
+volatile uint32_t seq_num = 0;
 DevInfo_Typedef  g_devInfo;
-static UINT8V SetupReqType = 0;    //Host request descriptor type
-static UINT8V SetupReq = 0;        //Host request descriptor type
-static PUINT8 pDescr;
-extern UINT8V Link_Sta;
+static volatile uint8_t SetupReqType = 0;    //Host request descriptor type
+static volatile uint8_t SetupReq = 0;        //Host request descriptor type
+static uint8_t * pDescr;
+extern volatile uint8_t Link_Sta;
 
-__attribute__ ((aligned(16))) UINT8 vendor_buff[16]  __attribute__((section(".DMADATA")));
+__attribute__ ((aligned(16))) uint8_t vendor_buff[16]  __attribute__((section(".DMADATA")));
 /* Function declaration */
 void USBHS_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 
-const UINT8 hs_device_descriptor[] =
+const uint8_t hs_device_descriptor[] =
 {
     0x12,   // bLength
     0x01,   // DEVICE descriptor type
@@ -49,7 +49,7 @@ const UINT8 hs_device_descriptor[] =
     0x01    // number of configurations
 };
 
-const UINT8 hs_config_descriptor[] =
+const uint8_t hs_config_descriptor[] =
 {
     /* Configuration Descriptor */
     0x09,                           // bLength
@@ -99,7 +99,7 @@ const UINT8 hs_config_descriptor[] =
 };
 
 /* Language Descriptor */
-const UINT8 hs_string_descriptor0[] =
+const uint8_t hs_string_descriptor0[] =
 {
     0x04,   // this descriptor length
     0x03,   // descriptor type
@@ -108,7 +108,7 @@ const UINT8 hs_string_descriptor0[] =
 };
 
 /* Manufacturer Descriptor */
-const UINT8 hs_string_descriptor1[] =
+const uint8_t hs_string_descriptor1[] =
 {
     0x08,   // length of this descriptor
     0x03,
@@ -121,7 +121,7 @@ const UINT8 hs_string_descriptor1[] =
 };
 
 /* Product Descriptor */
-const UINT8 hs_string_descriptor2[]=
+const uint8_t hs_string_descriptor2[]=
 {
     38,         //38 bytes
     0x03,       //0x03
@@ -145,7 +145,7 @@ const UINT8 hs_string_descriptor2[]=
     0x20, 0x00  //
 };
 
-const UINT8 hs_bos_descriptor[] =
+const uint8_t hs_bos_descriptor[] =
 {
     0x05,   // length of this descriptor
     0x0f,   // CONFIGURATION (2)
@@ -174,7 +174,7 @@ const UINT8 hs_bos_descriptor[] =
 };
 
 /* HID Report Descriptor */
-const UINT8  hs_HIDReportDesc[ ] =
+const uint8_t  hs_HIDReportDesc[ ] =
 {
     0x06, 0x00, 0xFF,               // Usage Page (Vendor Defined 0xFF00)
     0x09, 0x01,                     // Usage (0x01)
@@ -212,9 +212,9 @@ void USB20_Endp_Init ()	// USBHS device endpoint initial
     R16_UEP2_MAX_LEN = 512;
 
 
-    R32_UEP0_RT_DMA = (UINT32)(UINT8 *)endp0RTbuff;
-	R32_UEP1_RX_DMA = (UINT32)(UINT8 *)HIDbuff;
-	R32_UEP2_TX_DMA = (UINT32)(UINT8 *)HIDbuff;
+    R32_UEP0_RT_DMA = (uint32_t)(uint8_t *)endp0RTbuff;
+	R32_UEP1_RX_DMA = (uint32_t)(uint8_t *)HIDbuff;
+	R32_UEP2_TX_DMA = (uint32_t)(uint8_t *)HIDbuff;
 
 
 	R16_UEP0_T_LEN = 0;
@@ -239,8 +239,8 @@ void USB20_Endp_Init ()	// USBHS device endpoint initial
  */
 void USB20_Device_Init ( FunctionalState sta )  // USBHS device initial
 {
-    UINT16 i;
-    UINT32 *p;
+    uint16_t i;
+    uint32_t *p;
     if(sta)
     {
         R8_USB_CTRL = 0;
@@ -263,7 +263,7 @@ void USB20_Device_Init ( FunctionalState sta )  // USBHS device initial
  *
  * @return  None
  **/
-void USB20_Device_Setaddress( UINT32 address )
+void USB20_Device_Setaddress( uint32_t address )
 {
     R8_USB_DEV_AD = address; // SET ADDRESS
 }
@@ -275,9 +275,9 @@ void USB20_Device_Setaddress( UINT32 address )
  *
  * @return   None
  */
-UINT16 U20_NonStandard_Request_Deal()
+uint16_t U20_NonStandard_Request_Deal()
 {
-  UINT16 len = 0;
+  uint16_t len = 0;
 
   return len;
 }
@@ -289,10 +289,10 @@ UINT16 U20_NonStandard_Request_Deal()
  *
  * @return   None
  */
-UINT16 U20_Standard_Request_Deal()
+uint16_t U20_Standard_Request_Deal()
 {
-  UINT16 len = 0;
-  UINT8 endp_dir;
+  uint16_t len = 0;
+  uint8_t endp_dir;
   SetupLen = 0;
   endp_dir = UsbSetupBuf->bRequestType & 0x80;
   switch( SetupReq )
@@ -302,11 +302,11 @@ UINT16 U20_Standard_Request_Deal()
         switch( UsbSetupBuf->wValueH  )
         {
             case USB_DESCR_TYP_DEVICE:
-                pDescr = (UINT8 *)hs_device_descriptor;
+                pDescr = (uint8_t *)hs_device_descriptor;
                 SetupLen = ( SetupReqLen > sizeof(hs_device_descriptor) )? sizeof(hs_device_descriptor):SetupReqLen;
                 break;
             case USB_DESCR_TYP_CONFIG:
-                pDescr = (UINT8 *)hs_config_descriptor;
+                pDescr = (uint8_t *)hs_config_descriptor;
                 SetupLen = ( SetupReqLen > sizeof(hs_config_descriptor) )? sizeof(hs_config_descriptor):SetupReqLen;
                 break;
             case USB_DESCR_TYP_STRING:
@@ -314,15 +314,15 @@ UINT16 U20_Standard_Request_Deal()
                 {
                     case USB_DESCR_LANGID_STRING:
 
-                        pDescr = (UINT8 *)hs_string_descriptor0;
+                        pDescr = (uint8_t *)hs_string_descriptor0;
                         SetupLen = ( SetupReqLen > sizeof(hs_string_descriptor0) )? sizeof(hs_string_descriptor0):SetupReqLen;
                         break;
                     case USB_DESCR_VENDOR_STRING:
-                        pDescr = (UINT8 *)hs_string_descriptor1;
+                        pDescr = (uint8_t *)hs_string_descriptor1;
                         SetupLen = ( SetupReqLen > sizeof(hs_string_descriptor1) )? sizeof(hs_string_descriptor1):SetupReqLen;
                         break;
                     case USB_DESCR_PRODUCT_STRING:
-                        pDescr =(UINT8 *) hs_string_descriptor2;
+                        pDescr =(uint8_t *) hs_string_descriptor2;
                         SetupLen = ( SetupReqLen > sizeof(hs_string_descriptor2) )? sizeof(hs_string_descriptor2):SetupReqLen;;
                         break;
                     case USB_DESCR_SERIAL_STRING:
@@ -333,17 +333,17 @@ UINT16 U20_Standard_Request_Deal()
                 }
                 break;
             case USB_DESCR_TYP_BOS:
-                 pDescr =(UINT8 *) hs_bos_descriptor;
+                 pDescr =(uint8_t *) hs_bos_descriptor;
                  SetupLen = ( SetupReqLen > sizeof(hs_bos_descriptor) )? sizeof(hs_bos_descriptor):SetupReqLen;
                  break;
 
             case USB_DESCR_TYP_HID:
-                pDescr =(UINT8 *) &hs_config_descriptor[18];
+                pDescr =(uint8_t *) &hs_config_descriptor[18];
                 SetupLen = 9;
                 break;
 
             case USB_DESCR_TYP_REPORT:
-                pDescr =(UINT8 *) hs_HIDReportDesc;
+                pDescr =(uint8_t *) hs_HIDReportDesc;
                 SetupLen = ( SetupReqLen > sizeof(hs_HIDReportDesc) )? sizeof(hs_HIDReportDesc):SetupReqLen;
                 break;
 
@@ -533,18 +533,18 @@ UINT16 U20_Standard_Request_Deal()
  */
 void USBHS_IRQHandler(void)			                                //USBHS interrupt service
 {
-	UINT32 end_num;
-	UINT32 rx_token;
-	UINT16 ret_len,i;
-	UINT16 rxlen;
-	UINT8  *p8;
-	UINT8 int_flg;
+	uint32_t end_num;
+	uint32_t rx_token;
+	uint16_t ret_len,i;
+	uint16_t rxlen;
+	uint8_t  *p8;
+	uint8_t int_flg;
 	int_flg = R8_USB_INT_FG;
 	if( int_flg & RB_USB_IF_SETUOACT )                   //SETUP interrupt
 	{
 #if 0
 		 printf("SETUP :");
-		 p8 = (UINT8 *)endp0RTbuff;
+		 p8 = (uint8_t *)endp0RTbuff;
 		 for(i=0; i<8; i++)  { printf("%02x ", *p8++); }
 		 printf("\n");
 #endif
@@ -700,9 +700,9 @@ void USBHS_IRQHandler(void)			                                //USBHS interrupt 
  *
  * @return   None
  */
-UINT16 U20_Endp0_IN_Callback(void)
+uint16_t U20_Endp0_IN_Callback(void)
 {
-    UINT16 len = 0;
+    uint16_t len = 0;
     switch(SetupReq)
     {
       case USB_GET_DESCRIPTOR:

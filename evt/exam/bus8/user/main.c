@@ -29,10 +29,10 @@
  *
  * @return  None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-	UINT32 x;
-	UINT32 t = FREQ_SYS;
+	uint32_t x;
+	uint32_t t = FREQ_SYS;
 	
 	x = 10 * t * 2 / 16 / baudrate;
 	x = ( x + 5 ) / 10;
@@ -52,8 +52,8 @@ void DebugInit(UINT32 baudrate)
  *
  * @return  none
  */
-#define R8_xbus_cmd    (*((PUINT8V)0x80000001))
-#define R8_xbus_dat    (*((PUINT8V)0x80000000))
+#define R8_xbus_cmd    (*((volatile uint8_t *)0x80000001))
+#define R8_xbus_dat    (*((volatile uint8_t *)0x80000000))
 
 int main()
 {  
@@ -63,7 +63,7 @@ int main()
 	DebugInit(115200);
 	PRINT("Start @ChipID=%02X\r\n", R8_CHIP_ID );
 #if 1
-	UINT8 ver;
+	uint8_t ver;
 
 	BUS8_Init(ADDR_6, WIDTH_16, HOLD_3, SETUP_3);
 

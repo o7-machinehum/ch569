@@ -51,46 +51,46 @@ extern "C" {
 
 typedef struct __PACKED  _HOST_STATUS
 {
-    UINT8 InSeqNum[8];
-    UINT8 InMaxBurstSize[8];
-    UINT8 OutSeqNum[8];
-    UINT8 OutMaxBurstSize[8];
+    uint8_t InSeqNum[8];
+    uint8_t InMaxBurstSize[8];
+    uint8_t OutSeqNum[8];
+    uint8_t OutMaxBurstSize[8];
 }DevInfo,PDevInfo;
 
-extern UINT8V device_link_status;
+extern volatile uint8_t device_link_status;
 
-extern const UINT8 get_descriptor[];
-extern const UINT8 get_cfg_descriptor[];
-extern const UINT8 get_cfg_descriptor_all[];
-extern const UINT8 get_bos_descriptor[];
-extern const UINT8 get_string_descriptor0[];
-extern const UINT8 get_string_descriptor1[];
-extern const UINT8 get_string_descriptor2[];
-extern const UINT8 get_string_descriptor3[];
-extern const UINT8 get_interface[];
-extern const UINT8 set_configuration[];
-extern const UINT8 set_address[];
-extern const UINT8 set_isoch_delay[];
-extern const UINT8 set_sel[];
-extern const UINT8 tx_sel_data[];
-extern const UINT8 set_feature_U1[];
-extern const UINT8 set_feature_U2[];
+extern const uint8_t get_descriptor[];
+extern const uint8_t get_cfg_descriptor[];
+extern const uint8_t get_cfg_descriptor_all[];
+extern const uint8_t get_bos_descriptor[];
+extern const uint8_t get_string_descriptor0[];
+extern const uint8_t get_string_descriptor1[];
+extern const uint8_t get_string_descriptor2[];
+extern const uint8_t get_string_descriptor3[];
+extern const uint8_t get_interface[];
+extern const uint8_t set_configuration[];
+extern const uint8_t set_address[];
+extern const uint8_t set_isoch_delay[];
+extern const uint8_t set_sel[];
+extern const uint8_t tx_sel_data[];
+extern const uint8_t set_feature_U1[];
+extern const uint8_t set_feature_U2[];
 
-extern __attribute__ ((aligned(16))) UINT8 endpRXbuff[512] __attribute__((section(".DMADATA")));
-extern __attribute__ ((aligned(16))) UINT8 endpTXbuff[512] __attribute__((section(".DMADATA")));
-
-
+extern __attribute__ ((aligned(16))) uint8_t endpRXbuff[512] __attribute__((section(".DMADATA")));
+extern __attribute__ ((aligned(16))) uint8_t endpTXbuff[512] __attribute__((section(".DMADATA")));
 
 
-UINT8 USB30HOST_ClearEndpStall( UINT8 endp );
-UINT8 USB30HSOT_Enumerate_Hotrst( UINT8 *pbuf );
+
+
+uint8_t USB30HOST_ClearEndpStall( uint8_t endp );
+uint8_t USB30HSOT_Enumerate_Hotrst( uint8_t *pbuf );
 
 void   USB30Host_Enum(void);
-void   USB30_link_status(UINT8 s);
-UINT16 USB30HOST_INTransaction(UINT8 seq_num,UINT8 *recv_packnum ,UINT8 endp_num,UINT16 *status);
+void   USB30_link_status(uint8_t s);
+uint16_t USB30HOST_INTransaction(uint8_t seq_num,uint8_t *recv_packnum ,uint8_t endp_num,uint16_t *status);
 
-UINT8  USB30HOST_OUTTransaction(UINT8 seq_num,UINT8 send_packnum ,UINT8 endp_num,UINT32 txlen);
-UINT16 USB30HOST_CtrlTransaciton(UINT8 *databuf);
+uint8_t  USB30HOST_OUTTransaction(uint8_t seq_num,uint8_t send_packnum ,uint8_t endp_num,uint32_t txlen);
+uint16_t USB30HOST_CtrlTransaciton(uint8_t *databuf);
 
 
 void LINK_IRQHandler (void) __attribute__((interrupt("WCH-Interrupt-fast")));

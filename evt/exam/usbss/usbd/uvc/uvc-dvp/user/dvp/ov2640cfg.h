@@ -15,7 +15,7 @@
 /* Global Variable */
 
 /* yuv uxga format */
-const UINT8 yuv_uxga[][2]=
+const uint8_t yuv_uxga[][2]=
 {
         0xFF, 0x00,
         0x2C, 0xFF,
@@ -346,7 +346,7 @@ const UINT8 yuv_uxga[][2]=
 /*OV2640 UXGA Initialization register sequence table (Initial camera configuration)
 * In this mode, the frame rate is 15 frames
 * UXGA(1600*1200)*/
-const UINT8 ov2640_uxga_init_reg_tbl[][2]=
+const uint8_t ov2640_uxga_init_reg_tbl[][2]=
 {
         0xff, 0x00,
         0x2c, 0xff,
@@ -556,7 +556,7 @@ const UINT8 ov2640_uxga_init_reg_tbl[][2]=
 /*OV2640 SVGA Initialization register sequence table
 * In this mode, the frame rate can reach 30 frames
 * SVGA 800*600*/
-const UINT8 ov2640_svga_init_reg_tbl[][2]=
+const uint8_t ov2640_svga_init_reg_tbl[][2]=
 {
         0xff, 0x00,
         0x2c, 0xff,
@@ -761,7 +761,7 @@ const UINT8 ov2640_svga_init_reg_tbl[][2]=
 };
 
 /*jpeg  mode*/
-const UINT8 ov2640_jpeg_reg_tbl[][2]=
+const uint8_t ov2640_jpeg_reg_tbl[][2]=
 {
 	0xFF, 0x00,
 	0xDA, 0x10,
@@ -775,7 +775,7 @@ const UINT8 ov2640_jpeg_reg_tbl[][2]=
 
 
 /*RGB565 mode*/
-const UINT8 ov2640_rgb565_reg_tbl[][2]=
+const uint8_t ov2640_rgb565_reg_tbl[][2]=
 {
 	0xFF, 0x00,   //0xFF = 0
 	0xDA, 0x09,

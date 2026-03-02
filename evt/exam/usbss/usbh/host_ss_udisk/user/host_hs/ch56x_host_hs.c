@@ -13,20 +13,20 @@
 #include "ch56x_usb30h.h"
 #include "ch56xusb30h_lib.h"
 #include "ch56x_udisk.h"
-__attribute__ ((aligned(4))) const UINT8  GetDevDescrptor[]={USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_DEVICE, 0x00, 0x00, sizeof( USB_DEV_DESCR ), 0x00};
-__attribute__ ((aligned(4))) const UINT8  GetConfigDescrptor[]= {USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_CONFIG, 0x00, 0x00, 0x04, 0x00};
-__attribute__ ((aligned(4))) const UINT8  SetAddress[]={USB_REQ_TYP_OUT, USB_SET_ADDRESS, USB_DEVICE_ADDR, 0x00, 0x00, 0x00, 0x00, 0x00};
-__attribute__ ((aligned(4))) const UINT8  SetConfig[]={USB_REQ_TYP_OUT, USB_SET_CONFIGURATION, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-__attribute__ ((aligned(4))) const UINT8  Clear_EndpStall[]={USB_REQ_RECIP_INTERF, USB_SET_INTERFACE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+__attribute__ ((aligned(4))) const uint8_t  GetDevDescrptor[]={USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_DEVICE, 0x00, 0x00, sizeof( USB_DEV_DESCR ), 0x00};
+__attribute__ ((aligned(4))) const uint8_t  GetConfigDescrptor[]= {USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_CONFIG, 0x00, 0x00, 0x04, 0x00};
+__attribute__ ((aligned(4))) const uint8_t  SetAddress[]={USB_REQ_TYP_OUT, USB_SET_ADDRESS, USB_DEVICE_ADDR, 0x00, 0x00, 0x00, 0x00, 0x00};
+__attribute__ ((aligned(4))) const uint8_t  SetConfig[]={USB_REQ_TYP_OUT, USB_SET_CONFIGURATION, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+__attribute__ ((aligned(4))) const uint8_t  Clear_EndpStall[]={USB_REQ_RECIP_INTERF, USB_SET_INTERFACE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 /*global define */
 #define pSetupReq    ((PUSB_SETUP_REQ)endpTXbuff)
 
 /*global variable */
 DEV_INFO_Typedef g_U20DevInfo;
-UINT8 U20_Endp0MaxSize = 0;
+uint8_t U20_Endp0MaxSize = 0;
 USB_SETUP_REQ *Ctl_Setup;
-UINT8 UsbDevEndp0Size = 8;
+uint8_t UsbDevEndp0Size = 8;
 
 /*******************************************************************************
  * @fn        user2mem_copy
@@ -39,13 +39,13 @@ UINT8 UsbDevEndp0Size = 8;
  *
  * @return    None
  */
-void CopySetupReqPkg( const UINT8 *pReqPkt )
+void CopySetupReqPkg( const uint8_t *pReqPkt )
 {
-    UINT8 i;
+    uint8_t i;
 
     for ( i = 0; i != sizeof( USB_SETUP_REQ ); i ++ )
     {
-        ((PUINT8)pSetupReq)[ i ] = *pReqPkt;
+        ((uint8_t *)pSetupReq)[ i ] = *pReqPkt;
         pReqPkt++;
     }
 }
@@ -59,7 +59,7 @@ void CopySetupReqPkg( const UINT8 *pReqPkt )
  */
 void USB20HOST_SetBusReset( void )
 {
-    UINT16 i;
+    uint16_t i;
 
     R8_UHOST_CTRL = RB_UH_BUS_RESET;
     for(i = 0;i<150;i++)
@@ -92,8 +92,8 @@ void USB20Host_Init(FunctionalState sta)
         R8_USB_DEV_AD = 0;
         R8_UHOST_CTRL = 0;
 
-        R32_UH_TX_DMA = (UINT32)(UINT8 *)endpTXbuff;
-        R32_UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;
+        R32_UH_TX_DMA = (uint32_t)(uint8_t *)endpTXbuff;
+        R32_UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;
 
         R16_UH_RX_MAX_LEN = U20_MAXPACKET_LEN;
         R8_UH_EP_MOD = RB_UH_TX_EN | RB_UH_RX_EN ;
@@ -121,11 +121,11 @@ void USB20Host_Init(FunctionalState sta)
  *            ERR_USB_DISCON
  *            ERR_USB_CONNECT
  */
-UINT8 USB20HOST_Transact( UINT8 endp_pid, UINT8 toggle,UINT32 timeout)
+uint8_t USB20HOST_Transact( uint8_t endp_pid, uint8_t toggle,uint32_t timeout)
 {
-    UINT8 TransRetry=0;
-    UINT8 r;
-    UINT16  i;
+    uint8_t TransRetry=0;
+    uint8_t r;
+    uint16_t  i;
 
     do
     {
@@ -200,11 +200,11 @@ UINT8 USB20HOST_Transact( UINT8 endp_pid, UINT8 toggle,UINT32 timeout)
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HOST_GetDeviceDescr( UINT8 *buf ,UINT16 *len )
+uint8_t U20HOST_GetDeviceDescr( uint8_t *buf ,uint16_t *len )
 {
-    UINT8 l;
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint8_t l;
+    uint8_t  status;
+    uint8_t setup_buf[8];
     l = *len;
     setup_buf[0] = 0x80;
     setup_buf[1] = 0x06;
@@ -212,7 +212,7 @@ UINT8 U20HOST_GetDeviceDescr( UINT8 *buf ,UINT16 *len )
     setup_buf[3]  = 0x01;
     setup_buf[4]  = 0x00;
     setup_buf[5]  = 0x00;
-    setup_buf[6] = (UINT8)l;
+    setup_buf[6] = (uint8_t)l;
     setup_buf[7] = 0x00;
 
     status = USB20HOST_CtrlTransfer( setup_buf,buf,&l );
@@ -233,11 +233,11 @@ UINT8 U20HOST_GetDeviceDescr( UINT8 *buf ,UINT16 *len )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HOST_GetConfigDescr( UINT8 *buf ,UINT16 *len )
+uint8_t U20HOST_GetConfigDescr( uint8_t *buf ,uint16_t *len )
 {
-    UINT8 l;
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint8_t l;
+    uint8_t  status;
+    uint8_t setup_buf[8];
     setup_buf[0] = 0x80;
     setup_buf[1] = 0x06;
     setup_buf[2]  = 0x00;
@@ -275,11 +275,11 @@ UINT8 U20HOST_GetConfigDescr( UINT8 *buf ,UINT16 *len )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HOST_SetAddress( UINT8 addr )
+uint8_t U20HOST_SetAddress( uint8_t addr )
 {
-    UINT8  status;
+    uint8_t  status;
 
-    UINT8 setup_buf[8];
+    uint8_t setup_buf[8];
     setup_buf[0] = 0X00;
     setup_buf[1] = 0x05;
     setup_buf[2]  = addr;
@@ -306,10 +306,10 @@ UINT8 U20HOST_SetAddress( UINT8 addr )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HOST_SetConfig( UINT8 cfg )
+uint8_t U20HOST_SetConfig( uint8_t cfg )
 {
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint8_t  status;
+    uint8_t setup_buf[8];
     setup_buf[0] = 0x00;
     setup_buf[1] = 0x09;
     setup_buf[2]  = cfg;
@@ -329,9 +329,9 @@ UINT8 U20HOST_SetConfig( UINT8 cfg )
 * Output         : None
 * Return         : None
 *******************************************************************************/
-UINT8 U20HOST_CofDescrAnalyse( UINT8 *pbuf )
+uint8_t U20HOST_CofDescrAnalyse( uint8_t *pbuf )
 {
-    static UINT8 gDeviceClassType;
+    static uint8_t gDeviceClassType;
     gDeviceClassType = ( (PUSB_CFG_DESCR_LONG)pbuf ) -> itf_descr.bInterfaceClass;
     if( ( gDeviceClassType <= 0x09 ) || ( gDeviceClassType == 0xFF ) )
     {
@@ -354,12 +354,12 @@ UINT8 U20HOST_CofDescrAnalyse( UINT8 *pbuf )
  * @return    ERR_SUCCESS
  *            ERR_USB_TRANSFER
  */
-UINT8 USB20Host_Enum( UINT8 *Databuf )
+uint8_t USB20Host_Enum( uint8_t *Databuf )
 {
-       UINT8 status;
-       UINT8 cfg,i;
-       UINT32 timeout;
-       UINT16 len;
+       uint8_t status;
+       uint8_t cfg,i;
+       uint32_t timeout;
+       uint16_t len;
        USB20HOST_SetBusReset();
        timeout = 0;
        while(1){
@@ -425,7 +425,7 @@ UINT8 USB20Host_Enum( UINT8 *Databuf )
        status = U20HOST_SetConfig( cfg );
        if ( status != USB_INT_SUCCESS )
        {
-           printf( "SetConfig_ERROR = %02X\n", (UINT16)status );
+           printf( "SetConfig_ERROR = %02X\n", (uint16_t)status );
            return( USB_OPERATE_ERROR );
        }
        return status;
@@ -444,21 +444,21 @@ UINT8 USB20Host_Enum( UINT8 *Databuf )
  * @return    ERR_SUCCESS
  *            ERR_USB_TRANSFER
  */
-UINT8 USB20HOST_CtrlTransfer(UINT8 *ReqBuf, UINT8 *DataBuf, UINT8 *RetLen )
+uint8_t USB20HOST_CtrlTransfer(uint8_t *ReqBuf, uint8_t *DataBuf, uint8_t *RetLen )
 {
-    UINT16  RemLen  = 0;
-    UINT8   s, RxLen;
-    UINT8   tog;
-    PUINT8  pBuf;
-    PUINT8  pLen;
-    UINT8 *p;
+    uint16_t  RemLen  = 0;
+    uint8_t   s, RxLen;
+    uint8_t   tog;
+    uint8_t *  pBuf;
+    uint8_t *  pLen;
+    uint8_t *p;
 
     pBuf = DataBuf;
     pLen = RetLen;
-    R32_UH_TX_DMA = (UINT32)endpTXbuff;
-    R32_UH_RX_DMA = (UINT32)endpRXbuff;
+    R32_UH_TX_DMA = (uint32_t)endpTXbuff;
+    R32_UH_RX_DMA = (uint32_t)endpRXbuff;
     if ( pLen )*pLen = 0;
-    p = (UINT8 *)endpTXbuff;
+    p = (uint8_t *)endpTXbuff;
     memcpy( p,ReqBuf,8 );
 
 
@@ -483,7 +483,7 @@ UINT8 USB20HOST_CtrlTransfer(UINT8 *ReqBuf, UINT8 *DataBuf, UINT8 *RetLen )
                 RxLen = R16_USB_RX_LEN < RemLen ? R16_USB_RX_LEN : RemLen;
                 RemLen -= RxLen;
                 if ( pLen )*pLen += RxLen;
-                p = (UINT8 *)endpRXbuff;
+                p = (uint8_t *)endpRXbuff;
                 memcpy( DataBuf,p,RxLen );
 
                 DataBuf += *pLen;
@@ -496,7 +496,7 @@ UINT8 USB20HOST_CtrlTransfer(UINT8 *ReqBuf, UINT8 *DataBuf, UINT8 *RetLen )
         {
             while ( RemLen )
             {
-                R32_UH_TX_DMA = (UINT32)pBuf + *pLen;
+                R32_UH_TX_DMA = (uint32_t)pBuf + *pLen;
                 R16_UH_TX_LEN = RemLen >= UsbDevEndp0Size ? UsbDevEndp0Size : RemLen;
 
                 s = USB20HOST_Transact( USB_PID_OUT << 4 | 0x00, tog, 0x1ffffff );
@@ -524,10 +524,10 @@ UINT8 USB20HOST_CtrlTransfer(UINT8 *ReqBuf, UINT8 *DataBuf, UINT8 *RetLen )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 USB20HOST_ClearEndpStall( UINT8 endp )
+uint8_t USB20HOST_ClearEndpStall( uint8_t endp )
 {
-    UINT8  status = 0;
-    UINT8  setup_buf[8];
+    uint8_t  status = 0;
+    uint8_t  setup_buf[8];
     setup_buf[0] = 0x02;
     setup_buf[1] = 0x01;
     setup_buf[2] = 0X00;

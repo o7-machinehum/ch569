@@ -58,8 +58,8 @@ typedef enum
 
 
 
-void DVP_INTCfg( UINT8 s,  UINT8 i );
-void DVP_Mode( UINT8 s,  DVP_Data_ModeTypeDef i);
+void DVP_INTCfg( uint8_t s,  uint8_t i );
+void DVP_Mode( uint8_t s,  DVP_Data_ModeTypeDef i);
 void DVP_Cfg( DVP_DMATypeDef s,  DVP_FLAG_FIFO_RESETTypeDef i, DVP_RX_RESETTypeDef j);
 
 	 

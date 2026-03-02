@@ -23,9 +23,9 @@
 #define UART1_BAUD  921600
 
 EMMC_PARAMETER  TF_EMMCParam;
-UINT8V trans_err_flag = 0;
+volatile uint8_t trans_err_flag = 0;
 
-__attribute__ ((aligned(16))) UINT8  test_data_buffer[5120]   __attribute__((section(".DMADATA")));
+__attribute__ ((aligned(16))) uint8_t  test_data_buffer[5120]   __attribute__((section(".DMADATA")));
 void EMMC_IRQHandler(void)   __attribute__((interrupt("WCH-Interrupt-fast" )));
 
 /***************************************************************
@@ -37,10 +37,10 @@ void EMMC_IRQHandler(void)   __attribute__((interrupt("WCH-Interrupt-fast" )));
  * 
  * @return    None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-    UINT32 x;
-    UINT32 t = FREQ_SYS;
+    uint32_t x;
+    uint32_t t = FREQ_SYS;
     x = 10 * t * 2 / 16 / baudrate;
     x = ( x + 5 ) / 10;
     R8_UART1_DIV = 1;
@@ -62,7 +62,7 @@ void DebugInit(UINT32 baudrate)
  *
  * @return None
  */
-void EMMC_IO_init(UINT8 a)
+void EMMC_IO_init(uint8_t a)
 {
     /* GPIO configuration */
     R32_PB_PU  |= bSDCMD;
@@ -108,7 +108,7 @@ void EMMC_IO_init(UINT8 a)
     R8_EMMC_TIMEOUT = 14;   // calculating overtime
 }
 
-UINT8V gb_err_flag=0;
+volatile uint8_t gb_err_flag=0;
 
 /*****************************************************************
  * @fn     EMMC_function_init
@@ -118,9 +118,9 @@ UINT8V gb_err_flag=0;
  * @return OP_SUCCESS
  *         OP_FAILED
  */
-UINT8 EMMC_function_init( UINT8 b){
-    UINT8  sta;
-    UINT32 i;
+uint8_t EMMC_function_init( uint8_t b){
+    uint8_t  sta;
+    uint32_t i;
 
     EMMCResetIdle( &TF_EMMCParam );
     mDelaymS(30);
@@ -202,8 +202,8 @@ eee:
  */
 int main()
 {
-    UINT16 s;
-    UINT8 i;
+    uint16_t s;
+    uint8_t i;
 
     SystemInit(FREQ_SYS);
     Delay_Init(FREQ_SYS);
@@ -302,7 +302,7 @@ int main()
  */
 void EMMC_IRQHandler(){
 
-    UINT16 t;
+    uint16_t t;
 
     TF_EMMCParam.EMMCOpErr = 1;
     t= R16_EMMC_INT_FG;

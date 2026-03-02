@@ -20,14 +20,14 @@ extern "C" {
 
 typedef struct              //Data bit alignment
 {
-    UINT8   Name[ 13 ];             // Short file name 8+3 format (converted)
-    UINT8   attrib;                 // File or folder 0--File£¬1--folder
-    UINT32  FileLen;                // File length, folder is 0
-    UINT16  UpdateDate;             // modification date
-    UINT16  UpdateTime;             // Modification time
-    UINT16  CreateDate;             // Creation data
-    UINT16  CreateTime;             // Creation time
-    UINT16  LongNameLen;            // The valid length of long file name is equal to RecCmd.len - 25
+    uint8_t   Name[ 13 ];             // Short file name 8+3 format (converted)
+    uint8_t   attrib;                 // File or folder 0--File£¬1--folder
+    uint32_t  FileLen;                // File length, folder is 0
+    uint16_t  UpdateDate;             // modification date
+    uint16_t  UpdateTime;             // Modification time
+    uint16_t  CreateDate;             // Creation data
+    uint16_t  CreateTime;             // Creation time
+    uint16_t  LongNameLen;            // The valid length of long file name is equal to RecCmd.len - 25
 } disk_2;
 
 
@@ -39,10 +39,10 @@ typedef  union
 } DiskData_1;
 DiskData_1  DiskData;
 
-extern  UINT8  Fat_Init( void );
+extern  uint8_t  Fat_Init( void );
 extern  unsigned char Enum_Dir( void );
 extern  unsigned char Manual_Send_Dir( void );
-extern  UINT8 path_name[255],back_path_name[255];
+extern  uint8_t path_name[255],back_path_name[255];
 
 #ifdef __cplusplus
 }

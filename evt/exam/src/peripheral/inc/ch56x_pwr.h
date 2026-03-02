@@ -42,8 +42,8 @@
 #define BIT_SLP_CLK_ECDC                 RB_SLP_CLK_ECDC   /*!< ECDC peripher clk bit */
 
 
-void PWR_PeriphClkCfg( UINT8 s, UINT16 perph );               /* Peripheral Clock Control Bits */
-void PWR_PeriphWakeUpCfg( UINT8 s, UINT16 perph );            /* Sleep wakeup source configuration */
+void PWR_PeriphClkCfg( uint8_t s, uint16_t perph );               /* Peripheral Clock Control Bits */
+void PWR_PeriphWakeUpCfg( uint8_t s, uint16_t perph );            /* Sleep wakeup source configuration */
 void LowPower_Idle( void );                                   /* Low power consumption - IDLE mode */
 void LowPower_Halt( void );                                   /* Low power consumption - Halt mode */
 void LowPower_Sleep( void );                                  /* Low power consumption - Sleep mode */

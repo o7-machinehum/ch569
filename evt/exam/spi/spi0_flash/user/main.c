@@ -46,10 +46,10 @@
  *
  * @return    None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-	UINT32 x;
-	UINT32 t = FREQ_SYS;
+	uint32_t x;
+	uint32_t t = FREQ_SYS;
 	
 	x = 10 * t * 2 / 16 / baudrate;
 	x = ( x + 5 ) / 10;
@@ -87,7 +87,7 @@ void SPI_MASTER_INIT(void)
  *
  * @return  None
  */
-void SPI0_Trans(UINT8 data)
+void SPI0_Trans(uint8_t data)
 {
 
 //    R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
@@ -106,14 +106,14 @@ void SPI0_Trans(UINT8 data)
  *
  * @return  None
  */
-UINT8 SPI0_Recv(void)
+uint8_t SPI0_Recv(void)
 {
 //    R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
 //    R8_SPI0_BUFFER = 0xFF;                                //start transfer
 //    while( !(R8_SPI0_INT_FLAG & RB_SPI_FREE) );
 //    return ( R8_SPI0_BUFFER );
 
-    UINT8 data;
+    uint8_t data;
     R32_SPI0_FIFO = 0xff;
     R16_SPI0_TOTAL_CNT = 0x01;
     while( R8_SPI0_FIFO_COUNT != 0 );                                           /* wait for data to come back */
@@ -131,9 +131,9 @@ UINT8 SPI0_Recv(void)
 
  * @return   None
  */
-void SPI0_RecvS(UINT8 *pbuf, UINT16 len)
+void SPI0_RecvS(uint8_t *pbuf, uint16_t len)
 {
-    UINT16  readlen;
+    uint16_t  readlen;
 
     readlen = len;
     R8_SPI0_CTRL_MOD |= RB_SPI_FIFO_DIR;          //Set data direction to input
@@ -157,9 +157,9 @@ void SPI0_RecvS(UINT8 *pbuf, UINT16 len)
  *
  * @return  ExFlashRegStatus
  */
-UINT8 ReadExternalFlashStatusReg_SPI(void)
+uint8_t ReadExternalFlashStatusReg_SPI(void)
 {
-    UINT8 ExFlashRegStatus;
+    uint8_t ExFlashRegStatus;
 
 
     SPI0_CS_LOW();
@@ -208,7 +208,7 @@ void WriteExternalFlashEnable_SPI(void)
  *
  * @return   None
  */
-void EraseExternal4KFlash_SPI(UINT32 Dst_Addr)
+void EraseExternal4KFlash_SPI(uint32_t Dst_Addr)
 {
     WriteExternalFlashEnable_SPI();
     WaitExternalFlashIfBusy();
@@ -232,7 +232,7 @@ void EraseExternal4KFlash_SPI(UINT32 Dst_Addr)
  *
  * @return     None
  */
-void EraseExternal32KFlash_SPI(UINT32 Dst_Addr)
+void EraseExternal32KFlash_SPI(uint32_t Dst_Addr)
 {
     WriteExternalFlashEnable_SPI();
     WaitExternalFlashIfBusy();
@@ -258,9 +258,9 @@ void EraseExternal32KFlash_SPI(UINT32 Dst_Addr)
  *
  * @returnNone
  */
-void PageWriteExternalFlash_SPI(UINT32 StarAddr, UINT16 Len, PUINT8 RcvBuffer)
+void PageWriteExternalFlash_SPI(uint32_t StarAddr, uint16_t Len, uint8_t * RcvBuffer)
 {
-    UINT16 i;
+    uint16_t i;
 
     WriteExternalFlashEnable_SPI();                                   //SET WEL
 
@@ -289,9 +289,9 @@ void PageWriteExternalFlash_SPI(UINT32 StarAddr, UINT16 Len, PUINT8 RcvBuffer)
  *
  * @return   None
  */
-void BlukWriteExternalFlash_SPI(UINT32 StarAddr, UINT16 Len, PUINT8 SendBuffer)
+void BlukWriteExternalFlash_SPI(uint32_t StarAddr, uint16_t Len, uint8_t * SendBuffer)
 {
-    UINT16  pageremain;
+    uint16_t  pageremain;
 
     pageremain = 256-StarAddr%256;                                     //The remaining bytes of a single page
     if(Len<=pageremain)
@@ -333,7 +333,7 @@ void BlukWriteExternalFlash_SPI(UINT32 StarAddr, UINT16 Len, PUINT8 SendBuffer)
  *
  * @return None
  */
-void ReadExternalFlash_SPI(UINT32 StarAddr, UINT16 Len, PUINT8 RcvBuffer)
+void ReadExternalFlash_SPI(uint32_t StarAddr, uint16_t Len, uint8_t * RcvBuffer)
 {
     SPI0_CS_LOW();
     SPI0_Trans(CMD_READ_DATA);                                         //read command
@@ -355,7 +355,7 @@ void ReadExternalFlash_SPI(UINT32 StarAddr, UINT16 Len, PUINT8 RcvBuffer)
 
  * @return None
  */
-void BlukReadExternalFlash_SPI(UINT32 StarAddr, UINT16 Len, PUINT8 RcvBuffer)
+void BlukReadExternalFlash_SPI(uint32_t StarAddr, uint16_t Len, uint8_t * RcvBuffer)
 {
     SPI0_CS_LOW();
     SPI0_Trans(CMD_FAST_READ);                                         //high speed
@@ -378,9 +378,9 @@ void BlukReadExternalFlash_SPI(UINT32 StarAddr, UINT16 Len, PUINT8 RcvBuffer)
  *            0XEF16 - Indicates that the chip model is W25Q64
  *            0XEF17 - Indicates that the chip model is W25Q128
  */
-UINT16 SPIFlash_ReadID(void)
+uint16_t SPIFlash_ReadID(void)
 {
-    UINT16  temp = 0;
+    uint16_t  temp = 0;
 
     R32_PA_CLR |=  1<<12 ;
 
@@ -407,8 +407,8 @@ UINT16 SPIFlash_ReadID(void)
 int main()
 {
 
-	UINT8 buf[1024];
-	UINT8 i;
+	uint8_t buf[1024];
+	uint8_t i;
 
 	SystemInit(FREQ_SYS);
     Delay_Init(FREQ_SYS);
@@ -434,7 +434,7 @@ int main()
     BlukReadExternalFlash_SPI( 0,255,buf );
 
     for(i=0; i!=255; i++){
-    	printf("%d ",(UINT16)buf[i]);
+    	printf("%d ",(uint16_t)buf[i]);
     }
     printf("done\n");
 

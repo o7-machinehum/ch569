@@ -14,7 +14,7 @@
 #include "ov.h"
 
 //Start Camera Initialize configuration register list
-const UINT8 OV2640_InitRegTbl[][2]=
+const uint8_t OV2640_InitRegTbl[][2]=
 {
 	0xff, 0x00, 0x2c, 0xff,	0x2e, 0xdf,	0xff, 0x01,	0x3c, 0x32,
 
@@ -72,19 +72,19 @@ const UINT8 OV2640_InitRegTbl[][2]=
 };
 
 //Camera YUV422 Mode Configuration Register List
-const UINT8 OV2640_YUV422RegTbl[][2]=
+const uint8_t OV2640_YUV422RegTbl[][2]=
 {
 	0xFF, 0x00,	0xDA, 0x10,	0xD7, 0x03,	0xDF, 0x00,	0x33, 0x80,	0x3C, 0x40,	0xe1, 0x77,	0x00, 0x00,
 };
 
 //Camera JPEG Mode Configuration Register List
-const UINT8 OV2640_JPEGRegTbl[][2]=
+const uint8_t OV2640_JPEGRegTbl[][2]=
 {
 	0xff, 0x01,	0xe0, 0x14,	0xe1, 0x77,	0xe5, 0x1f,	0xd7, 0x03,	0xda, 0x10,	0xe0, 0x00,
 };
 
 //Camera RGB565 Mode Configuration Register List
-const UINT8 OV2640_RGB565RegTbl[][2]=
+const uint8_t OV2640_RGB565RegTbl[][2]=
 {
 	0xFF, 0x00,	0xDA, 0x09,	0xD7, 0x03,	0xDF, 0x02,	0x33, 0xa0,	0x3C, 0x00,	0xe1, 0x67,
 
@@ -166,9 +166,9 @@ void SCCB_No_Ack(void)
  * @return    0: success
  *            Other: failed
  */
-UINT8 SCCB_WR_Byte(UINT8 data)
+uint8_t SCCB_WR_Byte(uint8_t data)
 {
-	UINT8 i,t;
+	uint8_t i,t;
 
 	for(i=0; i<8; i++){
 		if(data & 0x80){
@@ -206,9 +206,9 @@ UINT8 SCCB_WR_Byte(UINT8 data)
  *
  * @return    Read one byte data
  */
-UINT8 SCCB_RD_Byte(void)
+uint8_t SCCB_RD_Byte(void)
 {
-	UINT8 t=0,i;
+	uint8_t t=0,i;
 
 	IIC_SDA_IN;
 
@@ -239,9 +239,9 @@ UINT8 SCCB_RD_Byte(void)
  * @return    0: success
  *            Other: failed
  */
-UINT8 SCCB_WR_Reg(UINT8 Reg_Adr, UINT8 Reg_Val)
+uint8_t SCCB_WR_Reg(uint8_t Reg_Adr, uint8_t Reg_Val)
 {
-	UINT8 res=0;
+	uint8_t res=0;
 
 	SCCB_Start();
 	if(SCCB_WR_Byte(SCCB_ID))res=1;
@@ -261,9 +261,9 @@ UINT8 SCCB_WR_Reg(UINT8 Reg_Adr, UINT8 Reg_Val)
  *
  * @return     Camera Register value
  */
-UINT8 SCCB_RD_Reg(UINT8 Reg_Adr)
+uint8_t SCCB_RD_Reg(uint8_t Reg_Adr)
 {
-	UINT8 val=0;
+	uint8_t val=0;
 
 	SCCB_Start();
 	SCCB_WR_Byte(SCCB_ID);
@@ -292,10 +292,10 @@ UINT8 SCCB_RD_Reg(UINT8 Reg_Adr)
  * @return     0 - initialization succeeded
  *             1 - initialization failed
  */
-UINT8 OV2640_Init(void)
+uint8_t OV2640_Init(void)
 {
-	UINT16 i=0;
-	UINT16 reg;
+	uint16_t i=0;
+	uint16_t reg;
 
 	//PA17:RESET  PA23:PWDN
 	R32_PA_DIR |= (1<<17)|(1<<23);
@@ -379,7 +379,7 @@ void JPEG_Mode_Init(void)
  */
 void OV2640_JPEG_Mode(void)
 {
-	UINT16 i=0;
+	uint16_t i=0;
 
 	//YUV422
 	for(i=0;i<(sizeof(OV2640_YUV422RegTbl)/2);i++)
@@ -402,7 +402,7 @@ void OV2640_JPEG_Mode(void)
  */
 void OV2640_RGB565_Mode(void)
 {
-	UINT16 i=0;
+	uint16_t i=0;
 
 	//RGB565
 	for(i=0;i<(sizeof(OV2640_RGB565RegTbl)/2);i++)
@@ -422,11 +422,11 @@ void OV2640_RGB565_Mode(void)
  * @return    0: success
  *            Other: failed
  */
-UINT8 OV2640_OutSize_Set(UINT16 Image_width, UINT16 Image_height)
+uint8_t OV2640_OutSize_Set(uint16_t Image_width, uint16_t Image_height)
 {
-	UINT16 Out_Size_Width;
-	UINT16 Out_Size_Height;
-	UINT8 t;
+	uint16_t Out_Size_Width;
+	uint16_t Out_Size_Height;
+	uint8_t t;
 
 	if((Image_width%4) || (Image_height%4))return 0x01;
 
@@ -456,7 +456,7 @@ UINT8 OV2640_OutSize_Set(UINT16 Image_width, UINT16 Image_height)
  * @return    0: success
  *            Other: failed
  */
-void OV2640_Speed_Set(UINT8 Pclk_Div, UINT8 Xclk_Div)
+void OV2640_Speed_Set(uint8_t Pclk_Div, uint8_t Xclk_Div)
 {
 	SCCB_WR_Reg(0XFF,0X00);
 	SCCB_WR_Reg(0XD3,Pclk_Div);

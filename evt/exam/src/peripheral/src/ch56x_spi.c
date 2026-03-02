@@ -70,7 +70,7 @@ void SPI0_DataMode( ModeBitOrderTypeDef m )
  *
  * @return  None
  */
-void SPI0_MasterSendByte( UINT8 d )
+void SPI0_MasterSendByte( uint8_t d )
 {
     R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
     R8_SPI0_BUFFER = d;
@@ -84,7 +84,7 @@ void SPI0_MasterSendByte( UINT8 d )
  *
  * @return   bytes received
  */
-UINT8 SPI0_MasterRecvByte( void )
+uint8_t SPI0_MasterRecvByte( void )
 {
     R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
     R8_SPI0_BUFFER = 0xFF;                                //start transfer
@@ -101,9 +101,9 @@ UINT8 SPI0_MasterRecvByte( void )
  *
  * @return   None
  */
-void SPI0_MasterTrans( UINT8 *pbuf, UINT16 len )
+void SPI0_MasterTrans( uint8_t *pbuf, uint16_t len )
 {
-    UINT16 sendlen;
+    uint16_t sendlen;
 
     sendlen = len;
     R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;        //Set data direction to output
@@ -130,9 +130,9 @@ void SPI0_MasterTrans( UINT8 *pbuf, UINT16 len )
  *
  * @return   None
  **/
-void SPI0_MasterRecv( UINT8 *pbuf, UINT16 len )
+void SPI0_MasterRecv( uint8_t *pbuf, uint16_t len )
 {
-    UINT16  readlen;
+    uint16_t  readlen;
 
     readlen = len;
     R8_SPI0_CTRL_MOD |= RB_SPI_FIFO_DIR;          //Set data direction to input
@@ -158,11 +158,11 @@ void SPI0_MasterRecv( UINT8 *pbuf, UINT16 len )
  *
  * @return   None
  */
-void SPI0_MasterDMATrans( PUINT8 pbuf, UINT16 len)
+void SPI0_MasterDMATrans( uint8_t * pbuf, uint16_t len)
 {
     R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
-    R32_SPI0_DMA_BEG = (UINT32)pbuf;
-    R32_SPI0_DMA_END = (UINT32)(pbuf + len);
+    R32_SPI0_DMA_BEG = (uint32_t)pbuf;
+    R32_SPI0_DMA_END = (uint32_t)(pbuf + len);
     R16_SPI0_TOTAL_CNT = len;
     R8_SPI0_INT_FLAG = RB_SPI_IF_CNT_END|RB_SPI_IF_DMA_END;
     R8_SPI0_CTRL_CFG |= RB_SPI_DMA_ENABLE;
@@ -179,11 +179,11 @@ void SPI0_MasterDMATrans( PUINT8 pbuf, UINT16 len)
  *
  * @return   None
  **/
-void SPI0_MasterDMARecv( PUINT8 pbuf, UINT16 len)
+void SPI0_MasterDMARecv( uint8_t * pbuf, uint16_t len)
 {
     R8_SPI0_CTRL_MOD |= RB_SPI_FIFO_DIR;
-    R32_SPI0_DMA_BEG = (UINT32)pbuf;
-    R32_SPI0_DMA_END = (UINT32)(pbuf + len);
+    R32_SPI0_DMA_BEG = (uint32_t)pbuf;
+    R32_SPI0_DMA_END = (uint32_t)(pbuf + len);
     R16_SPI0_TOTAL_CNT = len;
     R8_SPI0_INT_FLAG = RB_SPI_IF_CNT_END|RB_SPI_IF_DMA_END;
     R8_SPI0_CTRL_CFG |= RB_SPI_DMA_ENABLE;
@@ -212,7 +212,7 @@ void SPI0_SlaveInit( void )
  * 
  * @return   received data
  */
-UINT8 SPI0_SlaveRecvByte( void )
+uint8_t SPI0_SlaveRecvByte( void )
 {
     R8_SPI0_CTRL_MOD |= RB_SPI_FIFO_DIR;              //Set to input mode, receive data
     while( R8_SPI0_FIFO_COUNT == 0 );
@@ -226,7 +226,7 @@ UINT8 SPI0_SlaveRecvByte( void )
  * 
  * @return   received data
  **/
-void SPI0_SlaveSendByte( UINT8 d )
+void SPI0_SlaveSendByte( uint8_t d )
 {
     R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;              //Set data direction to output
     R8_SPI0_FIFO = d;
@@ -242,9 +242,9 @@ void SPI0_SlaveSendByte( UINT8 d )
  *
  * @return   None
  **/
-void SPI0_SlaveRecv( PUINT8 pbuf, UINT16 len )
+void SPI0_SlaveRecv( uint8_t * pbuf, uint16_t len )
 {
-    UINT16 revlen;
+    uint16_t revlen;
 
     revlen = len;
     R8_SPI0_CTRL_MOD |= RB_SPI_FIFO_DIR;                //Set to input mode, receive data
@@ -270,9 +270,9 @@ void SPI0_SlaveRecv( PUINT8 pbuf, UINT16 len )
  *
  * @return   None
  */
-void SPI0_SlaveTrans( UINT8 *pbuf, UINT16 len )
+void SPI0_SlaveTrans( uint8_t *pbuf, uint16_t len )
 {
-    UINT16 sendlen;
+    uint16_t sendlen;
 
     sendlen = len;
     R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;              //Set data direction to output
@@ -351,7 +351,7 @@ void SPI1_DataMode( ModeBitOrderTypeDef m )
  *
  * @return   None
  */
-void SPI1_MasterSendByte( UINT8 d )
+void SPI1_MasterSendByte( uint8_t d )
 {
     R8_SPI1_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
     R8_SPI1_BUFFER = d;
@@ -365,7 +365,7 @@ void SPI1_MasterSendByte( UINT8 d )
  *
  * @return   bytes received
  */
-UINT8 SPI1_MasterRecvByte( void )
+uint8_t SPI1_MasterRecvByte( void )
 {
     R8_SPI1_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
     R8_SPI1_BUFFER = 0xFF;                     //start transfer
@@ -382,9 +382,9 @@ UINT8 SPI1_MasterRecvByte( void )
  *         len - The length of the data sent by the request, the maximum is 4095
  * @return   None
  */
-void SPI1_MasterTrans( UINT8 *pbuf, UINT16 len )
+void SPI1_MasterTrans( uint8_t *pbuf, uint16_t len )
 {
-    UINT16 sendlen;
+    uint16_t sendlen;
 
     sendlen = len;
     R8_SPI1_CTRL_MOD &= ~RB_SPI_FIFO_DIR;        //Set data direction to output
@@ -411,9 +411,9 @@ void SPI1_MasterTrans( UINT8 *pbuf, UINT16 len )
  *         len - The length of the data sent by the request, the maximum is 4095
  * @return   None
  **/
-void SPI1_MasterRecv( UINT8 *pbuf, UINT16 len )
+void SPI1_MasterRecv( uint8_t *pbuf, uint16_t len )
 {
-    UINT16  readlen;
+    uint16_t  readlen;
 
     readlen = len;
     R8_SPI1_CTRL_MOD |= RB_SPI_FIFO_DIR;         //Set data direction to input
@@ -439,11 +439,11 @@ void SPI1_MasterRecv( UINT8 *pbuf, UINT16 len )
  *         len - With send data length
  * @return   None
  */
-void SPI1_MasterDMATrans( PUINT8 pbuf, UINT16 len)
+void SPI1_MasterDMATrans( uint8_t * pbuf, uint16_t len)
 {
     R8_SPI1_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
-    R32_SPI1_DMA_BEG = (UINT32)pbuf;
-    R32_SPI1_DMA_END = (UINT32)(pbuf + len);
+    R32_SPI1_DMA_BEG = (uint32_t)pbuf;
+    R32_SPI1_DMA_END = (uint32_t)(pbuf + len);
     R16_SPI1_TOTAL_CNT = len;
     R8_SPI1_INT_FLAG = RB_SPI_IF_CNT_END|RB_SPI_IF_DMA_END;
     R8_SPI1_CTRL_CFG |= RB_SPI_DMA_ENABLE;
@@ -461,11 +461,11 @@ void SPI1_MasterDMATrans( PUINT8 pbuf, UINT16 len)
  *
  * @return   None
  */
-void SPI1_MasterDMARecv( PUINT8 pbuf, UINT16 len)
+void SPI1_MasterDMARecv( uint8_t * pbuf, uint16_t len)
 {
     R8_SPI1_CTRL_MOD |= RB_SPI_FIFO_DIR;
-    R32_SPI1_DMA_BEG = (UINT32)pbuf;
-    R32_SPI1_DMA_END = (UINT32)(pbuf + len);
+    R32_SPI1_DMA_BEG = (uint32_t)pbuf;
+    R32_SPI1_DMA_END = (uint32_t)(pbuf + len);
     R16_SPI1_TOTAL_CNT = len;
     R8_SPI1_INT_FLAG = RB_SPI_IF_CNT_END|RB_SPI_IF_DMA_END;
     R8_SPI1_CTRL_CFG |= RB_SPI_DMA_ENABLE;
@@ -494,7 +494,7 @@ void SPI1_SlaveInit( void )
  * 
  * @return   received data
  */
-UINT8 SPI1_SlaveRecvByte( void )
+uint8_t SPI1_SlaveRecvByte( void )
 {
     R8_SPI1_CTRL_MOD |= RB_SPI_FIFO_DIR;
     while( R8_SPI1_FIFO_COUNT == 0 );
@@ -508,7 +508,7 @@ UINT8 SPI1_SlaveRecvByte( void )
  * 
  * @return   received data
  */
-void SPI1_SlaveSendByte( UINT8 d )
+void SPI1_SlaveSendByte( uint8_t d )
 {
     R8_SPI1_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
     R8_SPI1_FIFO = d;
@@ -522,9 +522,9 @@ void SPI1_SlaveSendByte( UINT8 d )
  *         len - Request to receive data length
  * @return   None
  */
-void SPI1_SlaveRecv( PUINT8 pbuf, UINT16 len )
+void SPI1_SlaveRecv( uint8_t * pbuf, uint16_t len )
 {
-    UINT16 revlen;
+    uint16_t revlen;
 
     revlen = len;
     R8_SPI1_CTRL_MOD |= RB_SPI_FIFO_DIR;
@@ -550,9 +550,9 @@ void SPI1_SlaveRecv( PUINT8 pbuf, UINT16 len )
  *         len - The length of the data sent by the request, the maximum is 4095
  * @return   None
  */
-void SPI1_SlaveTrans( UINT8 *pbuf, UINT16 len )
+void SPI1_SlaveTrans( uint8_t *pbuf, uint16_t len )
 {
-    UINT16 sendlen;
+    uint16_t sendlen;
 
     sendlen = len;
     R8_SPI1_CTRL_MOD &= ~RB_SPI_FIFO_DIR;              //Set data direction to output

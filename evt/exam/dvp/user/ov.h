@@ -51,18 +51,18 @@ void SCCB_GPIO_Init(void);
 void SCCB_Start(void);
 void SCCB_Stop(void);
 void SCCB_No_Ack(void);
-UINT8 SCCB_WR_Byte(UINT8 data);
-UINT8 SCCB_RD_Byte(void);
-UINT8 SCCB_WR_Reg(UINT8 Reg_Adr,UINT8 Reg_Val);
-UINT8 SCCB_RD_Reg(UINT8 Reg_Adr);
+uint8_t SCCB_WR_Byte(uint8_t data);
+uint8_t SCCB_RD_Byte(void);
+uint8_t SCCB_WR_Reg(uint8_t Reg_Adr,uint8_t Reg_Val);
+uint8_t SCCB_RD_Reg(uint8_t Reg_Adr);
 
 void RGB565_Mode_Init(void);
 void JPEG_Mode_Init(void);
-UINT8 OV2640_Init(void);
+uint8_t OV2640_Init(void);
 void OV2640_JPEG_Mode(void);
 void OV2640_RGB565_Mode(void);
-UINT8 OV2640_OutSize_Set(UINT16 Image_width,UINT16 Image_height);
-void OV2640_Speed_Set(UINT8 Pclk_Div, UINT8 Xclk_Div);
+uint8_t OV2640_OutSize_Set(uint16_t Image_width,uint16_t Image_height);
+void OV2640_Speed_Set(uint8_t Pclk_Div, uint8_t Xclk_Div);
 
 
 

@@ -32,10 +32,10 @@
  *
  * @return    None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-	UINT32 x;
-	UINT32 t = FREQ_SYS;
+	uint32_t x;
+	uint32_t t = FREQ_SYS;
 	x = 10 * t * 2 / 16 / baudrate;
 	x = ( x + 5 ) / 10;
 	R8_UART1_DIV = 1;
@@ -56,8 +56,8 @@ void DebugInit(UINT32 baudrate)
  */
 int main( void )
 {
-    UINT8   s;
-    UINT16  i;
+    uint8_t   s;
+    uint16_t  i;
 
     SystemInit(FREQ_SYS);
 	Delay_Init(FREQ_SYS);

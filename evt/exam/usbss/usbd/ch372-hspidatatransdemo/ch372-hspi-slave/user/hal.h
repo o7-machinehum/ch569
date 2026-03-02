@@ -26,10 +26,10 @@
 #define PIN_HRTS_HIGH( )            ( R32_PB_OUT |= ( 1 << 23 ) )               /* HRTS Output high */
 
 /******************************************************************************/
-extern void Delay_uS( UINT16 delay );
-extern void Delay_mS( UINT16 delay );
-extern void UART1_Init( UINT32 baudrate );
-extern void Timer1_Init( UINT32 time );
+extern void Delay_uS( uint16_t delay );
+extern void Delay_mS( uint16_t delay );
+extern void UART1_Init( uint32_t baudrate );
+extern void Timer1_Init( uint32_t time );
 extern void GPIO_Init( void );
 
 #endif

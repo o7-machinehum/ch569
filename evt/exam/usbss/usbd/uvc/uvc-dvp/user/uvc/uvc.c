@@ -18,34 +18,34 @@
 #define DVP_NUM         24
 
 /* Global Variable */
-static UINT32V Dvp_Class=0;
-static UINT32V Dvp_Addrcount;                    //Double buffered address switch count
-static UINT32V Dvp_Start;                        //Frame start flag
-static UINT32V Dvp_End;                          //Frame end flag
-static UINT32V UVC_DvpStart;                     //UVC Start transmitting data
-static UINT32V Dvp_Reclength = 0;                //Length of data to be uploaded
-static UINT32V DVP_Recaddpoint = 0;              //Storage address
-PUINT8 Dvp_Recaddr = UVC_DMABuffer + UVC_HEADERSIZE; //Storage address
-UINT16V Dvp_DataSize = 0;                        //Size of each package of DVP
+static volatile uint32_t Dvp_Class=0;
+static volatile uint32_t Dvp_Addrcount;                    //Double buffered address switch count
+static volatile uint32_t Dvp_Start;                        //Frame start flag
+static volatile uint32_t Dvp_End;                          //Frame end flag
+static volatile uint32_t UVC_DvpStart;                     //UVC Start transmitting data
+static volatile uint32_t Dvp_Reclength = 0;                //Length of data to be uploaded
+static volatile uint32_t DVP_Recaddpoint = 0;              //Storage address
+uint8_t * Dvp_Recaddr = UVC_DMABuffer + UVC_HEADERSIZE; //Storage address
+volatile uint16_t Dvp_DataSize = 0;                        //Size of each package of DVP
 
-static UINT8V USB_Uploadflg = 0;                 //USB is uploading flag
-static UINT32V USB_MframeUploadLength = 0;       //Number of bytes to upload for a microframe
-static UINT32V USB_LastMframeUploadLength = 0;   //Number of bytes to upload for the previous microframe
-static UINT32V USB_Uploadcount = 0;              //Number of packages to upload for a microframe
-static UINT8 USB_ISOSeqnumber = 0;               //USB3.0 seqnumber count
-static UINT32V USB_Uploadpoint = 0;              //Point to the current USB upload address
-static PUINT8 USBUploadaddr = UVC_DMABuffer;     //USB Upload address
+static volatile uint8_t USB_Uploadflg = 0;                 //USB is uploading flag
+static volatile uint32_t USB_MframeUploadLength = 0;       //Number of bytes to upload for a microframe
+static volatile uint32_t USB_LastMframeUploadLength = 0;   //Number of bytes to upload for the previous microframe
+static volatile uint32_t USB_Uploadcount = 0;              //Number of packages to upload for a microframe
+static uint8_t USB_ISOSeqnumber = 0;               //USB3.0 seqnumber count
+static volatile uint32_t USB_Uploadpoint = 0;              //Point to the current USB upload address
+static uint8_t * USBUploadaddr = UVC_DMABuffer;     //USB Upload address
 
-UINT8V  Formatchange_flag = 1;                   // Video format switching : 1-mjpeg   2-yuv
-UINT16V Resolution_width = 0;                    //Resolution width
-UINT16V Resolution_height = 0;                   //Resolution length
+volatile uint8_t  Formatchange_flag = 1;                   // Video format switching : 1-mjpeg   2-yuv
+volatile uint16_t Resolution_width = 0;                    //Resolution width
+volatile uint16_t Resolution_height = 0;                   //Resolution length
 
 
 /*
  * Resolution settings supported by USB3.0 and 2.0 UVC. If you want to change the resolution,
  * you also need to change the corresponding resolution in the USB configuration descriptor.
  */
-const UINT16 ov2640_JPEGframe_resolution_USB30[5][2]=
+const uint16_t ov2640_JPEGframe_resolution_USB30[5][2]=
 {
     0x320,0x258,    //800*600
     0x160,0x120,    //352*288
@@ -54,7 +54,7 @@ const UINT16 ov2640_JPEGframe_resolution_USB30[5][2]=
     0x640,0x4b0,    //1600*1200
 };
 
-const UINT16 ov2640_JPEGframe_resolution_USB20[5][2]=
+const uint16_t ov2640_JPEGframe_resolution_USB20[5][2]=
 {
     0x320,0x258,    //800*600
     0x160,0x120,    //352*288
@@ -63,7 +63,7 @@ const UINT16 ov2640_JPEGframe_resolution_USB20[5][2]=
     0x640,0x4b0,    //1600*1200
 };
 
-const UINT16 ov2640_YUVframe_resolution_USB30[5][2]=
+const uint16_t ov2640_YUVframe_resolution_USB30[5][2]=
 {
     0x280,0x1e0,    //640*480
     0x640,0x4b0,    //1600*1200
@@ -73,7 +73,7 @@ const UINT16 ov2640_YUVframe_resolution_USB30[5][2]=
 
 };
 
-const UINT16 ov2640_YUVframe_resolution_USB20[5][2]=
+const uint16_t ov2640_YUVframe_resolution_USB20[5][2]=
 {
     0x280,0x1e0,    //640*480      VGA
     0x320,0x258,    //800*600
@@ -85,13 +85,13 @@ const UINT16 ov2640_YUVframe_resolution_USB20[5][2]=
 /*UVC Frame header structure definition*/
 typedef struct __attribute__((packed))
  {
-    UINT8 len;
-    UINT8 tog;
-    UINT32 Frequeny;
-    UINT32 Clock;
-    UINT16 count;
-    UINT32 alignment;
-    UINT32 reallen;
+    uint8_t len;
+    uint8_t tog;
+    uint32_t Frequeny;
+    uint32_t Clock;
+    uint16_t count;
+    uint32_t alignment;
+    uint32_t reallen;
  }Picture;
  Picture UVC;
 
@@ -99,7 +99,7 @@ typedef struct __attribute__((packed))
  * Video Streaming Interface Control Request Descriptor.
  * Before you turn on the camera, the host will issue the setting descriptor.
  */
-UINT8V Get_Curr[26]=
+volatile uint8_t Get_Curr[26]=
 {
     0x00, 0x00,
     0x01,
@@ -145,12 +145,12 @@ void UVC_SourceClock(FunctionalState sta)
 void SS_CtrlCamera()
 {
     Dvp_Class = 1;
-    UINT16 i = 0;
+    uint16_t i = 0;
     if(UsbSetupBuf->wValueL > 0)
     {
         /* Fill frame header data */
         UVC.Clock = 0x0136E5;
-        UVC.Frequeny = ~((*(UINT32V *)(0xe000f004)));
+        UVC.Frequeny = ~((*(volatile uint32_t *)(0xe000f004)));
         UVC.count=0x04DD;
         UVC.len = UVC_HEADERSIZE;
         UVC.tog = 0x8c;
@@ -198,7 +198,7 @@ void HS_CtrlCamera()
     {
         UVC_SourceClock(1);
         UVC.Clock = 0;
-        UVC.Frequeny = ~((*(UINT32V *)(0xe000f004)));
+        UVC.Frequeny = ~((*(volatile uint32_t *)(0xe000f004)));
         UVC.count = 0;
         UVC.len = UVC_HEADERSIZE;
         UVC.tog = 0x8c;
@@ -246,7 +246,7 @@ void HS_Endp1_Hander(void)
     {
         USB_Uploadflg = 0;      //Current microframe data transmission completed
     }
-    memcpy( (UINT8 *)USBUploadaddr,  (uint8_t *)&UVC, UVC_HEADERSIZE );//copy UVC frame Header-16byte
+    memcpy( (uint8_t *)USBUploadaddr,  (uint8_t *)&UVC, UVC_HEADERSIZE );//copy UVC frame Header-16byte
     UVC.tog &= 0xFD;
     UVC.reallen = UVC_HEADERSIZE;
 }
@@ -260,10 +260,10 @@ void HS_Endp1_Hander(void)
  */
 void HS_Endp1_ISOHander()
 {
-    static UINT8 togGG = 0;//Used to set DATA0 1 2
+    static uint8_t togGG = 0;//Used to set DATA0 1 2
 
     Dvp_Class++;
-    UVC.Clock = (UINT32)SOURCECLOCK;
+    UVC.Clock = (uint32_t)SOURCECLOCK;
     /*Write structure every 8, add one for each IPT , 125us*/
     if(Dvp_Class%8==0)
     {
@@ -316,20 +316,20 @@ void HS_Endp1_ISOHander()
             if(togGG == 2)//DATA1 - second package
             {
                 togGG = 1;
-                R32_UEP1_TX_DMA = (UINT32)(UINT8 *)USBUploadaddr+FULLPACKSIZE;
+                R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)USBUploadaddr+FULLPACKSIZE;
                 UVC.reallen = FULLPACKSIZE;
             }
             else if(togGG == 1)//DATA0 - third package
             {
                 togGG = 0 ;
-                R32_UEP1_TX_DMA = (UINT32)(UINT8 *)USBUploadaddr+FULLPACKSIZE*2;
+                R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)USBUploadaddr+FULLPACKSIZE*2;
                 UVC.reallen = USB_MframeUploadLength-FULLPACKSIZE*2;
                 USB_MframeUploadLength = 0;
             }
             else if(togGG == 0)//DATA2 - first package
             {
                 togGG = 2;
-                R32_UEP1_TX_DMA = (UINT32)(UINT8 *)USBUploadaddr;
+                R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)USBUploadaddr;
                 UVC.reallen = FULLPACKSIZE;
             }
         }
@@ -338,20 +338,20 @@ void HS_Endp1_ISOHander()
             if(togGG == 1)//DATA0 - second package
             {
                 togGG = 0 ;
-                R32_UEP1_TX_DMA = (UINT32)(UINT8 *)USBUploadaddr+FULLPACKSIZE;
+                R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)USBUploadaddr+FULLPACKSIZE;
                 UVC.reallen = USB_MframeUploadLength-FULLPACKSIZE;
                 USB_MframeUploadLength  = 0;
             }
             else if(togGG == 0)//DATA1 - first package
             {
                 togGG = 1;
-                R32_UEP1_TX_DMA = (UINT32)(UINT8 *)USBUploadaddr;
+                R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)USBUploadaddr;
                 UVC.reallen = FULLPACKSIZE;
             }
         }
         else if( USB_MframeUploadLength <= PACKSIZE_1 )//DATA0 - first package
         {
-            R32_UEP1_TX_DMA = (UINT32)(UINT8 *)USBUploadaddr;
+            R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)USBUploadaddr;
             UVC.reallen = USB_MframeUploadLength;
             togGG = 0;
             USB_MframeUploadLength  = 0;
@@ -369,7 +369,7 @@ void HS_Endp1_ISOHander()
         }
 
         UVC.reallen = UVC_HEADERSIZE;
-        R32_UEP1_TX_DMA = (UINT32)(UINT8 *)USBUploadaddr;
+        R32_UEP1_TX_DMA = (uint32_t)(uint8_t *)USBUploadaddr;
         R8_UEP1_TX_CTRL &= ~(3<<3);
         R8_UEP1_TX_CTRL |= (0<<3);
     }
@@ -386,8 +386,8 @@ void HS_Endp1_ISOHander()
  */
 void SS_Endp1_Hander(void)
 {
-    UINT8 nump;
-    static UINT32 currpoint = 0;
+    uint8_t nump;
+    static uint32_t currpoint = 0;
 
     nump = USB30_IN_Nump(endp_1);
     if( nump < USB_Uploadcount )
@@ -398,7 +398,7 @@ void SS_Endp1_Hander(void)
 
         currpoint += nump*FULLPACKSIZE;          //The sending address that should be directed
 
-        USBSS->UEP1_TX_DMA = (UINT32)(UINT8 *)(USBUploadaddr+currpoint);//Reset DMA address
+        USBSS->UEP1_TX_DMA = (uint32_t)(uint8_t *)(USBUploadaddr+currpoint);//Reset DMA address
         USB30_IN_ClearIT(endp_1);
         USB30_Set_endp_seqnumber(0x81,&USB_ISOSeqnumber);//set seqnum
         /*Determine if the package is full*/
@@ -414,7 +414,7 @@ void SS_Endp1_Hander(void)
     else
     {
         Dvp_Class++;
-        UVC.Clock = (UINT32)SOURCECLOCK;
+        UVC.Clock = (uint32_t)SOURCECLOCK;
         /*Write structure every 8, add one for each IPT , 125us*/
         if(Dvp_Class%8==0)
         {
@@ -462,7 +462,7 @@ void SS_Endp1_Hander(void)
         }
 
         USB_ISOSeqnumber = 0;
-        USBSS->UEP1_TX_DMA = (UINT32)(UINT8 *)USBUploadaddr;//set DMA address
+        USBSS->UEP1_TX_DMA = (uint32_t)(uint8_t *)USBUploadaddr;//set DMA address
         USB30_Set_endp_seqnumber(0x81,&USB_ISOSeqnumber);//set seqnum
         USB30_IN_ClearIT(endp_1);
         /*Determine if the package is full*/
@@ -525,22 +525,22 @@ void DVP_Hander(void)
         {
             if( DVP_Recaddpoint+Dvp_DataSize >= DVP_NUM * Dvp_DataSize) //Pointer turns back to prevent crossing boundaries
             {
-                R32_DVP_DMA_BUF1 = (UINT32)(UINT8 *)Dvp_Recaddr;
+                R32_DVP_DMA_BUF1 = (uint32_t)(uint8_t *)Dvp_Recaddr;
             }
             else
             {
-                R32_DVP_DMA_BUF1 = (UINT32)(UINT8 *)Dvp_Recaddr+DVP_Recaddpoint+Dvp_DataSize;//Preset the next received data for the next time
+                R32_DVP_DMA_BUF1 = (uint32_t)(uint8_t *)Dvp_Recaddr+DVP_Recaddpoint+Dvp_DataSize;//Preset the next received data for the next time
             }
         }
         else
         {
             if( DVP_Recaddpoint+Dvp_DataSize >= DVP_NUM * Dvp_DataSize)//Pointer turns back to prevent crossing boundaries
             {
-                R32_DVP_DMA_BUF0 = (UINT32)(UINT8 *)Dvp_Recaddr;
+                R32_DVP_DMA_BUF0 = (uint32_t)(uint8_t *)Dvp_Recaddr;
             }
             else
             {
-                R32_DVP_DMA_BUF0 = (UINT32)(UINT8 *)Dvp_Recaddr+DVP_Recaddpoint+Dvp_DataSize;//Preset the next received data for the next time
+                R32_DVP_DMA_BUF0 = (uint32_t)(uint8_t *)Dvp_Recaddr+DVP_Recaddpoint+Dvp_DataSize;//Preset the next received data for the next time
             }
         }
         Dvp_Addrcount++;
@@ -557,7 +557,7 @@ void DVP_Hander(void)
         R8_DVP_INT_FLAG = RB_DVP_IF_STR_FRM;
         if((UVC_DvpStart & 0x01)==1)
         {
-            UVC.Frequeny = ~((*(UINT32V *)(0xe000f004)));
+            UVC.Frequeny = ~((*(volatile uint32_t *)(0xe000f004)));
             Dvp_Addrcount = 0;
             UVC.tog ^= 0x01;
 

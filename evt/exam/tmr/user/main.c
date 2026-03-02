@@ -20,8 +20,8 @@
 #define  FREQ_SYS   80000000
 
 
-__attribute__ ((aligned(4))) UINT32 CapBuf[100];
-volatile UINT8 capFlag = 0;
+__attribute__ ((aligned(4))) uint32_t CapBuf[100];
+volatile uint8_t capFlag = 0;
 
 
 #define count 1    //Turn on the counting function
@@ -39,10 +39,10 @@ void TMR2_IRQHandler (void) __attribute__((interrupt("WCH-Interrupt-fast")));
  *
  * @return    None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-	UINT32 x;
-	UINT32 t = FREQ_SYS;
+	uint32_t x;
+	uint32_t t = FREQ_SYS;
 	
 	x = 10 * t * 2 / 16 / baudrate;
 	x = ( x + 5 ) / 10;
@@ -64,7 +64,7 @@ void DebugInit(UINT32 baudrate)
  */
 int main()
 {
-	UINT8 i;
+	uint8_t i;
 	
 	SystemInit(FREQ_SYS);
 	Delay_Init(FREQ_SYS);
@@ -117,7 +117,7 @@ int main()
 
 	 TMR2_CapInit( Edge_To_Edge );
 	 TMR2_CAPTimeoutCfg( 67108863 );
-	 TMR2_DMACfg( ENABLE, (UINT16)(UINT32)(&CapBuf[0]), (UINT16)(UINT32)(&CapBuf[99]), Mode_Single );
+	 TMR2_DMACfg( ENABLE, (uint16_t)(uint32_t)(&CapBuf[0]), (uint16_t)(uint32_t)(&CapBuf[99]), Mode_Single );
 	 TMR2_ITCfg( ENABLE , RB_TMR_IE_DMA_END);
 	 PFIC_EnableIRQ(TMR2_IRQn);
 

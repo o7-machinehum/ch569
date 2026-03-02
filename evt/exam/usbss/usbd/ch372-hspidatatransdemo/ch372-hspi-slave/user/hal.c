@@ -18,9 +18,9 @@
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void Delay_uS( UINT16 delay )
+void Delay_uS( uint16_t delay )
 {
-	UINT16 i, j;
+	uint16_t i, j;
 
 	for( i = delay; i != 0; i -- ) 
 	{
@@ -42,9 +42,9 @@ void Delay_uS( UINT16 delay )
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void Delay_mS( UINT16 delay )
+void Delay_mS( uint16_t delay )
 {
-    UINT16 i, j;
+    uint16_t i, j;
 
     for( i = delay; i != 0; i -- )
     {
@@ -62,10 +62,10 @@ void Delay_mS( UINT16 delay )
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void UART1_Init( UINT32 baudrate )
+void UART1_Init( uint32_t baudrate )
 {
-    UINT32 x;
-    UINT32 t = FREQ_SYS;
+    uint32_t x;
+    uint32_t t = FREQ_SYS;
 
     x = 10 * t * 2 / 16 / baudrate;
     x = ( x + 5 ) / 10;
@@ -85,7 +85,7 @@ void UART1_Init( UINT32 baudrate )
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void Timer1_Init( UINT32 time )
+void Timer1_Init( uint32_t time )
 {
     R32_TMR1_CNT_END = time;
     R8_TMR1_CTRL_MOD = RB_TMR_ALL_CLEAR;
@@ -104,7 +104,7 @@ void Timer1_Init( UINT32 time )
 void TMR1_IRQHandler( void ) __attribute__((interrupt("WCH-Interrupt-fast")));
 void TMR1_IRQHandler( void )
 {
-    static UINT8V count = 0;
+    static volatile uint8_t count = 0;
     if( R8_TMR1_INT_FLAG & RB_TMR_IE_CYC_END )
     {
         /* Clear interrupt flag */
@@ -123,22 +123,22 @@ void TMR1_IRQHandler( void )
 
             /* Print without HSPI sending or receiving */
             printf("~~~~~~~~~~~~~~~~~~~~~~1\n");
-            printf("Dbg_USB_Down_TLen: %x%x\n",(UINT32)( Dbg_USB_Down_TLen >> 32 ), (UINT32)( Dbg_USB_Down_TLen ) );
-            printf("Dbg_HSPI_Tx_TLen:  %x%x\n",(UINT32)( Dbg_HSPI_Tx_TLen >> 32 ), (UINT32)( Dbg_HSPI_Tx_TLen ) );
-            printf("Dbg_HSPI_Rx_TLen:  %x%x\n",(UINT32)( Dbg_HSPI_Rx_TLen >> 32 ), (UINT32)( Dbg_HSPI_Rx_TLen ) );
-            printf("Dbg_USB_Up_TLen:   %x%x\n",(UINT32)( Dbg_USB_Up_TLen >> 32 ), (UINT32)( Dbg_USB_Up_TLen ) );
-            printf("HSPI_Tx_Data_Len:  %x\n",(UINT32)HSPI_Tx_Data_RemainLen);
-            printf("HSPI_Rx_Data_Len:  %x\n",(UINT32)HSPI_Rx_Data_RemainLen);
-            printf("Endp1_Up_Status:   %x\n",(UINT32)Endp1_Up_Status);
+            printf("Dbg_USB_Down_TLen: %x%x\n",(uint32_t)( Dbg_USB_Down_TLen >> 32 ), (uint32_t)( Dbg_USB_Down_TLen ) );
+            printf("Dbg_HSPI_Tx_TLen:  %x%x\n",(uint32_t)( Dbg_HSPI_Tx_TLen >> 32 ), (uint32_t)( Dbg_HSPI_Tx_TLen ) );
+            printf("Dbg_HSPI_Rx_TLen:  %x%x\n",(uint32_t)( Dbg_HSPI_Rx_TLen >> 32 ), (uint32_t)( Dbg_HSPI_Rx_TLen ) );
+            printf("Dbg_USB_Up_TLen:   %x%x\n",(uint32_t)( Dbg_USB_Up_TLen >> 32 ), (uint32_t)( Dbg_USB_Up_TLen ) );
+            printf("HSPI_Tx_Data_Len:  %x\n",(uint32_t)HSPI_Tx_Data_RemainLen);
+            printf("HSPI_Rx_Data_Len:  %x\n",(uint32_t)HSPI_Rx_Data_RemainLen);
+            printf("Endp1_Up_Status:   %x\n",(uint32_t)Endp1_Up_Status);
 
             printf("~~~~~~~~~~~~~~~~~~~~~~2\n");
-            printf("Dbg_USB_Down_TLen: %d\n",(UINT32)Dbg_USB_Down_TLen);
-            printf("Dbg_HSPI_Tx_TLen:  %d\n",(UINT32)Dbg_HSPI_Tx_TLen);
-            printf("Dbg_HSPI_Rx_TLen:  %d\n",(UINT32)Dbg_HSPI_Rx_TLen);
-            printf("Dbg_USB_Up_TLen:   %d\n",(UINT32)Dbg_USB_Up_TLen);
-            printf("HSPI_Tx_Data_Len:  %d\n",(UINT64)HSPI_Tx_Data_RemainLen);
-            printf("HSPI_Rx_Data_Len:  %d\n",(UINT64)HSPI_Rx_Data_RemainLen);
-            printf("Endp1_Up_Status:   %d\n",(UINT64)Endp1_Up_Status);
+            printf("Dbg_USB_Down_TLen: %d\n",(uint32_t)Dbg_USB_Down_TLen);
+            printf("Dbg_HSPI_Tx_TLen:  %d\n",(uint32_t)Dbg_HSPI_Tx_TLen);
+            printf("Dbg_HSPI_Rx_TLen:  %d\n",(uint32_t)Dbg_HSPI_Rx_TLen);
+            printf("Dbg_USB_Up_TLen:   %d\n",(uint32_t)Dbg_USB_Up_TLen);
+            printf("HSPI_Tx_Data_Len:  %d\n",(uint64_t)HSPI_Tx_Data_RemainLen);
+            printf("HSPI_Rx_Data_Len:  %d\n",(uint64_t)HSPI_Rx_Data_RemainLen);
+            printf("Endp1_Up_Status:   %d\n",(uint64_t)Endp1_Up_Status);
         }
 #endif
     }
@@ -153,7 +153,7 @@ void TMR1_IRQHandler( void )
 *******************************************************************************/
 void GPIO_Init( void )
 {
-    UINT32 temp1;
+    uint32_t temp1;
 
     /* configure ACT(PB24)¡¢HRTS(PB23) Push-pull output,16mA */
     PIN_HRTS_HIGH( );

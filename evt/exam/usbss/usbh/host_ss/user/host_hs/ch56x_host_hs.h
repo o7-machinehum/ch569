@@ -45,42 +45,42 @@ extern "C" {
 
 typedef struct
 {
-    UINT16  OutEndpMaxSize;
-    UINT16  InEndpMaxSize;
-    UINT8   InEndpNum;
-    UINT8   InEndpCount;
-    UINT8   InTog;
-    UINT8   OutEndpNum;
-    UINT8   OutTog;
-    UINT8   OutEndpCount;
+    uint16_t  OutEndpMaxSize;
+    uint16_t  InEndpMaxSize;
+    uint8_t   InEndpNum;
+    uint8_t   InEndpCount;
+    uint8_t   InTog;
+    uint8_t   OutEndpNum;
+    uint8_t   OutTog;
+    uint8_t   OutEndpCount;
 }DEVENDP;
 
 typedef struct  __attribute__((packed))
 {
      DEVENDP DevEndp;
-     UINT8   DeviceStatus;
-     UINT8   DeviceAddress;
-     UINT8   DeviceSpeed;
-     UINT8   DeviceType;
-     UINT8   DeviceEndp0Size;
-     UINT8   DeviceCongValue;
+     uint8_t   DeviceStatus;
+     uint8_t   DeviceAddress;
+     uint8_t   DeviceSpeed;
+     uint8_t   DeviceType;
+     uint8_t   DeviceEndp0Size;
+     uint8_t   DeviceCongValue;
 
  }DEV_INFO_Typedef,*pDEV_INFO_Typedef;
 
 
- void  CopySetupReqPkg( const UINT8 *pReqPkt );
+ void  CopySetupReqPkg( const uint8_t *pReqPkt );
  void  SetBusReset(void);
- void  USBHS_CurrentAddr( UINT8 addr );
+ void  USBHS_CurrentAddr( uint8_t addr );
  void  USBHS_Host_Init(FunctionalState sta);
- void  USBHS_Analysis_Descr(pDEV_INFO_Typedef pusbdev,PUINT8 pdesc, UINT16 l);
+ void  USBHS_Analysis_Descr(pDEV_INFO_Typedef pusbdev,uint8_t * pdesc, uint16_t l);
 
- UINT8 USBHS_Transact( UINT8 endp_pid, UINT8 toggle,UINT32 timeout);
- UINT8 USBHS_HostCtrlTransfer(UINT8 *databuf,PUINT16 len);
- UINT8 USBHS_Host_Enum(UINT8 *Databuf);
- UINT8 CtrlGetDevDescr( UINT8 *databuf );
- UINT8 CtrlGetConfigDescr( UINT8 *databuf );
- UINT8 CtrlSetAddress( UINT8 addr );
- UINT8 CtrlSetConfig( UINT8 cfg_val );
+ uint8_t USBHS_Transact( uint8_t endp_pid, uint8_t toggle,uint32_t timeout);
+ uint8_t USBHS_HostCtrlTransfer(uint8_t *databuf,uint16_t * len);
+ uint8_t USBHS_Host_Enum(uint8_t *Databuf);
+ uint8_t CtrlGetDevDescr( uint8_t *databuf );
+ uint8_t CtrlGetConfigDescr( uint8_t *databuf );
+ uint8_t CtrlSetAddress( uint8_t addr );
+ uint8_t CtrlSetConfig( uint8_t cfg_val );
 
 #ifdef __cplusplus
 }

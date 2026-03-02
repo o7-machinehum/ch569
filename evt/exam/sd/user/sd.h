@@ -16,12 +16,12 @@
 #include "ch56xsfr.h"
 #include "ch56x_emmc.h"
 
-UINT8 SDReadOCR( PSD_PARAMETER pEMMCPara );
-UINT8 SDSetRCA( PSD_PARAMETER pEMMCPara );
-UINT8 SDReadCSD( PSD_PARAMETER pEMMCPara );
-UINT8 SDSetBusWidth(PSD_PARAMETER pEMMCPara, UINT8 bus_mode);
-UINT8 SD_ReadSCR(PSD_PARAMETER pEMMCPara, PUINT8 pRdatbuf);
-UINT8 SDCardReadOneSec( PSD_PARAMETER pEMMCPara, PUINT8 pRdatbuf, UINT32 Lbaaddr );
-UINT8 SDCardWriteONESec( PSD_PARAMETER pEMMCPara,  PUINT8 pWdatbuf, UINT32 Lbaaddr );
+uint8_t SDReadOCR( PSD_PARAMETER pEMMCPara );
+uint8_t SDSetRCA( PSD_PARAMETER pEMMCPara );
+uint8_t SDReadCSD( PSD_PARAMETER pEMMCPara );
+uint8_t SDSetBusWidth(PSD_PARAMETER pEMMCPara, uint8_t bus_mode);
+uint8_t SD_ReadSCR(PSD_PARAMETER pEMMCPara, uint8_t * pRdatbuf);
+uint8_t SDCardReadOneSec( PSD_PARAMETER pEMMCPara, uint8_t * pRdatbuf, uint32_t Lbaaddr );
+uint8_t SDCardWriteONESec( PSD_PARAMETER pEMMCPara,  uint8_t * pWdatbuf, uint32_t Lbaaddr );
 
 #endif

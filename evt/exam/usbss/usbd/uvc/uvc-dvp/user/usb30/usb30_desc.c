@@ -11,7 +11,7 @@
 #include "usb30_desc.h"
 
 /* Device Descriptor */
-const UINT8 DeviceDescriptor[] =
+const uint8_t DeviceDescriptor[] =
 {
 	0x12,
 	0x01,
@@ -34,7 +34,7 @@ const UINT8 DeviceDescriptor[] =
 };
 
 /* Configuration Descriptor */
-const UINT8 ConfigDescriptor[] =
+const uint8_t ConfigDescriptor[] =
 {
 
         0x09,
@@ -390,7 +390,7 @@ const UINT8 ConfigDescriptor[] =
 };
 
 /* Language Descriptor */
-const UINT8 StringLangID[SIZE_STRING_LANGID] =
+const uint8_t StringLangID[SIZE_STRING_LANGID] =
 {
    SIZE_STRING_LANGID,	// this descriptor length
 	0x03,	            // descriptor type
@@ -399,7 +399,7 @@ const UINT8 StringLangID[SIZE_STRING_LANGID] =
 };
 
 /* Manufacturer Descriptor */
-const UINT8 StringVendor[SIZE_STRING_VENDOR] =
+const uint8_t StringVendor[SIZE_STRING_VENDOR] =
 {
 	SIZE_STRING_VENDOR,
 	0x03,
@@ -409,7 +409,7 @@ const UINT8 StringVendor[SIZE_STRING_VENDOR] =
 };
 
 /* Product Descriptor */
-const UINT8 StringProduct[SIZE_STRING_PRODUCT] =
+const uint8_t StringProduct[SIZE_STRING_PRODUCT] =
 {
 	SIZE_STRING_PRODUCT,
 	0x03,
@@ -418,7 +418,7 @@ const UINT8 StringProduct[SIZE_STRING_PRODUCT] =
 };
 
 /* Serial Descriptor */
-UINT8 StringSerial[SIZE_STRING_SERIAL] =
+uint8_t StringSerial[SIZE_STRING_SERIAL] =
 {
 	SIZE_STRING_SERIAL,	// length of this descriptor
 	0x03,
@@ -444,7 +444,7 @@ UINT8 StringSerial[SIZE_STRING_SERIAL] =
 	0x00,
 };
 
-const UINT8 OSStringDescriptor[SIZE_STRING_OS] =
+const uint8_t OSStringDescriptor[SIZE_STRING_OS] =
 {
 	SIZE_STRING_OS,	// length of this descriptor
 	0x03,
@@ -466,7 +466,7 @@ const UINT8 OSStringDescriptor[SIZE_STRING_OS] =
 	0x00
 };
 
-const UINT8 BOSDescriptor[SIZE_BOS_DESC] =
+const uint8_t BOSDescriptor[SIZE_BOS_DESC] =
 {
 	0x05,   // length of this descriptor
 	0x0f,   // CONFIGURATION (2)
@@ -492,7 +492,7 @@ const UINT8 BOSDescriptor[SIZE_BOS_DESC] =
 	0x07
 };
 
-const UINT8 MSOS20DescriptorSet[] =
+const uint8_t MSOS20DescriptorSet[] =
 {
     // Microsoft OS 2.0 Descriptor Set Header
     0x0A, 0x00,             // wLength - 10 bytes
@@ -520,7 +520,7 @@ const UINT8 MSOS20DescriptorSet[] =
     0x01, 0x00, 0x00, 0x00  // PropertyData - 0x00000001
 };
 
-const UINT8 PropertyHeader[] =
+const uint8_t PropertyHeader[] =
 {
 	0x8e, 0x00, 0x00, 0x00, 0x00, 01, 05, 00, 01, 00,
 	0x84, 0x00, 0x00, 0x00,
@@ -538,13 +538,13 @@ const UINT8 PropertyHeader[] =
 	0x7d, 0x00, 0x00, 0x00
 };
 
-const UINT8 CompactId[] =
+const uint8_t CompactId[] =
 {
 	0x28, 0x00, 0x00, 0x00, 0x00, 0x01, 0x04, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
 	0x57, 0x49, 0x4e, 0x55, 0x53, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-UINT8 GetStatus[] =
+uint8_t GetStatus[] =
 {
 	0x01, 0x00
 };

@@ -44,35 +44,35 @@ extern "C" {
 
 typedef struct
 {
-    UINT16  OutEndpMaxSize;
-    UINT16  InEndpMaxSize;          // IN  Maximum packet size of endpoint
-    UINT8   InEndpNum;              // IN  endpoint number
-    UINT8   InEndpCount;            // IN  endpoint count
-    UINT8   InTog;                  // IN Synchronization flag
-    UINT8   OutEndpNum;             // OUT endpoint number
-    UINT8   OutTog;
-    UINT8   OutEndpCount;           // IN  endpoint count
+    uint16_t  OutEndpMaxSize;
+    uint16_t  InEndpMaxSize;          // IN  Maximum packet size of endpoint
+    uint8_t   InEndpNum;              // IN  endpoint number
+    uint8_t   InEndpCount;            // IN  endpoint count
+    uint8_t   InTog;                  // IN Synchronization flag
+    uint8_t   OutEndpNum;             // OUT endpoint number
+    uint8_t   OutTog;
+    uint8_t   OutEndpCount;           // IN  endpoint count
 }DEVENDP;
 
 typedef struct  __attribute__((packed))
 {
      DEVENDP DevEndp;
-     UINT8   DeviceStatus;
-     UINT8   DeviceAddress;
-     UINT8   DeviceSpeed;
-     UINT8   DeviceType;
-     UINT8   DeviceEndp0Size;
-     UINT8   DeviceCongValue;
+     uint8_t   DeviceStatus;
+     uint8_t   DeviceAddress;
+     uint8_t   DeviceSpeed;
+     uint8_t   DeviceType;
+     uint8_t   DeviceEndp0Size;
+     uint8_t   DeviceCongValue;
 
  }DEV_INFO_Typedef,*pDEV_INFO_Typedef;
 
- void  CopySetupReqPkg( const UINT8 *pReqPkt );
+ void  CopySetupReqPkg( const uint8_t *pReqPkt );
  void  USB20HOST_SetBusReset(void);
  void  USB20Host_Init(FunctionalState sta);
- UINT8 USB20HOST_CtrlTransfer(UINT8 *ReqBuf, UINT8 *DataBuf, UINT8 *RetLen );
- UINT8 USB20HOST_ClearEndpStall( UINT8 endp );
- UINT8 USB20HOST_Transact( UINT8 endp_pid, UINT8 toggle,UINT32 timeout);
- UINT8 USB20Host_Enum(UINT8 *Databuf);
+ uint8_t USB20HOST_CtrlTransfer(uint8_t *ReqBuf, uint8_t *DataBuf, uint8_t *RetLen );
+ uint8_t USB20HOST_ClearEndpStall( uint8_t endp );
+ uint8_t USB20HOST_Transact( uint8_t endp_pid, uint8_t toggle,uint32_t timeout);
+ uint8_t USB20Host_Enum(uint8_t *Databuf);
 
 
 #ifdef __cplusplus

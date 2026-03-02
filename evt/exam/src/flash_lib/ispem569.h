@@ -42,24 +42,24 @@
 #define FLASH_ROM_MAX_SIZE  0x070000                  // Flash-ROM maximum program size, 448KB
 #endif
 
-extern VOID GET_UNIQUE_ID( PVOID Buffer );  // get 64 bit unique ID
+extern VOID GET_UNIQUE_ID( void * Buffer );  // get 64 bit unique ID
 
 extern VOID FLASH_ROM_PWR_DOWN( VOID );  // power-down FlashROM
 
 extern VOID FLASH_ROM_PWR_UP( VOID );  // power-up FlashROM
 
-extern VOID EEPROM_READ( UINT32 StartAddr, PVOID Buffer, UINT32 Length );  // read Data-Flash data block
+extern VOID EEPROM_READ( uint32_t StartAddr, void * Buffer, uint32_t Length );  // read Data-Flash data block
 
-extern UINT8 EEPROM_ERASE( UINT32 StartAddr, UINT32 Length );  // erase Data-Flash block, minimal block is 4KB, return 0 if success
+extern uint8_t EEPROM_ERASE( uint32_t StartAddr, uint32_t Length );  // erase Data-Flash block, minimal block is 4KB, return 0 if success
 
-extern UINT8 EEPROM_WRITE( UINT32 StartAddr, PVOID Buffer, UINT32 Length );  // write Data-Flash data block, return 0 if success
+extern uint8_t EEPROM_WRITE( uint32_t StartAddr, void * Buffer, uint32_t Length );  // write Data-Flash data block, return 0 if success
 
-extern UINT8 FLASH_ROMA_ERASE( UINT32 StartAddr, UINT32 Length );  // erase FlashROM block, minimal block is 4KB, return 0 if success
+extern uint8_t FLASH_ROMA_ERASE( uint32_t StartAddr, uint32_t Length );  // erase FlashROM block, minimal block is 4KB, return 0 if success
 
-extern UINT8 FLASH_ROMA_WRITE( UINT32 StartAddr, PVOID Buffer, UINT32 Length );  // write FlashROM data block, minimal block is dword, return 0 if success
+extern uint8_t FLASH_ROMA_WRITE( uint32_t StartAddr, void * Buffer, uint32_t Length );  // write FlashROM data block, minimal block is dword, return 0 if success
 
-extern UINT32 FLASH_ROMA_VERIFY( UINT32 StartAddr, PVOID Buffer, UINT32 Length );  // verify FlashROM data block, minimal block is dword, return 0 if success
+extern uint32_t FLASH_ROMA_VERIFY( uint32_t StartAddr, void * Buffer, uint32_t Length );  // verify FlashROM data block, minimal block is dword, return 0 if success
 
-extern UINT8 FLASH_ROMA_READ( UINT32 StartAddr, PVOID Buffer, UINT32 Length );  // read FlashROM data block, minimal block is dword, return 0 if success
+extern uint8_t FLASH_ROMA_READ( uint32_t StartAddr, void * Buffer, uint32_t Length );  // read FlashROM data block, minimal block is dword, return 0 if success
 
-extern VOID GET_FLASH_ID( PVOID Buffer );  // get 128 bit FLASH ID
+extern VOID GET_FLASH_ID( void * Buffer );  // get 128 bit FLASH ID

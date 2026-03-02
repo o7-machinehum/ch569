@@ -20,7 +20,7 @@
 #include "ispem569.h"
 #define FREQ_SYS    80000000
 
-UINT8 my_buffer[1024];
+uint8_t my_buffer[1024];
 
 /*******************************************************************************
  * @fn      DebugInit
@@ -31,10 +31,10 @@ UINT8 my_buffer[1024];
  *
  * @return  None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-    UINT32 x;
-    UINT32 t = FREQ_SYS;
+    uint32_t x;
+    uint32_t t = FREQ_SYS;
 
     x = 10 * t * 2 / 16 / baudrate;
     x = (x + 5) / 10;
@@ -63,7 +63,7 @@ int main()
     PRINT("Start @ChipID=%02X\r\n", R8_CHIP_ID);
 
     /* unique ID */
-    UINT8 i = 0;
+    uint8_t i = 0;
     GET_UNIQUE_ID(my_buffer);
     PRINT("chip id: ");
     for(i = 0; i < 8; i++)

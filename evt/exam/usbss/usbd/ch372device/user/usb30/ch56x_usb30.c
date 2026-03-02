@@ -15,23 +15,23 @@
 #include "ch56x_usb30.h"
 
 /* Global Variable */
-UINT8V        Tx_Lmp_Port = 0;
-UINT8V        Link_Sta = 0;
-static UINT32 SetupLen = 0;
-static UINT8  SetupReqCode = 0;
-static PUINT8 pDescr;
+volatile uint8_t        Tx_Lmp_Port = 0;
+volatile uint8_t        Link_Sta = 0;
+static uint32_t SetupLen = 0;
+static uint8_t  SetupReqCode = 0;
+static uint8_t * pDescr;
 
-__attribute__((aligned(16))) UINT8 endp0RTbuff[512] __attribute__((section(".DMADATA")));  //Endpoint 0 data receiving and sending buffer
-__attribute__((aligned(16))) UINT8 endp1RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 1 data receiving and sending buffer
-__attribute__((aligned(16))) UINT8 endp2RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 2 data receiving and sending buffer
-__attribute__((aligned(16))) UINT8 endp3RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 3 data receiving and sending buffer
-__attribute__((aligned(16))) UINT8 endp4RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 4 data receiving and sending buffer
-__attribute__((aligned(16))) UINT8 endp5RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 5 data receiving and sending buffer
-__attribute__((aligned(16))) UINT8 endp6RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 6 data receiving and sending buffer
-__attribute__((aligned(16))) UINT8 endp7RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 7 data receiving and sending buffer
+__attribute__((aligned(16))) uint8_t endp0RTbuff[512] __attribute__((section(".DMADATA")));  //Endpoint 0 data receiving and sending buffer
+__attribute__((aligned(16))) uint8_t endp1RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 1 data receiving and sending buffer
+__attribute__((aligned(16))) uint8_t endp2RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 2 data receiving and sending buffer
+__attribute__((aligned(16))) uint8_t endp3RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 3 data receiving and sending buffer
+__attribute__((aligned(16))) uint8_t endp4RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 4 data receiving and sending buffer
+__attribute__((aligned(16))) uint8_t endp5RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 5 data receiving and sending buffer
+__attribute__((aligned(16))) uint8_t endp6RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 6 data receiving and sending buffer
+__attribute__((aligned(16))) uint8_t endp7RTbuff[4096] __attribute__((section(".DMADATA"))); //Endpoint 7 data receiving and sending buffer
 
 /*Superspeed device descriptor*/
-const UINT8 SS_DeviceDescriptor[] =
+const uint8_t SS_DeviceDescriptor[] =
     {
         0x12, // bLength
         0x01, // DEVICE descriptor type
@@ -54,7 +54,7 @@ const UINT8 SS_DeviceDescriptor[] =
 };
 
 /*Superspeed Configuration Descriptor*/
-const UINT8 SS_ConfigDescriptor[] =
+const uint8_t SS_ConfigDescriptor[] =
 {
         0x09, // length of this descriptor
         0x02, // CONFIGURATION (2)
@@ -289,7 +289,7 @@ const UINT8 SS_ConfigDescriptor[] =
 
 
 /*String Descriptor Lang ID*/
-const UINT8 StringLangID[] =
+const uint8_t StringLangID[] =
 {
         0x04, // this descriptor length
         0x03, // descriptor type
@@ -298,7 +298,7 @@ const UINT8 StringLangID[] =
 };
 
 /*String Descriptor Vendor*/
-const UINT8 StringVendor[] =
+const uint8_t StringVendor[] =
 {
         0x08, // length of this descriptor
         0x03,
@@ -311,7 +311,7 @@ const UINT8 StringVendor[] =
 };
 
 /*String Descriptor Product*/
-const UINT8 StringProduct[] =
+const uint8_t StringProduct[] =
 {
         38,         //38 bytes in length
         0x03,       //Type code
@@ -336,7 +336,7 @@ const UINT8 StringProduct[] =
 };
 
 /*String Descriptor Serial*/
-UINT8 StringSerial[] =
+uint8_t StringSerial[] =
 {
         0x16, // length of this descriptor
         0x03,
@@ -362,7 +362,7 @@ UINT8 StringSerial[] =
         0x00,
 };
 
-const UINT8 OSStringDescriptor[] =
+const uint8_t OSStringDescriptor[] =
 {
         0x12, // length of this descriptor
         0x03,
@@ -384,7 +384,7 @@ const UINT8 OSStringDescriptor[] =
         0x00
 };
 
-const UINT8 BOSDescriptor[] =
+const uint8_t BOSDescriptor[] =
 {
         0x05, // length of this descriptor
         0x0f, // CONFIGURATION (2)
@@ -414,7 +414,7 @@ const UINT8 BOSDescriptor[] =
         0x07
 };
 
-const UINT8 MSOS20DescriptorSet[] =
+const uint8_t MSOS20DescriptorSet[] =
 {
         // Microsoft OS 2.0 Descriptor Set Header
         0x0A, 0x00,             // wLength - 10 bytes
@@ -442,7 +442,7 @@ const UINT8 MSOS20DescriptorSet[] =
         0x01, 0x00, 0x00, 0x00 // PropertyData - 0x00000001
 };
 
-const UINT8 PropertyHeader[] =
+const uint8_t PropertyHeader[] =
 {
         0x8e, 0x00, 0x00, 0x00, 0x00, 01, 05, 00, 01, 00,
         0x84, 0x00, 0x00, 0x00,
@@ -460,13 +460,13 @@ const UINT8 PropertyHeader[] =
         0x7d, 0x00, 0x00, 0x00
 };
 
-const UINT8 CompactId[] =
+const uint8_t CompactId[] =
 {
         0x28, 0x00, 0x00, 0x00, 0x00, 0x01, 0x04, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
         0x57, 0x49, 0x4e, 0x55, 0x53, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-UINT8 GetStatus[] =
+uint8_t GetStatus[] =
 {
         0x01, 0x00
 };
@@ -486,22 +486,22 @@ void USB30D_init(FunctionalState sta)
 
         USBSS->UEP_CFG = EP0_R_EN | EP0_T_EN | EP1_R_EN | EP1_T_EN | EP2_R_EN | EP2_T_EN | EP3_R_EN | EP3_T_EN | EP4_R_EN | EP4_T_EN | EP5_R_EN | EP5_T_EN | EP6_R_EN | EP6_T_EN | EP7_R_EN | EP7_T_EN; // set end point rx/tx enable
 
-        USBSS->UEP0_DMA = (UINT32)(UINT8 *)endp0RTbuff;
-        USBSS->UEP1_TX_DMA = (UINT32)(UINT8 *)endp1RTbuff;
-        USBSS->UEP2_TX_DMA = (UINT32)(UINT8 *)endp2RTbuff;
-        USBSS->UEP3_TX_DMA = (UINT32)(UINT8 *)endp3RTbuff;
-        USBSS->UEP4_TX_DMA = (UINT32)(UINT8 *)endp4RTbuff;
-        USBSS->UEP5_TX_DMA = (UINT32)(UINT8 *)endp5RTbuff;
-        USBSS->UEP6_TX_DMA = (UINT32)(UINT8 *)endp6RTbuff;
-        USBSS->UEP7_TX_DMA = (UINT32)(UINT8 *)endp7RTbuff;
+        USBSS->UEP0_DMA = (uint32_t)(uint8_t *)endp0RTbuff;
+        USBSS->UEP1_TX_DMA = (uint32_t)(uint8_t *)endp1RTbuff;
+        USBSS->UEP2_TX_DMA = (uint32_t)(uint8_t *)endp2RTbuff;
+        USBSS->UEP3_TX_DMA = (uint32_t)(uint8_t *)endp3RTbuff;
+        USBSS->UEP4_TX_DMA = (uint32_t)(uint8_t *)endp4RTbuff;
+        USBSS->UEP5_TX_DMA = (uint32_t)(uint8_t *)endp5RTbuff;
+        USBSS->UEP6_TX_DMA = (uint32_t)(uint8_t *)endp6RTbuff;
+        USBSS->UEP7_TX_DMA = (uint32_t)(uint8_t *)endp7RTbuff;
 
-        USBSS->UEP1_RX_DMA = (UINT32)(UINT8 *)endp1RTbuff;
-        USBSS->UEP2_RX_DMA = (UINT32)(UINT8 *)endp2RTbuff;
-        USBSS->UEP3_RX_DMA = (UINT32)(UINT8 *)endp3RTbuff;
-        USBSS->UEP4_RX_DMA = (UINT32)(UINT8 *)endp4RTbuff;
-        USBSS->UEP5_RX_DMA = (UINT32)(UINT8 *)endp5RTbuff;
-        USBSS->UEP6_RX_DMA = (UINT32)(UINT8 *)endp6RTbuff;
-        USBSS->UEP7_RX_DMA = (UINT32)(UINT8 *)endp7RTbuff;
+        USBSS->UEP1_RX_DMA = (uint32_t)(uint8_t *)endp1RTbuff;
+        USBSS->UEP2_RX_DMA = (uint32_t)(uint8_t *)endp2RTbuff;
+        USBSS->UEP3_RX_DMA = (uint32_t)(uint8_t *)endp3RTbuff;
+        USBSS->UEP4_RX_DMA = (uint32_t)(uint8_t *)endp4RTbuff;
+        USBSS->UEP5_RX_DMA = (uint32_t)(uint8_t *)endp5RTbuff;
+        USBSS->UEP6_RX_DMA = (uint32_t)(uint8_t *)endp6RTbuff;
+        USBSS->UEP7_RX_DMA = (uint32_t)(uint8_t *)endp7RTbuff;
 
         USB30_OUT_Set(ENDP_1, ACK, DEF_ENDP1_OUT_BURST_LEVEL); // endpoint1 receive setting
         USB30_OUT_Set(ENDP_2, ACK, DEF_ENDP2_OUT_BURST_LEVEL);
@@ -536,14 +536,14 @@ void USB30D_init(FunctionalState sta)
  *
  * @return  Length
  */
-UINT16 USB30_NonStandardReq( void )
+uint16_t USB30_NonStandardReq( void )
 {
-    UINT8 endp_dir;
+    uint8_t endp_dir;
 
     SetupReqCode = UsbSetupBuf->bRequest;
     SetupLen = UsbSetupBuf->wLength;
     endp_dir = UsbSetupBuf->bRequestType & 0x80;
-    UINT16 len = 0;
+    uint16_t len = 0;
 #if 0
     printf("NS:%02x %02x %02x %02x %02x %02x %02x %02x\n", endp0RTbuff[0], endp0RTbuff[1],
             endp0RTbuff[2], endp0RTbuff[3], endp0RTbuff[4], endp0RTbuff[5],
@@ -556,7 +556,7 @@ UINT16 USB30_NonStandardReq( void )
             {
                 case 0x04:
                    if(SetupLen>SIZE_CompactId) SetupLen  = SIZE_CompactId;
-                   pDescr = (PUINT8)CompactId;
+                   pDescr = (uint8_t *)CompactId;
                    break;
                 case 0x06:
                     break;
@@ -564,7 +564,7 @@ UINT16 USB30_NonStandardReq( void )
                     break;
                 case 0x07:
                   if(SetupLen>SIZE_MSOS20DescriptorSet) SetupLen  = SIZE_MSOS20DescriptorSet;
-                  pDescr = (PUINT8)MSOS20DescriptorSet;
+                  pDescr = (uint8_t *)MSOS20DescriptorSet;
                    break;
                case 0x08:
                    break;
@@ -582,7 +582,7 @@ UINT16 USB30_NonStandardReq( void )
                 case 0x05:
                     if(SetupLen > SIZE_PropertyHeader)
                         SetupLen = SIZE_PropertyHeader;
-                    pDescr = (PUINT8)PropertyHeader;
+                    pDescr = (uint8_t *)PropertyHeader;
                     break;
                 default:
                     SetupReqCode = INVALID_REQ_CODE;
@@ -612,11 +612,11 @@ UINT16 USB30_NonStandardReq( void )
  *
  * @return  Length
  */
-UINT16 USB30_StandardReq( void )
+uint16_t USB30_StandardReq( void )
 {
     SetupReqCode = UsbSetupBuf->bRequest;
     SetupLen = UsbSetupBuf->wLength;
-    UINT16 len = 0;
+    uint16_t len = 0;
 #if 0
     printf("S:%02x %02x %02x %02x %02x %02x %02x %02x\n", endp0RTbuff[0], endp0RTbuff[1],
             endp0RTbuff[2], endp0RTbuff[3], endp0RTbuff[4], endp0RTbuff[5],
@@ -637,17 +637,17 @@ UINT16 USB30_StandardReq( void )
                     case USB_DESCR_TYP_DEVICE:
                         if(SetupLen > SIZE_DEVICE_DESC)
                             SetupLen = SIZE_DEVICE_DESC;
-                        pDescr = (PUINT8)SS_DeviceDescriptor;
+                        pDescr = (uint8_t *)SS_DeviceDescriptor;
                         break;
                     case USB_DESCR_TYP_CONFIG:
                         if(SetupLen > SIZE_CONFIG_DESC)
                             SetupLen = SIZE_CONFIG_DESC;
-                        pDescr = (PUINT8)SS_ConfigDescriptor;
+                        pDescr = (uint8_t *)SS_ConfigDescriptor;
                         break;
                     case USB_DESCR_TYP_BOS:
                         if(SetupLen > SIZE_BOS_DESC)
                             SetupLen = SIZE_BOS_DESC;
-                        pDescr = (PUINT8)BOSDescriptor;
+                        pDescr = (uint8_t *)BOSDescriptor;
                         break;
                     case USB_DESCR_TYP_STRING:
                         switch(UsbSetupBuf->wValueL)
@@ -655,27 +655,27 @@ UINT16 USB30_StandardReq( void )
                             case USB_DESCR_LANGID_STRING:
                                 if(SetupLen > SIZE_STRING_LANGID)
                                     SetupLen = SIZE_STRING_LANGID;
-                                pDescr = (PUINT8)StringLangID;
+                                pDescr = (uint8_t *)StringLangID;
                                 break;
                             case USB_DESCR_VENDOR_STRING:
                                 if(SetupLen > SIZE_STRING_VENDOR)
                                     SetupLen = SIZE_STRING_VENDOR;
-                                pDescr = (PUINT8)StringVendor;
+                                pDescr = (uint8_t *)StringVendor;
                                 break;
                             case USB_DESCR_PRODUCT_STRING:
                                 if(SetupLen > SIZE_STRING_PRODUCT)
                                     SetupLen = SIZE_STRING_PRODUCT;
-                                pDescr = (PUINT8)StringProduct;
+                                pDescr = (uint8_t *)StringProduct;
                                 break;
                             case USB_DESCR_SERIAL_STRING:
                                 if(SetupLen > SIZE_STRING_SERIAL)
                                     SetupLen = SIZE_STRING_SERIAL;
-                                pDescr = (PUINT8)StringSerial;
+                                pDescr = (uint8_t *)StringSerial;
                                 break;
                             case USB_DESCR_OS_STRING:
                                 if(SetupLen > SIZE_STRING_OS)
                                     SetupLen = SIZE_STRING_OS;
-                                pDescr = (PUINT8)OSStringDescriptor;
+                                pDescr = (uint8_t *)OSStringDescriptor;
                                 break;
                             default:
                                 len = USB_DESCR_UNSUPPORTED;     //Unsupported descriptor
@@ -753,9 +753,9 @@ UINT16 USB30_StandardReq( void )
  *
  * @return  Send length
  */
-UINT16 EP0_IN_Callback( void )
+uint16_t EP0_IN_Callback( void )
 {
-    UINT16 len = 0;
+    uint16_t len = 0;
     switch(SetupReqCode)
     {
         case USB_GET_DESCRIPTOR:
@@ -775,9 +775,9 @@ UINT16 EP0_IN_Callback( void )
  *
  * @return  Length
  */
-UINT16 EP0_OUT_Callback( void )
+uint16_t EP0_OUT_Callback( void )
 {
-    UINT16 len = 0;
+    uint16_t len = 0;
     return len;
 }
 
@@ -991,11 +991,11 @@ void LINK_IRQHandler() //USBSS link interrupt service
  */
 void EP1_IN_Callback(void)
 {
-    UINT8 nump;
+    uint8_t nump;
     nump = USB30_IN_Nump(ENDP_1); //nump: Number of remaining packets to be sent
     if(nump == 0)
     {                                                             //All sent out
-        USBSS->UEP1_TX_DMA = (UINT32)(UINT8 *)endp1RTbuff;
+        USBSS->UEP1_TX_DMA = (uint32_t)(uint8_t *)endp1RTbuff;
         USB30_IN_ClearIT(ENDP_1);
         USB30_OUT_Set(ENDP_1, ACK, DEF_ENDP1_OUT_BURST_LEVEL);
         USB30_Send_ERDY(ENDP_1 | OUT, DEF_ENDP1_OUT_BURST_LEVEL); //Notify the host to send 4 packets
@@ -1031,11 +1031,11 @@ void EP1_IN_Callback(void)
  */
 void EP2_IN_Callback(void)
 {
-    UINT8 nump;
+    uint8_t nump;
     nump = USB30_IN_Nump(ENDP_2);
     if(nump == 0)
     {
-        USBSS->UEP2_TX_DMA = (UINT32)(UINT8 *)endp2RTbuff;
+        USBSS->UEP2_TX_DMA = (uint32_t)(uint8_t *)endp2RTbuff;
         USB30_IN_ClearIT(ENDP_2);
         USB30_IN_Set(ENDP_2, ENABLE, ACK, DEF_ENDP2_IN_BURST_LEVEL, 1024);
         USB30_Send_ERDY(ENDP_2 | IN, DEF_ENDP2_IN_BURST_LEVEL);
@@ -1069,11 +1069,11 @@ void EP2_IN_Callback(void)
  */
 void EP3_IN_Callback(void)
 {
-    UINT8 nump;
+    uint8_t nump;
     nump = USB30_IN_Nump(ENDP_3);
     if(nump == 0)
     {
-        USBSS->UEP3_TX_DMA = (UINT32)(UINT8 *)endp3RTbuff;
+        USBSS->UEP3_TX_DMA = (uint32_t)(uint8_t *)endp3RTbuff;
         USB30_IN_ClearIT(ENDP_3);
         USB30_IN_Set(ENDP_3, ENABLE, ACK, DEF_ENDP3_IN_BURST_LEVEL, 1024);
         USB30_Send_ERDY(ENDP_3 | IN, DEF_ENDP3_IN_BURST_LEVEL);
@@ -1107,11 +1107,11 @@ void EP3_IN_Callback(void)
  */
 void EP4_IN_Callback(void)
 {
-    UINT8 nump;
+    uint8_t nump;
     nump = USB30_IN_Nump(ENDP_4);
     if(nump == 0)
     {
-        USBSS->UEP4_TX_DMA = (UINT32)(UINT8 *)endp4RTbuff;
+        USBSS->UEP4_TX_DMA = (uint32_t)(uint8_t *)endp4RTbuff;
         USB30_IN_ClearIT(ENDP_4);
         USB30_IN_Set(ENDP_4, ENABLE, ACK, DEF_ENDP4_IN_BURST_LEVEL, 1024);
         USB30_Send_ERDY(ENDP_4 | IN, DEF_ENDP4_IN_BURST_LEVEL);
@@ -1144,11 +1144,11 @@ void EP4_IN_Callback(void)
  */
 void EP5_IN_Callback(void)
 {
-    UINT8 nump;
+    uint8_t nump;
     nump = USB30_IN_Nump(ENDP_5);
     if(nump == 0)
     {
-        USBSS->UEP5_TX_DMA = (UINT32)(UINT8 *)endp5RTbuff;
+        USBSS->UEP5_TX_DMA = (uint32_t)(uint8_t *)endp5RTbuff;
         USB30_IN_ClearIT(ENDP_5);
         USB30_IN_Set(ENDP_5, ENABLE, ACK, DEF_ENDP5_IN_BURST_LEVEL, 1024);
         USB30_Send_ERDY(ENDP_5 | IN, DEF_ENDP5_IN_BURST_LEVEL);
@@ -1181,11 +1181,11 @@ void EP5_IN_Callback(void)
  */
 void EP6_IN_Callback(void)
 {
-    UINT8 nump;
+    uint8_t nump;
     nump = USB30_IN_Nump(ENDP_6);
     if(nump == 0)
     {
-        USBSS->UEP6_TX_DMA = (UINT32)(UINT8 *)endp6RTbuff;
+        USBSS->UEP6_TX_DMA = (uint32_t)(uint8_t *)endp6RTbuff;
         USB30_IN_ClearIT(ENDP_6);
         USB30_IN_Set(ENDP_6, ENABLE, ACK, DEF_ENDP6_IN_BURST_LEVEL, 1024);
         USB30_Send_ERDY(ENDP_6 | IN, DEF_ENDP6_IN_BURST_LEVEL);
@@ -1218,11 +1218,11 @@ void EP6_IN_Callback(void)
  */
 void EP7_IN_Callback(void)
 {
-    UINT8 nump;
+    uint8_t nump;
     nump = USB30_IN_Nump(ENDP_7);
     if(nump == 0)
     {
-        USBSS->UEP7_TX_DMA = (UINT32)(UINT8 *)endp7RTbuff;
+        USBSS->UEP7_TX_DMA = (uint32_t)(uint8_t *)endp7RTbuff;
         USB30_IN_ClearIT(ENDP_7);
         USB30_IN_Set(ENDP_7, ENABLE, ACK, DEF_ENDP7_IN_BURST_LEVEL, 1024);
         USB30_Send_ERDY(ENDP_7 | IN, DEF_ENDP7_IN_BURST_LEVEL);
@@ -1257,14 +1257,14 @@ void EP7_IN_Callback(void)
  */
 void EP1_OUT_Callback(void)
 {
-    UINT16 rx_len;
-    UINT8  nump;
-    UINT8  status;
+    uint16_t rx_len;
+    uint8_t  nump;
+    uint8_t  status;
     USB30_OUT_Status(ENDP_1, &nump, &rx_len, &status); //Get the number of received packets,rxlen is the package length of the last package
     if(nump == 0)
     {
         USB30_OUT_ClearIT(ENDP_1);
-        USBSS->UEP1_RX_DMA = (UINT32)(UINT8 *)endp1RTbuff;
+        USBSS->UEP1_RX_DMA = (uint32_t)(uint8_t *)endp1RTbuff;
         USB30_IN_Set(ENDP_1, ENABLE, ACK, DEF_ENDP1_IN_BURST_LEVEL, 1024);
         USB30_Send_ERDY(ENDP_1 | IN, DEF_ENDP1_IN_BURST_LEVEL);
     }
@@ -1297,14 +1297,14 @@ void EP1_OUT_Callback(void)
  */
 void EP2_OUT_Callback(void)
 {
-    UINT16 rx_len;
-    UINT8  nump;
-    UINT8  status;
+    uint16_t rx_len;
+    uint8_t  nump;
+    uint8_t  status;
     USB30_OUT_Status(ENDP_2, &nump, &rx_len, &status);
     if(nump == 0)
     {
         USB30_OUT_ClearIT(ENDP_2);
-        USBSS->UEP2_RX_DMA = (UINT32)(UINT8 *)endp2RTbuff;
+        USBSS->UEP2_RX_DMA = (uint32_t)(uint8_t *)endp2RTbuff;
         USB30_OUT_Set(ENDP_2, ACK, DEF_ENDP2_OUT_BURST_LEVEL);
         USB30_Send_ERDY(ENDP_2 | OUT, DEF_ENDP2_OUT_BURST_LEVEL);
     }
@@ -1336,14 +1336,14 @@ void EP2_OUT_Callback(void)
  */
 void EP3_OUT_Callback(void)
 {
-    UINT16 rx_len;
-    UINT8  nump;
-    UINT8  status;
+    uint16_t rx_len;
+    uint8_t  nump;
+    uint8_t  status;
     USB30_OUT_Status(ENDP_3, &nump, &rx_len, &status);
     if(nump == 0)
     {
         USB30_OUT_ClearIT(ENDP_3);
-        USBSS->UEP3_RX_DMA = (UINT32)(UINT8 *)endp3RTbuff;
+        USBSS->UEP3_RX_DMA = (uint32_t)(uint8_t *)endp3RTbuff;
         USB30_OUT_Set(ENDP_3, ACK, DEF_ENDP3_OUT_BURST_LEVEL);
         USB30_Send_ERDY(ENDP_3 | OUT, DEF_ENDP3_OUT_BURST_LEVEL);
     }
@@ -1375,14 +1375,14 @@ void EP3_OUT_Callback(void)
  */
 void EP4_OUT_Callback(void)
 {
-    UINT16 rx_len;
-    UINT8  nump;
-    UINT8  status;
+    uint16_t rx_len;
+    uint8_t  nump;
+    uint8_t  status;
     USB30_OUT_Status(ENDP_4, &nump, &rx_len, &status);
     if(nump == 0)
     {
         USB30_OUT_ClearIT(ENDP_4);
-        USBSS->UEP4_RX_DMA = (UINT32)(UINT8 *)endp4RTbuff;
+        USBSS->UEP4_RX_DMA = (uint32_t)(uint8_t *)endp4RTbuff;
         USB30_OUT_Set(ENDP_4, ACK, DEF_ENDP4_OUT_BURST_LEVEL);
         USB30_Send_ERDY(ENDP_4 | OUT, DEF_ENDP4_OUT_BURST_LEVEL);
     }
@@ -1414,14 +1414,14 @@ void EP4_OUT_Callback(void)
  */
 void EP5_OUT_Callback(void)
 {
-    UINT16 rx_len;
-    UINT8  nump;
-    UINT8  status;
+    uint16_t rx_len;
+    uint8_t  nump;
+    uint8_t  status;
     USB30_OUT_Status(ENDP_5, &nump, &rx_len, &status);
     if(nump == 0)
     {
         USB30_OUT_ClearIT(ENDP_5);
-        USBSS->UEP5_RX_DMA = (UINT32)(UINT8 *)endp5RTbuff;
+        USBSS->UEP5_RX_DMA = (uint32_t)(uint8_t *)endp5RTbuff;
         USB30_OUT_Set(ENDP_5, ACK, DEF_ENDP5_OUT_BURST_LEVEL);
         USB30_Send_ERDY(ENDP_5 | OUT, DEF_ENDP5_OUT_BURST_LEVEL);
     }
@@ -1453,14 +1453,14 @@ void EP5_OUT_Callback(void)
  */
 void EP6_OUT_Callback(void)
 {
-    UINT16 rx_len;
-    UINT8  nump;
-    UINT8  status;
+    uint16_t rx_len;
+    uint8_t  nump;
+    uint8_t  status;
     USB30_OUT_Status(ENDP_6, &nump, &rx_len, &status);
     if(nump == 0)
     {
         USB30_OUT_ClearIT(ENDP_6);
-        USBSS->UEP6_RX_DMA = (UINT32)(UINT8 *)endp6RTbuff;
+        USBSS->UEP6_RX_DMA = (uint32_t)(uint8_t *)endp6RTbuff;
         USB30_OUT_Set(ENDP_6, ACK, DEF_ENDP2_OUT_BURST_LEVEL);
         USB30_Send_ERDY(ENDP_6 | OUT, DEF_ENDP2_OUT_BURST_LEVEL);
     }
@@ -1492,14 +1492,14 @@ void EP6_OUT_Callback(void)
  */
 void EP7_OUT_Callback(void)
 {
-    UINT16 rx_len;
-    UINT8  nump;
-    UINT8  status;
+    uint16_t rx_len;
+    uint8_t  nump;
+    uint8_t  status;
     USB30_OUT_Status(ENDP_7, &nump, &rx_len, &status);
     if(nump == 0)
     {
         USB30_OUT_ClearIT(ENDP_7);
-        USBSS->UEP7_RX_DMA = (UINT32)(UINT8 *)endp7RTbuff;
+        USBSS->UEP7_RX_DMA = (uint32_t)(uint8_t *)endp7RTbuff;
         USB30_OUT_Set(ENDP_7, ACK, DEF_ENDP2_OUT_BURST_LEVEL);
         USB30_Send_ERDY(ENDP_7 | OUT, DEF_ENDP2_OUT_BURST_LEVEL);
     }
@@ -1530,7 +1530,7 @@ void EP7_OUT_Callback(void)
  *
  * @return  None
  */
-void USB30_ITP_Callback(UINT32 ITPCounter)
+void USB30_ITP_Callback(uint32_t ITPCounter)
 {
     (void)ITPCounter;
 }

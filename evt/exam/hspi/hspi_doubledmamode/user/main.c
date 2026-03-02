@@ -49,8 +49,8 @@
 #define DMA_RX_Addr1   0x20020000 + DMA_Tx_Len1
 
 
-volatile UINT8 Tx_End_Flag = 0;  //send complete flag
-volatile UINT8 Rx_End_Flag = 0;  //receive complete flag
+volatile uint8_t Tx_End_Flag = 0;  //send complete flag
+volatile uint8_t Rx_End_Flag = 0;  //receive complete flag
 
 
 void HSPI_IRQHandler (void) __attribute__((interrupt("WCH-Interrupt-fast")));
@@ -65,10 +65,10 @@ void HSPI_IRQHandler (void) __attribute__((interrupt("WCH-Interrupt-fast")));
  *
  * @return    None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-	UINT32 x;
-	UINT32 t = FREQ_SYS;
+	uint32_t x;
+	uint32_t t = FREQ_SYS;
 	
 	x = 10 * t * 2 / 16 / baudrate;
 	x = ( x + 5 ) / 10;
@@ -207,9 +207,9 @@ void HSPI_Init(void)
  */
 int main()
 {  
-    UINT32 i,j ;
-	UINT8 val;
-	UINT8 Rx_Verify_Flag = 0;
+    uint32_t i,j ;
+	uint8_t val;
+	uint8_t Rx_Verify_Flag = 0;
 
     SystemInit(FREQ_SYS);
     Delay_Init(FREQ_SYS);
@@ -227,7 +227,7 @@ int main()
 
 	//дRAM2
 	for(i=0; i<0x2000; i++){   //0x2000*4 = 32K
-      *(UINT32*)(0x20020000+i*4) = i;
+      *(uint32_t*)(0x20020000+i*4) = i;
 	}
 
 	R8_HSPI_INT_FLAG = 0xF;  //Clear all HSPI interrupt flags to 0 before sending
@@ -252,7 +252,7 @@ int main()
 
 	//vreify
 	for(i=0; i<0x2000; i++){
-      if(*(UINT32*)(0x20020000+i*4) != i){
+      if(*(uint32_t*)(0x20020000+i*4) != i){
         Rx_Verify_Flag = 1;
         break;
       }
@@ -280,9 +280,9 @@ int main()
  */
 void HSPI_IRQHandler(void)
 {
-	static UINT32 Tx_Cnt = 0;
-	static UINT32 Rx_Cnt = 0;
-	static UINT32 addr_cnt = 0;
+	static uint32_t Tx_Cnt = 0;
+	static uint32_t Rx_Cnt = 0;
+	static uint32_t addr_cnt = 0;
 
 	if(R8_HSPI_INT_FLAG & RB_HSPI_IF_T_DONE){   //Single packet sent completed
 		R8_HSPI_INT_FLAG = RB_HSPI_IF_T_DONE;  //Clear Interrupt

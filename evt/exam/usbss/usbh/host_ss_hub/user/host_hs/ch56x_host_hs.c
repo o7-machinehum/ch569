@@ -15,27 +15,27 @@
 #include "hub.h"
 
 
-__attribute__ ((aligned(4))) const UINT8  GetDevDescrptor[]={USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_DEVICE, 0x00, 0x00, sizeof( USB_DEV_DESCR ), 0x00};
-__attribute__ ((aligned(4))) const UINT8  GetConfigDescrptor[]= {USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_CONFIG, 0x00, 0x00, 0x04, 0x00};
-__attribute__ ((aligned(4))) const UINT8  SetAddress[]={USB_REQ_TYP_OUT, USB_SET_ADDRESS, USB_DEVICE_ADDR, 0x00, 0x00, 0x00, 0x00, 0x00};
-__attribute__ ((aligned(4))) const UINT8  SetConfig[]={USB_REQ_TYP_OUT, USB_SET_CONFIGURATION, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-__attribute__ ((aligned(4))) const UINT8  Clear_EndpStall[]={USB_REQ_RECIP_INTERF, USB_SET_INTERFACE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+__attribute__ ((aligned(4))) const uint8_t  GetDevDescrptor[]={USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_DEVICE, 0x00, 0x00, sizeof( USB_DEV_DESCR ), 0x00};
+__attribute__ ((aligned(4))) const uint8_t  GetConfigDescrptor[]= {USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_CONFIG, 0x00, 0x00, 0x04, 0x00};
+__attribute__ ((aligned(4))) const uint8_t  SetAddress[]={USB_REQ_TYP_OUT, USB_SET_ADDRESS, USB_DEVICE_ADDR, 0x00, 0x00, 0x00, 0x00, 0x00};
+__attribute__ ((aligned(4))) const uint8_t  SetConfig[]={USB_REQ_TYP_OUT, USB_SET_CONFIGURATION, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+__attribute__ ((aligned(4))) const uint8_t  Clear_EndpStall[]={USB_REQ_RECIP_INTERF, USB_SET_INTERFACE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 /*global define */
 #define pSetupReq    ((PUSB_SETUP_REQ)endpTXbuff)
 
 /*global variable */
 DEV_INFO_Typedef g_U20DevInfo;
-UINT8 U20_Endp0MaxSize = 0;
+uint8_t U20_Endp0MaxSize = 0;
 USB_SETUP_REQ *Ctl_Setup;
-UINT8 UsbDevEndp0Size = 8;
-UINT8 gDiskInterfNumber = 0;
-UINT16 U20_ENDP_SIZE;
-UINT16 Hid_Report_Len;
-UINT8 test_flag = 0;
-UINT8 gEndp_Num = 0;
-UINT8 Global_Index = 0;
-UINT16 EndpnMaxSize = 0;
+uint8_t UsbDevEndp0Size = 8;
+uint8_t gDiskInterfNumber = 0;
+uint16_t U20_ENDP_SIZE;
+uint16_t Hid_Report_Len;
+uint8_t test_flag = 0;
+uint8_t gEndp_Num = 0;
+uint8_t Global_Index = 0;
+uint16_t EndpnMaxSize = 0;
 #define     PID_SSPLIT      (0<<0)
 #define     PID_CSPLIT      (1<<0)
 #define     WAIT_USB_TOUT_200US     300000
@@ -56,13 +56,13 @@ UINT16 EndpnMaxSize = 0;
  *
  * @return    None
  */
-void CopySetupReqPkg( const UINT8 *pReqPkt )
+void CopySetupReqPkg( const uint8_t *pReqPkt )
 {
-    UINT8 i;
+    uint8_t i;
 
     for ( i = 0; i != sizeof( USB_SETUP_REQ ); i ++ )
     {
-        ((PUINT8)pSetupReq)[ i ] = *pReqPkt;
+        ((uint8_t *)pSetupReq)[ i ] = *pReqPkt;
         pReqPkt++;
     }
 }
@@ -76,7 +76,7 @@ void CopySetupReqPkg( const UINT8 *pReqPkt )
  */
 void USB20HOST_SetBusReset( void )
 {
-    UINT16 i;
+    uint16_t i;
 
     R8_UHOST_CTRL = RB_UH_BUS_RESET;
     for(i = 0;i<150;i++)
@@ -109,8 +109,8 @@ void USB20Host_Init(FunctionalState sta)
         R8_USB_DEV_AD = 0;
         R8_UHOST_CTRL = 0;
 
-        R32_UH_TX_DMA = (UINT32)(UINT8 *)endpTXbuff;
-        R32_UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;
+        R32_UH_TX_DMA = (uint32_t)(uint8_t *)endpTXbuff;
+        R32_UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;
 
         R16_UH_RX_MAX_LEN = U20_MAXPACKET_LEN;
         R8_UH_EP_MOD = RB_UH_TX_EN | RB_UH_RX_EN ;
@@ -138,11 +138,11 @@ void USB20Host_Init(FunctionalState sta)
  *            ERR_USB_DISCON
  *            ERR_USB_CONNECT
  */
-UINT8 USB20HOST_Transact( UINT8 endp_pid, UINT8 toggle,UINT32 timeout)
+uint8_t USB20HOST_Transact( uint8_t endp_pid, uint8_t toggle,uint32_t timeout)
 {
-    UINT8 TransRetry=0;
-    UINT8 r;
-    UINT16  i;
+    uint8_t TransRetry=0;
+    uint8_t r;
+    uint16_t  i;
 
     do
     {
@@ -229,11 +229,11 @@ UINT8 USB20HOST_Transact( UINT8 endp_pid, UINT8 toggle,UINT32 timeout)
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HOST_GetDeviceDescr( UINT8 *buf ,UINT16 *len )
+uint8_t U20HOST_GetDeviceDescr( uint8_t *buf ,uint16_t *len )
 {
-    UINT8 l;
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint8_t l;
+    uint8_t  status;
+    uint8_t setup_buf[8];
     l = *len;
     setup_buf[0] = 0x80;
     setup_buf[1] = 0x06;
@@ -241,7 +241,7 @@ UINT8 U20HOST_GetDeviceDescr( UINT8 *buf ,UINT16 *len )
     setup_buf[3]  = 0x01;
     setup_buf[4]  = 0x00;
     setup_buf[5]  = 0x00;
-    setup_buf[6] = (UINT8)l;
+    setup_buf[6] = (uint8_t)l;
     setup_buf[7] = 0x00;
 
     status = USB20HOST_CtrlTransfer( setup_buf,buf,&l );
@@ -263,11 +263,11 @@ UINT8 U20HOST_GetDeviceDescr( UINT8 *buf ,UINT16 *len )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-void HubAnalysis_Descr(PHUB_Port_Info portn,PUINT8 pdesc, UINT16 l)
+void HubAnalysis_Descr(PHUB_Port_Info portn,uint8_t * pdesc, uint16_t l)
 {
-    UINT16 i;
+    uint16_t i;
 
-    UINT8 endp_num = 0;
+    uint8_t endp_num = 0;
     for( i=0; i<l; i++ )                                                //Analysis Descriptor
     {
          if((pdesc[i]==0x09)&&(pdesc[i+1]==0x02))
@@ -281,7 +281,7 @@ void HubAnalysis_Descr(PHUB_Port_Info portn,PUINT8 pdesc, UINT16 l)
          }
          if((pdesc[i]==0x09)&&(pdesc[i+1]==0x21))                       //Report descriptor length
          {
-              Hid_Report_Len = ((UINT16)pdesc[i+8]<<8)|pdesc[i+7];
+              Hid_Report_Len = ((uint16_t)pdesc[i+8]<<8)|pdesc[i+7];
               printf("Hid_Report_Len:%02x \n",Hid_Report_Len);                 //interface type
          }
          if((pdesc[i]==0x07)&&(pdesc[i+1]==0x05))
@@ -293,11 +293,11 @@ void HubAnalysis_Descr(PHUB_Port_Info portn,PUINT8 pdesc, UINT16 l)
                  portn->portEndp[ endp_num ].endptype = pdesc[i+3];
                  if(((pdesc[i+5])&0x18) && (portn->speed == 0x01) )     //High speed and high bandwidth endpoints
                  {
-                     EndpnMaxSize = ((UINT16)(pdesc[i+5]&0x07)<<8)|pdesc[i+4]; //Take endpoint size
+                     EndpnMaxSize = ((uint16_t)(pdesc[i+5]&0x07)<<8)|pdesc[i+4]; //Take endpoint size
                      portn->portEndp[ endp_num ].HighTransNum = ((pdesc[i+5]&0x18)>>3); //  Number of transactions within a microframe
                  }
                  else {
-                     EndpnMaxSize = ((UINT16)pdesc[i+5]<<8)|pdesc[i+4];     //Take endpoint size
+                     EndpnMaxSize = ((uint16_t)pdesc[i+5]<<8)|pdesc[i+4];     //Take endpoint size
                      portn->portEndp[ endp_num ].HighTransNum = 0;
                  }
                  portn->portEndp[ endp_num ].endp_size = EndpnMaxSize;
@@ -308,15 +308,15 @@ void HubAnalysis_Descr(PHUB_Port_Info portn,PUINT8 pdesc, UINT16 l)
             else
             {
                 printf("endpOUT:%02x \n",pdesc[i+2]&0x0f);              //Take out endpoint number
-                EndpnMaxSize = ((UINT16)pdesc[i+5]<<8)|pdesc[i+4];     //Take endpoint size
+                EndpnMaxSize = ((uint16_t)pdesc[i+5]<<8)|pdesc[i+4];     //Take endpoint size
                 portn->portEndp[ endp_num ].num = pdesc[i+2];
                 portn->portEndp[ endp_num ].endptype = pdesc[i+3];
                 if(((pdesc[i+5])&0x18) && (portn->speed == 0x01) )     //High speed and high bandwidth endpoints
                 {
-                    EndpnMaxSize = ((UINT16)(pdesc[i+5]&0x07)<<8)|pdesc[i+4]; //Take endpoint size
+                    EndpnMaxSize = ((uint16_t)(pdesc[i+5]&0x07)<<8)|pdesc[i+4]; //Take endpoint size
                 }
                 else {
-                    EndpnMaxSize = ((UINT16)pdesc[i+5]<<8)|pdesc[i+4];     //Take endpoint size
+                    EndpnMaxSize = ((uint16_t)pdesc[i+5]<<8)|pdesc[i+4];     //Take endpoint size
                 }
                 portn->portEndp[ endp_num ].endp_size = EndpnMaxSize;
                 portn->portEndp[ endp_num ].tog = 0;
@@ -339,9 +339,9 @@ void HubAnalysis_Descr(PHUB_Port_Info portn,PUINT8 pdesc, UINT16 l)
  *
  * @return  none
  */
-void USBHS_Analysis_Descr(pDEV_INFO_Typedef pusbdev,PUINT8 pdesc, UINT16 l)
+void USBHS_Analysis_Descr(pDEV_INFO_Typedef pusbdev,uint8_t * pdesc, uint16_t l)
 {
-    UINT16 i;
+    uint16_t i;
     for( i=0; i<l; i++ )                                                //Analysis Descriptor
     {
          if((pdesc[i]==0x09)&&(pdesc[i+1]==0x02))
@@ -360,7 +360,7 @@ void USBHS_Analysis_Descr(pDEV_INFO_Typedef pusbdev,PUINT8 pdesc, UINT16 l)
                  printf("endpIN:%02x \n",pdesc[i+2]&0x0f);              //Take in endpoint number
                  pusbdev->DevEndp.InEndpNum = pdesc[i+2]&0x0f;
                  pusbdev->DevEndp.InEndpCount++;
-                 EndpnMaxSize = ((UINT16)pdesc[i+5]<<8)|pdesc[i+4];     //Take endpoint size
+                 EndpnMaxSize = ((uint16_t)pdesc[i+5]<<8)|pdesc[i+4];     //Take endpoint size
                  pusbdev->DevEndp.InEndpMaxSize = EndpnMaxSize;
                  printf("In_endpmaxsize:%02x \n",EndpnMaxSize);
             }
@@ -369,7 +369,7 @@ void USBHS_Analysis_Descr(pDEV_INFO_Typedef pusbdev,PUINT8 pdesc, UINT16 l)
                 printf("endpOUT:%02x \n",pdesc[i+2]&0x0f);              //Take out endpoint number
                 pusbdev->DevEndp.OutEndpNum = pdesc[i+2]&0x0f;
                 pusbdev->DevEndp.OutEndpCount++;
-                EndpnMaxSize =((UINT16)pdesc[i+5]<<8)|pdesc[i+4];       //Take endpoint size
+                EndpnMaxSize =((uint16_t)pdesc[i+5]<<8)|pdesc[i+4];       //Take endpoint size
                 pusbdev->DevEndp.OutEndpMaxSize = EndpnMaxSize;
                 printf("Out_endpmaxsize:%02x \n",EndpnMaxSize);
             }
@@ -386,11 +386,11 @@ void USBHS_Analysis_Descr(pDEV_INFO_Typedef pusbdev,PUINT8 pdesc, UINT16 l)
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HOST_GetConfigDescr( PHUB_Port_Info phub,UINT8 *buf ,UINT16 *len )
+uint8_t U20HOST_GetConfigDescr( PHUB_Port_Info phub,uint8_t *buf ,uint16_t *len )
 {
-    UINT8 l;
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint8_t l;
+    uint8_t  status;
+    uint8_t setup_buf[8];
     setup_buf[0] = 0x80;
     setup_buf[1] = 0x06;
     setup_buf[2]  = 0x00;
@@ -423,12 +423,12 @@ UINT8 U20HOST_GetConfigDescr( PHUB_Port_Info phub,UINT8 *buf ,UINT16 *len )
     if( thisUsbDev.DeviceType == 0x09 )
     {
         //HUB processing
-        HubAnalysis_Descr( phub,(UINT8 *)buf, pSetupReq->wLength );
+        HubAnalysis_Descr( phub,(uint8_t *)buf, pSetupReq->wLength );
     }
     else
     {
         //Other equipment processing
-        USBHS_Analysis_Descr( &thisUsbDev, (UINT8 *)buf, pSetupReq->wLength );
+        USBHS_Analysis_Descr( &thisUsbDev, (uint8_t *)buf, pSetupReq->wLength );
     }
 
     return status;
@@ -442,11 +442,11 @@ UINT8 U20HOST_GetConfigDescr( PHUB_Port_Info phub,UINT8 *buf ,UINT16 *len )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HOST_SetAddress( UINT8 addr )
+uint8_t U20HOST_SetAddress( uint8_t addr )
 {
-    UINT8  status;
+    uint8_t  status;
 
-    UINT8 setup_buf[8];
+    uint8_t setup_buf[8];
     setup_buf[0] = 0X00;
     setup_buf[1] = 0x05;
     setup_buf[2]  = addr;
@@ -473,10 +473,10 @@ UINT8 U20HOST_SetAddress( UINT8 addr )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HOST_SetConfig( UINT8 cfg )
+uint8_t U20HOST_SetConfig( uint8_t cfg )
 {
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint8_t  status;
+    uint8_t setup_buf[8];
     setup_buf[0] = 0x00;
     setup_buf[1] = 0x09;
     setup_buf[2]  = cfg;
@@ -496,7 +496,7 @@ UINT8 U20HOST_SetConfig( UINT8 cfg )
 * Output         : None
 * Return         : None
 *******************************************************************************/
-UINT8 U20HOST_CofDescrAnalyse( UINT8 depth,UINT8 *pbuf, UINT8 port)
+uint8_t U20HOST_CofDescrAnalyse( uint8_t depth,uint8_t *pbuf, uint8_t port)
 {
     gDeviceClassType = ( (PUSB_CFG_DESCR_LONG)pbuf ) -> itf_descr.bInterfaceClass;
     if( ( gDeviceClassType <= 0x09 ) || ( gDeviceClassType == 0xFF ) )
@@ -551,12 +551,12 @@ UINT8 U20HOST_CofDescrAnalyse( UINT8 depth,UINT8 *pbuf, UINT8 port)
  * @return    ERR_SUCCESS
  *            ERR_USB_TRANSFER
  */
-UINT8 USB20Host_Enum( UINT8 depth,UINT8 *Databuf )
+uint8_t USB20Host_Enum( uint8_t depth,uint8_t *Databuf )
 {
-    UINT8 status;
-    UINT8 cfg,i;
-    UINT32 timeout;
-    UINT16 len;
+    uint8_t status;
+    uint8_t cfg,i;
+    uint32_t timeout;
+    uint16_t len;
     USB20HOST_SetBusReset();
     timeout = 0;
     while(1)
@@ -620,7 +620,7 @@ UINT8 USB20Host_Enum( UINT8 depth,UINT8 *Databuf )
     status = U20HOST_SetConfig( cfg );
     if ( status != USB_INT_SUCCESS )
     {
-        printf( "SetConfig_ERROR = %02X\n", (UINT16)status );
+        printf( "SetConfig_ERROR = %02X\n", (uint16_t)status );
         return( USB_OPERATE_ERROR );
     }
     return status;
@@ -638,21 +638,21 @@ UINT8 USB20Host_Enum( UINT8 depth,UINT8 *Databuf )
  * @return    ERR_SUCCESS
  *            ERR_USB_TRANSFER
  */
-UINT8 USB20HOST_CtrlTransfer(UINT8 *ReqBuf, UINT8 *DataBuf, UINT8 *RetLen )
+uint8_t USB20HOST_CtrlTransfer(uint8_t *ReqBuf, uint8_t *DataBuf, uint8_t *RetLen )
 {
-    UINT16  RemLen  = 0;
-    UINT8   s, RxLen;
-    UINT8   tog;
-    PUINT8  pBuf;
-    PUINT8  pLen;
-    UINT8 *p;
+    uint16_t  RemLen  = 0;
+    uint8_t   s, RxLen;
+    uint8_t   tog;
+    uint8_t *  pBuf;
+    uint8_t *  pLen;
+    uint8_t *p;
 
     pBuf = DataBuf;
     pLen = RetLen;
-    R32_UH_TX_DMA = (UINT32)endpTXbuff;
-    R32_UH_RX_DMA = (UINT32)endpRXbuff;
+    R32_UH_TX_DMA = (uint32_t)endpTXbuff;
+    R32_UH_RX_DMA = (uint32_t)endpRXbuff;
     if ( pLen )*pLen = 0;
-    p = (UINT8 *)endpTXbuff;
+    p = (uint8_t *)endpTXbuff;
     memcpy( p,ReqBuf,8 );
 
 
@@ -679,7 +679,7 @@ UINT8 USB20HOST_CtrlTransfer(UINT8 *ReqBuf, UINT8 *DataBuf, UINT8 *RetLen )
                 RxLen = R16_USB_RX_LEN < RemLen ? R16_USB_RX_LEN : RemLen;
                 RemLen -= RxLen;
                 if ( pLen )*pLen += RxLen;
-                p = (UINT8 *)endpRXbuff;
+                p = (uint8_t *)endpRXbuff;
                 memcpy( DataBuf,p,RxLen );
 
                 DataBuf += *pLen;
@@ -692,7 +692,7 @@ UINT8 USB20HOST_CtrlTransfer(UINT8 *ReqBuf, UINT8 *DataBuf, UINT8 *RetLen )
         {
             while ( RemLen )
             {
-                R32_UH_TX_DMA = (UINT32)pBuf + *pLen;
+                R32_UH_TX_DMA = (uint32_t)pBuf + *pLen;
                 R16_UH_TX_LEN = RemLen >= UsbDevEndp0Size ? UsbDevEndp0Size : RemLen;
 
                 s = USB20HOST_Transact( USB_PID_OUT << 4 | 0x00, tog, 100000 );
@@ -720,10 +720,10 @@ UINT8 USB20HOST_CtrlTransfer(UINT8 *ReqBuf, UINT8 *DataBuf, UINT8 *RetLen )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 USB20HOST_ClearEndpStall( UINT8 endp )
+uint8_t USB20HOST_ClearEndpStall( uint8_t endp )
 {
-    UINT8  status = 0;
-    UINT8  setup_buf[8];
+    uint8_t  status = 0;
+    uint8_t  setup_buf[8];
     setup_buf[0] = 0x02;
     setup_buf[1] = 0x01;
     setup_buf[2] = 0X00;
@@ -745,7 +745,7 @@ UINT8 USB20HOST_ClearEndpStall( UINT8 endp )
 *******************************************************************************/
 void SetBusReset( void )
 {
-    UINT16 i;
+    uint16_t i;
 
     R8_UHOST_CTRL = RB_UH_BUS_RESET;          //Send bus reset signal
     for( i=0; i<150; i++ )
@@ -767,11 +767,11 @@ void SetBusReset( void )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HOST_GetHUBDevDescr( UINT8 *buf, UINT16 *len )
+uint8_t U20HOST_GetHUBDevDescr( uint8_t *buf, uint16_t *len )
 {
-    UINT8 l;
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint8_t l;
+    uint8_t  status;
+    uint8_t setup_buf[8];
     l = *len;
 
     setup_buf[0] = 0xA0;
@@ -807,10 +807,10 @@ UINT8 U20HOST_GetHUBDevDescr( UINT8 *buf, UINT16 *len )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HOST_SetPortFeatrue( UINT8 port ,UINT8 port_status )
+uint8_t U20HOST_SetPortFeatrue( uint8_t port ,uint8_t port_status )
 {
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint8_t  status;
+    uint8_t setup_buf[8];
     setup_buf[0] = 0x23;
     setup_buf[1] = 0x03;
     setup_buf[2]  = port_status;
@@ -833,11 +833,11 @@ UINT8 U20HOST_SetPortFeatrue( UINT8 port ,UINT8 port_status )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20USBHostTransact( UINT8 endp_pid, UINT8 tog, UINT32 timeout )
+uint8_t U20USBHostTransact( uint8_t endp_pid, uint8_t tog, uint32_t timeout )
 {
-    UINT8 TransRetry=0;
-    UINT8  r;
-    UINT16  i;
+    uint8_t TransRetry=0;
+    uint8_t  r;
+    uint16_t  i;
 
     do
     {
@@ -907,13 +907,13 @@ UINT8 U20USBHostTransact( UINT8 endp_pid, UINT8 tog, UINT32 timeout )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HOST_GetPortStstus( UINT8 depth,UINT8 port )
+uint8_t U20HOST_GetPortStstus( uint8_t depth,uint8_t port )
 {
-    UINT8 l;
-    UINT16  Port_Status_Bits,Port_Change_Field;
-    UINT8  status;
-    UINT8 setup_buf[8];
-    UINT8 buf[4];
+    uint8_t l;
+    uint16_t  Port_Status_Bits,Port_Change_Field;
+    uint8_t  status;
+    uint8_t setup_buf[8];
+    uint8_t buf[4];
     setup_buf[0] = 0xA3;
     setup_buf[1] = 0x00;
     setup_buf[2] = 0x00;
@@ -927,9 +927,9 @@ UINT8 U20HOST_GetPortStstus( UINT8 depth,UINT8 port )
     if( status == USB_INT_SUCCESS )
     {
         Port_Status_Bits = buf[0];
-        Port_Status_Bits |= ((UINT16)buf[1]<<8);
+        Port_Status_Bits |= ((uint16_t)buf[1]<<8);
         Port_Change_Field = buf[2];
-        Port_Change_Field |= ((UINT16)buf[3]<<8);
+        Port_Change_Field |= ((uint16_t)buf[3]<<8);
 
         if( Port_Status_Bits&PORT_CONNECTION )
         {
@@ -967,19 +967,19 @@ UINT8 U20HOST_GetPortStstus( UINT8 depth,UINT8 port )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8  U20HOST_Hub_IntConnect_Process( UINT8 depth,UINT8 *pbuf )
+uint8_t  U20HOST_Hub_IntConnect_Process( uint8_t depth,uint8_t *pbuf )
 {
-    UINT8 status;
-    UINT8 *p;
-    UINT16 len;
-    p = (UINT8 *)endpTXbuff;
-    R32_UH_TX_DMA = (UINT32)(UINT8 *)endpTXbuff;
-    R32_UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;
+    uint8_t status;
+    uint8_t *p;
+    uint16_t len;
+    p = (uint8_t *)endpTXbuff;
+    R32_UH_TX_DMA = (uint32_t)(uint8_t *)endpTXbuff;
+    R32_UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;
     status = U20USBHostTransact( USB_PID_IN << 4 | hs_hub_info[depth].rootEndp[0].num, hs_hub_info[depth].rootEndp[0].tog, 1 );
     if( status == 0x14 )
     {
         len = R16_USB_RX_LEN;
-        p = (UINT8 *)endpRXbuff;
+        p = (uint8_t *)endpRXbuff;
         memcpy( pbuf,p,len );
         hs_hub_info[depth].rootEndp[0].tog^=0x01;
     }
@@ -996,10 +996,10 @@ UINT8  U20HOST_Hub_IntConnect_Process( UINT8 depth,UINT8 *pbuf )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HOST_ClearPortFeatrue( UINT8 port ,UINT8 port_status )
+uint8_t U20HOST_ClearPortFeatrue( uint8_t port ,uint8_t port_status )
 {
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint8_t  status;
+    uint8_t setup_buf[8];
     setup_buf[0] = 0x23;
     setup_buf[1] = 0x01;
     setup_buf[2]  = port_status;
@@ -1024,9 +1024,9 @@ UINT8 U20HOST_ClearPortFeatrue( UINT8 port ,UINT8 port_status )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HOST_ClearPortFeatrue_Process( UINT8 depth,UINT8 port )
+uint8_t U20HOST_ClearPortFeatrue_Process( uint8_t depth,uint8_t port )
 {
-    UINT8 status;
+    uint8_t status;
     if( hs_hub_info[depth].portD[port-1].portpchangefield&0x01 )
     {
         status = U20HOST_ClearPortFeatrue( port,C_PORT_CONNECTION );
@@ -1059,7 +1059,7 @@ UINT8 U20HOST_ClearPortFeatrue_Process( UINT8 depth,UINT8 port )
 * Description    : Start separation processing
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 SSPLITPacket( PHUB_Port_Info portn, UINT8 *pbuf, UINT16 *plen, UINT8 endp_pid, UINT8 tog ,UINT8 hubaddr)
+uint8_t SSPLITPacket( PHUB_Port_Info portn, uint8_t *pbuf, uint16_t *plen, uint8_t endp_pid, uint8_t tog ,uint8_t hubaddr)
 {
     uint32_t  i;
     uint16_t   r, type;
@@ -1087,7 +1087,7 @@ UINT8 SSPLITPacket( PHUB_Port_Info portn, UINT8 *pbuf, UINT16 *plen, UINT8 endp_
     if( (endp_pid>>4) != USB_PID_IN ){
         R8_UH_TX_CTRL = (tog<<3);
         memcpy( endpTXbuff,pbuf,*plen );
-        R32_UH_TX_DMA = (UINT32)endpTXbuff;
+        R32_UH_TX_DMA = (uint32_t)endpTXbuff;
 
         R16_UH_TX_LEN = *plen;
     }
@@ -1112,7 +1112,7 @@ UINT8 SSPLITPacket( PHUB_Port_Info portn, UINT8 *pbuf, UINT16 *plen, UINT8 endp_
 * Description    : none
 * Return         : Returns the current command execution status
 *******************************************************************************/
-uint8_t CSPLITPacket( PHUB_Port_Info portn, uint8_t *pbuf, uint16_t *plen, uint8_t endp_pid, uint8_t tog ,UINT8 hubaddr)
+uint8_t CSPLITPacket( PHUB_Port_Info portn, uint8_t *pbuf, uint16_t *plen, uint8_t endp_pid, uint8_t tog ,uint8_t hubaddr)
 {
     uint32_t  i;
     uint16_t   r, type;
@@ -1132,7 +1132,7 @@ uint8_t CSPLITPacket( PHUB_Port_Info portn, uint8_t *pbuf, uint16_t *plen, uint8
 
         if((endp_pid>>4) == USB_PID_IN){
             R8_UH_RX_CTRL = (tog<<3);
-            R32_UH_RX_DMA = (UINT32)endpRXbuff;;
+            R32_UH_RX_DMA = (uint32_t)endpRXbuff;;
         }
         else{
             R8_UH_TX_CTRL = (tog<<3)|RB_UH_T_NODATA;
@@ -1165,7 +1165,7 @@ uint8_t CSPLITPacket( PHUB_Port_Info portn, uint8_t *pbuf, uint16_t *plen, uint8
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 HubCtrlTransfer( PHUB_Port_Info phub,UINT8 *ReqBuf, uint8_t *pDataBuf, uint16_t *pRetLen ,UINT8 hubaddr)
+uint8_t HubCtrlTransfer( PHUB_Port_Info phub,uint8_t *ReqBuf, uint8_t *pDataBuf, uint16_t *pRetLen ,uint8_t hubaddr)
 {
     uint16_t  RemLen, len,i;
     uint8_t   s, ctrltog;
@@ -1243,11 +1243,11 @@ UINT8 HubCtrlTransfer( PHUB_Port_Info phub,UINT8 *ReqBuf, uint8_t *pDataBuf, uin
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HubUSBGetDevDescr( PHUB_Port_Info phub,UINT8 *Databuf,UINT8 *len ,UINT8 hubaddr)
+uint8_t U20HubUSBGetDevDescr( PHUB_Port_Info phub,uint8_t *Databuf,uint8_t *len ,uint8_t hubaddr)
 {
-    UINT16 l;
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint16_t l;
+    uint8_t  status;
+    uint8_t setup_buf[8];
     l = *len;
 
     setup_buf[0] = 0x80;
@@ -1256,7 +1256,7 @@ UINT8 U20HubUSBGetDevDescr( PHUB_Port_Info phub,UINT8 *Databuf,UINT8 *len ,UINT8
     setup_buf[3]  = 0x01;
     setup_buf[4]  = 0x00;
     setup_buf[5]  = 0x00;
-    setup_buf[6] = (UINT8)l;
+    setup_buf[6] = (uint8_t)l;
     setup_buf[7] = 0x00;
 
     status = HubCtrlTransfer(  phub,setup_buf,Databuf,&l, hubaddr );
@@ -1278,11 +1278,11 @@ UINT8 U20HubUSBGetDevDescr( PHUB_Port_Info phub,UINT8 *Databuf,UINT8 *len ,UINT8
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HubUSBSetAddr( PHUB_Port_Info phub,UINT8 addr ,UINT8 hubaddr)
+uint8_t U20HubUSBSetAddr( PHUB_Port_Info phub,uint8_t addr ,uint8_t hubaddr)
 {
-    UINT16 l;
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint16_t l;
+    uint8_t  status;
+    uint8_t setup_buf[8];
 
     setup_buf[0] = 0x00;
     setup_buf[1] = 0x05;
@@ -1309,11 +1309,11 @@ UINT8 U20HubUSBSetAddr( PHUB_Port_Info phub,UINT8 addr ,UINT8 hubaddr)
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HubUSBGetConfigDescr( PHUB_Port_Info phub,UINT8 *Databuf,UINT8 *len ,UINT8 hubaddr)
+uint8_t U20HubUSBGetConfigDescr( PHUB_Port_Info phub,uint8_t *Databuf,uint8_t *len ,uint8_t hubaddr)
 {
-    UINT16 l;
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint16_t l;
+    uint8_t  status;
+    uint8_t setup_buf[8];
     l = *len;
 
     setup_buf[0] = 0x80;
@@ -1322,7 +1322,7 @@ UINT8 U20HubUSBGetConfigDescr( PHUB_Port_Info phub,UINT8 *Databuf,UINT8 *len ,UI
     setup_buf[3]  = 0x02;
     setup_buf[4]  = 0x00;
     setup_buf[5]  = 0x00;
-    setup_buf[6]  = (UINT8)l;
+    setup_buf[6]  = (uint8_t)l;
     setup_buf[7]  = 0x00;
 
     status = HubCtrlTransfer(  phub,setup_buf,Databuf,&l , hubaddr);
@@ -1351,11 +1351,11 @@ UINT8 U20HubUSBGetConfigDescr( PHUB_Port_Info phub,UINT8 *Databuf,UINT8 *len ,UI
     printf("thisUsbDev.DeviceType=%02x\n",thisUsbDev.DeviceType);
     if( thisUsbDev.DeviceType == 0x09 )
     {        //HUB
-        HubAnalysis_Descr( phub,(UINT8 *)Databuf, pSetupReq->wLength );
+        HubAnalysis_Descr( phub,(uint8_t *)Databuf, pSetupReq->wLength );
     }
     else
     {       //Other device types
-        USBHS_Analysis_Descr( &thisUsbDev, (UINT8 *)Databuf, pSetupReq->wLength );
+        USBHS_Analysis_Descr( &thisUsbDev, (uint8_t *)Databuf, pSetupReq->wLength );
     }
 
     return status;
@@ -1368,10 +1368,10 @@ UINT8 U20HubUSBGetConfigDescr( PHUB_Port_Info phub,UINT8 *Databuf,UINT8 *len ,UI
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U20HubUSBSetConfig( PHUB_Port_Info phub, UINT8 cfg ,UINT8 hubaddr)
+uint8_t U20HubUSBSetConfig( PHUB_Port_Info phub, uint8_t cfg ,uint8_t hubaddr)
 {
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint8_t  status;
+    uint8_t setup_buf[8];
 
     setup_buf[0] = 0x00;
     setup_buf[1] = 0x09;
@@ -1396,7 +1396,7 @@ UINT8 U20HubUSBSetConfig( PHUB_Port_Info phub, UINT8 cfg ,UINT8 hubaddr)
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void U20HOST_DevSetAddress( UINT8 addr )
+void U20HOST_DevSetAddress( uint8_t addr )
 {
     R8_USB_DEV_AD = addr;
 }
@@ -1408,12 +1408,12 @@ void U20HOST_DevSetAddress( UINT8 addr )
 * Output         : None
 * Return         : device status
 *******************************************************************************/
-UINT8 U20HOST_Enumerate(UINT8 depth, UINT8 *pbuf,UINT8 addr, UINT8 port)
+uint8_t U20HOST_Enumerate(uint8_t depth, uint8_t *pbuf,uint8_t addr, uint8_t port)
 {
-    UINT8 status;
-    UINT8 cfg,i;
-    UINT32 timeout;
-    UINT16 len;
+    uint8_t status;
+    uint8_t cfg,i;
+    uint32_t timeout;
+    uint16_t len;
     if( port == 0 )
     {
         SetBusReset();
@@ -1479,7 +1479,7 @@ UINT8 U20HOST_Enumerate(UINT8 depth, UINT8 *pbuf,UINT8 addr, UINT8 port)
     status = U20HOST_SetConfig( cfg );
     if ( status != USB_INT_SUCCESS )
     {
-        printf( "SetConfig_ERROR = %02X\n", (UINT16)status );
+        printf( "SetConfig_ERROR = %02X\n", (uint16_t)status );
         return( USB_OPERATE_ERROR );
     }
     if( (hs_hub_info[depth].device_type == 0x09)  && (port == 0))
@@ -1489,7 +1489,7 @@ UINT8 U20HOST_Enumerate(UINT8 depth, UINT8 *pbuf,UINT8 addr, UINT8 port)
         status = U20HOST_GetHUBDevDescr( pbuf,&len );
         if ( status != USB_INT_SUCCESS )
         {
-            printf( "GetHUBDevDescr_ERROR = %02X\n", (UINT16)status );
+            printf( "GetHUBDevDescr_ERROR = %02X\n", (uint16_t)status );
             return( USB_OPERATE_ERROR );
         }
         hs_hub_info[depth].numofport = *(pbuf+2);
@@ -1507,7 +1507,7 @@ UINT8 U20HOST_Enumerate(UINT8 depth, UINT8 *pbuf,UINT8 addr, UINT8 port)
             status = U20HOST_SetPortFeatrue(i+1,PORT_POWER);
             if ( status != USB_INT_SUCCESS )
             {
-                printf( "SetPortFeatrue_ERROR = %02X\n", (UINT16)status );
+                printf( "SetPortFeatrue_ERROR = %02X\n", (uint16_t)status );
                 return( USB_OPERATE_ERROR );
             }
         }
@@ -1523,9 +1523,9 @@ UINT8 U20HOST_Enumerate(UINT8 depth, UINT8 *pbuf,UINT8 addr, UINT8 port)
 * Output         : None
 * Return         : hub port status
 *******************************************************************************/
-UINT8 USBHS_HUBCheckPortConnect( UINT8 depth,UINT8 port )
+uint8_t USBHS_HUBCheckPortConnect( uint8_t depth,uint8_t port )
 {
-    UINT8 ret;
+    uint8_t ret;
     ret = U20HOST_GetPortStstus( depth,port+1 );
     if( ret != ERR_SUCCESS )return ret;
     /* Determine the current port connection status */
@@ -1582,13 +1582,13 @@ UINT8 USBHS_HUBCheckPortConnect( UINT8 depth,UINT8 port )
 *                  hubaddr     - HUB's address
 * Return         : Enumerate status
 *******************************************************************************/
-UINT8 USBHS_HUBHostEnum( UINT8 depth, UINT8 *Databuf,UINT8 port ,UINT8 uplevelport,UINT8 hubaddr)
+uint8_t USBHS_HUBHostEnum( uint8_t depth, uint8_t *Databuf,uint8_t port ,uint8_t uplevelport,uint8_t hubaddr)
 {
-  UINT8 ret;
-  UINT16 s,i;
-  UINT16 temp16,len;
-  UINT8 cfg;
-  UINT8 l;
+  uint8_t ret;
+  uint16_t s,i;
+  uint16_t temp16,len;
+  uint8_t cfg;
+  uint8_t l;
 
   ret = U20HOST_GetPortStstus(depth, port+1 );
   if( ret != USB_INT_SUCCESS )
@@ -1709,8 +1709,8 @@ UINT8 USBHS_HUBHostEnum( UINT8 depth, UINT8 *Databuf,UINT8 port ,UINT8 uplevelpo
       }
       hs_hub_info[depth].portD[port].status = HUB_ERR_SCUESS;          //Enumeration successful
 
-      R32_UH_TX_DMA = (UINT32)(UINT8 *)endpTXbuff;
-      R32_UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;
+      R32_UH_TX_DMA = (uint32_t)(uint8_t *)endpTXbuff;
+      R32_UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;
 
       return( ERR_SUCCESS );
   }
@@ -1765,8 +1765,8 @@ UINT8 USBHS_HUBHostEnum( UINT8 depth, UINT8 *Databuf,UINT8 port ,UINT8 uplevelpo
       {
       }
       hs_hub_info[depth].portD[port].status = HUB_ERR_SCUESS;
-      R32_UH_TX_DMA = (UINT32)(UINT8 *)endpTXbuff;
-      R32_UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;
+      R32_UH_TX_DMA = (uint32_t)(uint8_t *)endpTXbuff;
+      R32_UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;
 
       return( ERR_SUCCESS );
   }
@@ -1781,15 +1781,15 @@ UINT8 USBHS_HUBHostEnum( UINT8 depth, UINT8 *Databuf,UINT8 port ,UINT8 uplevelpo
 *                  portnum     - Number of ports in HUB
 * Return         : Operational state
 *******************************************************************************/
-UINT8  USBHS_HUB_Main_Process( UINT8 depth ,UINT8 addr ,UINT8 uplevelport,UINT8 portnum)
+uint8_t  USBHS_HUB_Main_Process( uint8_t depth ,uint8_t addr ,uint8_t uplevelport,uint8_t portnum)
 {
-    UINT8 i,ret;
+    uint8_t i,ret;
     USB_HUB_SaveData hubdata;
 
       for( i=0;i!=portnum;i++ )
       {
-          R32_UH_TX_DMA = (UINT32)(UINT8 *)endpTXbuff;
-          R32_UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;
+          R32_UH_TX_DMA = (uint32_t)(uint8_t *)endpTXbuff;
+          R32_UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;
 
           hs_hub_info[depth].devaddr = addr;
           AssignHubData(&hubdata,depth,uplevelport,i+1,hs_hub_info[depth]);

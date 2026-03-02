@@ -23,10 +23,10 @@
  *
  * @return   None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-    UINT32 x;
-    UINT32 t = FREQ_SYS;
+    uint32_t x;
+    uint32_t t = FREQ_SYS;
 
     x = 10 * t * 2 / 16 / baudrate;
     x = (x + 5) / 10;
@@ -105,9 +105,9 @@ void DebugInit(UINT32 baudrate)
  * @return       0: Success
  *               1: Err
  */
-UINT8 UserOptionByteConfig(FunctionalState RESET_EN, FunctionalState LOCKUP_RST_EN, FunctionalState BOOT_PIN, UINT32 USER_MEM_Set, UINT32 FLASHProt_Size)
+uint8_t UserOptionByteConfig(FunctionalState RESET_EN, FunctionalState LOCKUP_RST_EN, FunctionalState BOOT_PIN, uint32_t USER_MEM_Set, uint32_t FLASHProt_Size)
 {
-    UINT32 s, t;
+    uint32_t s, t;
 
     FLASH_ROMA_READ(0x14, &s, 4);
 
@@ -161,9 +161,9 @@ UINT8 UserOptionByteConfig(FunctionalState RESET_EN, FunctionalState LOCKUP_RST_
  * @return   0: Success
  *           1: Err
  */
-UINT8 Close_SWD(void)
+uint8_t Close_SWD(void)
 {
-    UINT32 s, t;
+    uint32_t s, t;
 
     FLASH_ROMA_READ(0x14, &s, 4);
 
@@ -205,7 +205,7 @@ UINT8 Close_SWD(void)
     return 1;
 }
 
-UINT8 my_buffer[1024];
+uint8_t my_buffer[1024];
 
 /*********************************************************************
  * @fn      main
@@ -216,7 +216,7 @@ UINT8 my_buffer[1024];
  */
 int main()
 {
-    UINT32 x;
+    uint32_t x;
 
     SystemInit(FREQ_SYS);
     Delay_Init(FREQ_SYS);
@@ -234,7 +234,7 @@ int main()
     printf("0x8014-%08x\n", x);
 
     {
-        UINT8 p;
+        uint8_t p;
 
 #if 0 /* Modify user configuration values */
        p = UserOptionByteConfig(ENABLE, ENABLE, ENABLE, USER_MEM_RAM96K_ROM32K, FLASH_WRProt_Size_4KB);

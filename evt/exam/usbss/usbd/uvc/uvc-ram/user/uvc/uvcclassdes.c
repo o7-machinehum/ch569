@@ -23,14 +23,14 @@
 
 typedef struct
 {
-    UINT8 info[1];
-    UINT8 len[2];   //Used by the expansion unit
-    UINT8 min[10];
-    UINT8 max[10];
-    UINT8 res[10];
-    UINT8 def[10];
-    UINT8 cur[10];
-    UINT8 set[10];
+    uint8_t info[1];
+    uint8_t len[2];   //Used by the expansion unit
+    uint8_t min[10];
+    uint8_t max[10];
+    uint8_t res[10];
+    uint8_t def[10];
+    uint8_t cur[10];
+    uint8_t set[10];
 }Unit_t;
 
 Unit_t VAICSID[]={//ID=0,send VideoControl Interface Control Selectors
@@ -298,7 +298,7 @@ Unit_t ExtensionID2[]={//ID 06
  *
  * @return  Length
  */
-UINT16 UVC_NonStandardReq(UINT8 **pDescr){
+uint16_t UVC_NonStandardReq(uint8_t **pDescr){
     if(UsbSetupBuf->bRequestType==0xA1){
         switch(UsbSetupBuf->wIndexH){//UsbSetupBuf->wValueH
                     case 00:
@@ -306,7 +306,7 @@ UINT16 UVC_NonStandardReq(UINT8 **pDescr){
                             case 00://Only send request to the VideoControl interface (interface ID 00)
                                 switch(UsbSetupBuf->bRequest){
                                     case 0x81://GET CUR
-                                                *pDescr = (PUINT8)&VAICSID[UsbSetupBuf->wValueH].cur;
+                                                *pDescr = (uint8_t *)&VAICSID[UsbSetupBuf->wValueH].cur;
                                                 break;
                                 }
                                 break;
@@ -315,7 +315,7 @@ UINT16 UVC_NonStandardReq(UINT8 **pDescr){
                                         case 0x81://GET CUR
                                         case 0x82:
                                         case 0x83:
-                                                *pDescr = (PUINT8)&Get_Curr;
+                                                *pDescr = (uint8_t *)&Get_Curr;
                                                 break;
                                 }
                                 break;
@@ -324,100 +324,100 @@ UINT16 UVC_NonStandardReq(UINT8 **pDescr){
                     case 01:
                         switch(UsbSetupBuf->bRequest){//LEN->INFO->MIN->MAX->RES->DEF
                             case 0x81://GET CUR
-                                *pDescr = (PUINT8)&CameraID[UsbSetupBuf->wValueH].cur;
+                                *pDescr = (uint8_t *)&CameraID[UsbSetupBuf->wValueH].cur;
                                 break;
                             case 0x82://GET MIN
-                                *pDescr = (PUINT8)&CameraID[UsbSetupBuf->wValueH].min;
+                                *pDescr = (uint8_t *)&CameraID[UsbSetupBuf->wValueH].min;
                                 break;
                             case 0x83://GET MAX
-                                *pDescr = (PUINT8)&CameraID[UsbSetupBuf->wValueH].max;
+                                *pDescr = (uint8_t *)&CameraID[UsbSetupBuf->wValueH].max;
                                 break;
                             case 0x84://GET RES
-                                *pDescr = (PUINT8)&CameraID[UsbSetupBuf->wValueH].res;
+                                *pDescr = (uint8_t *)&CameraID[UsbSetupBuf->wValueH].res;
                                 break;
                             case 0x85://GET LEN
-                                *pDescr = (PUINT8)&CameraID[UsbSetupBuf->wValueH].len;
+                                *pDescr = (uint8_t *)&CameraID[UsbSetupBuf->wValueH].len;
                                 break;
                             case 0x86:// GET INFO
-                                *pDescr = (PUINT8)&CameraID[UsbSetupBuf->wValueH].info;
+                                *pDescr = (uint8_t *)&CameraID[UsbSetupBuf->wValueH].info;
                                 break;
                             case 0x87://GET DEF
-                                *pDescr = (PUINT8)&CameraID[UsbSetupBuf->wValueH].def;
+                                *pDescr = (uint8_t *)&CameraID[UsbSetupBuf->wValueH].def;
                                 break;
                         }
                         break;
                     case 02:
                         switch(UsbSetupBuf->bRequest){//LEN->INFO->MIN->MAX->RES->DEF
                             case 0x81://GET CUR
-                                *pDescr = (PUINT8)&ProcessID[UsbSetupBuf->wValueH].cur;
+                                *pDescr = (uint8_t *)&ProcessID[UsbSetupBuf->wValueH].cur;
                                 break;
                             case 0x82://GET MIN
-                                *pDescr = (PUINT8)&ProcessID[UsbSetupBuf->wValueH].min;
+                                *pDescr = (uint8_t *)&ProcessID[UsbSetupBuf->wValueH].min;
                                 break;
                             case 0x83://GET MAX
-                                *pDescr = (PUINT8)&ProcessID[UsbSetupBuf->wValueH].max;
+                                *pDescr = (uint8_t *)&ProcessID[UsbSetupBuf->wValueH].max;
                                 break;
                             case 0x84://GET RES
-                                *pDescr = (PUINT8)&ProcessID[UsbSetupBuf->wValueH].res;
+                                *pDescr = (uint8_t *)&ProcessID[UsbSetupBuf->wValueH].res;
                                 break;
                             case 0x85://GET LEN
-                                *pDescr = (PUINT8)&ProcessID[UsbSetupBuf->wValueH].len;
+                                *pDescr = (uint8_t *)&ProcessID[UsbSetupBuf->wValueH].len;
                                 break;
                             case 0x86:// GET INFO
-                                *pDescr = (PUINT8)&ProcessID[UsbSetupBuf->wValueH].info;
+                                *pDescr = (uint8_t *)&ProcessID[UsbSetupBuf->wValueH].info;
                                 break;
                             case 0x87://GET DEF
-                                *pDescr = (PUINT8)&ProcessID[UsbSetupBuf->wValueH].def;
+                                *pDescr = (uint8_t *)&ProcessID[UsbSetupBuf->wValueH].def;
                                 break;
                         }
                         break;
                     case 04:
                         switch(UsbSetupBuf->bRequest){//LEN->INFO->MIN->MAX->RES->DEF
                             case 0x81://GET CUR
-                                *pDescr = (PUINT8)&ExtensionID1[UsbSetupBuf->wValueH].cur;
+                                *pDescr = (uint8_t *)&ExtensionID1[UsbSetupBuf->wValueH].cur;
                                 break;
                             case 0x82://GET MIN
-                                *pDescr = (PUINT8)&ExtensionID1[UsbSetupBuf->wValueH].min;
+                                *pDescr = (uint8_t *)&ExtensionID1[UsbSetupBuf->wValueH].min;
                                 break;
                             case 0x83://GET MAX
-                                *pDescr = (PUINT8)&ExtensionID1[UsbSetupBuf->wValueH].max;
+                                *pDescr = (uint8_t *)&ExtensionID1[UsbSetupBuf->wValueH].max;
                                 break;
                             case 0x84://GET RES
-                                *pDescr = (PUINT8)&ExtensionID1[UsbSetupBuf->wValueH].res;
+                                *pDescr = (uint8_t *)&ExtensionID1[UsbSetupBuf->wValueH].res;
                                 break;
                             case 0x85://GET LEN
-                                *pDescr = (PUINT8)&ExtensionID1[UsbSetupBuf->wValueH].len;
+                                *pDescr = (uint8_t *)&ExtensionID1[UsbSetupBuf->wValueH].len;
                                 break;
                             case 0x86:// GET INFO
-                                *pDescr = (PUINT8)&ExtensionID1[UsbSetupBuf->wValueH].info;
+                                *pDescr = (uint8_t *)&ExtensionID1[UsbSetupBuf->wValueH].info;
                                 break;
                             case 0x87://GET DEF
-                                *pDescr = (PUINT8)&ExtensionID1[UsbSetupBuf->wValueH].def;
+                                *pDescr = (uint8_t *)&ExtensionID1[UsbSetupBuf->wValueH].def;
                                 break;
                         }
                         break;
                     case 06:
                         switch(UsbSetupBuf->bRequest){//LEN->INFO->MIN->MAX->RES->DEF
                             case 0x81://GET CUR
-                                *pDescr = (PUINT8)&ExtensionID2[UsbSetupBuf->wValueH].cur;
+                                *pDescr = (uint8_t *)&ExtensionID2[UsbSetupBuf->wValueH].cur;
                                 break;
                             case 0x82://GET MIN
-                                *pDescr = (PUINT8)&ExtensionID2[UsbSetupBuf->wValueH].min;
+                                *pDescr = (uint8_t *)&ExtensionID2[UsbSetupBuf->wValueH].min;
                                 break;
                             case 0x83://GET MAX
-                                *pDescr = (PUINT8)&ExtensionID2[UsbSetupBuf->wValueH].max;
+                                *pDescr = (uint8_t *)&ExtensionID2[UsbSetupBuf->wValueH].max;
                                 break;
                             case 0x84://GET RES
-                                *pDescr = (PUINT8)&ExtensionID2[UsbSetupBuf->wValueH].res;
+                                *pDescr = (uint8_t *)&ExtensionID2[UsbSetupBuf->wValueH].res;
                                 break;
                             case 0x85://GET LEN
-                                *pDescr = (PUINT8)&ExtensionID2[UsbSetupBuf->wValueH].len;
+                                *pDescr = (uint8_t *)&ExtensionID2[UsbSetupBuf->wValueH].len;
                                 break;
                             case 0x86:// GET INFO
-                                *pDescr = (PUINT8)&ExtensionID2[UsbSetupBuf->wValueH].info;
+                                *pDescr = (uint8_t *)&ExtensionID2[UsbSetupBuf->wValueH].info;
                                 break;
                             case 0x87://GET DEF
-                                *pDescr = (PUINT8)&ExtensionID2[UsbSetupBuf->wValueH].def;
+                                *pDescr = (uint8_t *)&ExtensionID2[UsbSetupBuf->wValueH].def;
                                 break;
                         }
                         break;
@@ -425,7 +425,7 @@ UINT16 UVC_NonStandardReq(UINT8 **pDescr){
 
         if(UsbSetupBuf->wIndexH ==0x01 &&((UsbSetupBuf->wValueH==0x14) ||(UsbSetupBuf->wValueH==0x09)))
         {
-                VAICSID[2].cur[0]=(UINT8)InvalidControl;
+                VAICSID[2].cur[0]=(uint8_t)InvalidControl;
                 return 0xFFFF;
         }
     }

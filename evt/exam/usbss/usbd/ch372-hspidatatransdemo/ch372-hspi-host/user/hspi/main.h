@@ -30,9 +30,9 @@ extern "C" {
 #define DEF_FUN_PACK_SN_EN         0x00
 
 /******************************************************************************/
-extern UINT32V Dbg_Idle_TimeCount;
-extern UINT64V Dbg_HSPI_Tx_TLen;
-extern UINT64V Dbg_HSPI_Rx_TLen;
+extern volatile uint32_t Dbg_Idle_TimeCount;
+extern volatile uint64_t Dbg_HSPI_Tx_TLen;
+extern volatile uint64_t Dbg_HSPI_Rx_TLen;
 
 /********************************************************************************/
 

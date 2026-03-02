@@ -23,10 +23,10 @@ void EMMC_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 
 
 EMMC_PARAMETER	TF_EMMCParam;
-__attribute__ ((aligned(16))) UINT8	Sendbuff[512*2]  __attribute__((section(".DMADATA")));
-__attribute__ ((aligned(16))) UINT8	Recvbuff[512*2]  __attribute__((section(".DMADATA")));
-UINT32  KeyValue[] = {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF};
-UINT32  CountValue[] = {0x00000001, 0x00000002, 0x00000003, 0x00000300};
+__attribute__ ((aligned(16))) uint8_t	Sendbuff[512*2]  __attribute__((section(".DMADATA")));
+__attribute__ ((aligned(16))) uint8_t	Recvbuff[512*2]  __attribute__((section(".DMADATA")));
+uint32_t  KeyValue[] = {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF};
+uint32_t  CountValue[] = {0x00000001, 0x00000002, 0x00000003, 0x00000300};
 
 /*******************************************************************************
  * @fn      DebugInit
@@ -37,10 +37,10 @@ UINT32  CountValue[] = {0x00000001, 0x00000002, 0x00000003, 0x00000300};
  *
  * @return  None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-	UINT32 x;
-	UINT32 t = FREQ_SYS;
+	uint32_t x;
+	uint32_t t = FREQ_SYS;
 	
 	x = 10 * t * 2 / 16 / baudrate;
 	x = ( x + 5 ) / 10;
@@ -70,8 +70,8 @@ int main()
 	PRINT("Start @ChipID=%02X\r\n", R8_CHIP_ID );
 #if 1
 
-    UINT8   s;
-    UINT16  i;
+    uint8_t   s;
+    uint16_t  i;
 
 	PFIC_EnableIRQ(EMMC_IRQn);
 	mDelaymS(40);
@@ -143,8 +143,8 @@ int main()
 #endif
 
 #if 0
-	UINT8   s=0;
-	UINT32  i=0, blocknum=2;
+	uint8_t   s=0;
+	uint32_t  i=0, blocknum=2;
 //Encryption and decryption initialization
 	ECDC_Init(MODE_AES_ECB, ECDCCLK_240MHZ, KEYLENGTH_128BIT, KeyValue, NULL);
 //	ECDC_Init(MODE_AES_CTR, ECDCCLK_240MHZ, KEYLENGTH_128BIT, KeyValue, CountValue);

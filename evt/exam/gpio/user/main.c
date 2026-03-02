@@ -34,10 +34,10 @@ void GPIO_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
  *
  * @return   None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-	UINT32 x;
-	UINT32 t = FREQ_SYS;
+	uint32_t x;
+	uint32_t t = FREQ_SYS;
 	
 	x = 10 * t * 2 / 16 / baudrate;
 	x = ( x + 5 ) / 10;

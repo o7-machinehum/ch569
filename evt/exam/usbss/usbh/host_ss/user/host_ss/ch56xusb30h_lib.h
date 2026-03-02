@@ -27,7 +27,7 @@
 #define POWER_MODE_3            3
 
 #define LINK_PRESENT            (1<<0)
-#define RX_WARM_RESET           ((UINT32)1<<1)
+#define RX_WARM_RESET           ((uint32_t)1<<1)
 
 #define GO_DISABLED             (1<<4)
 #define LINK_TXEQ               (1<<6)
@@ -35,11 +35,11 @@
 
 #define POLLING_EN              (1<<12)
 
-#define TX_HOT_RESET            ((UINT32)1<<16)
-#define RX_HOT_RESET            ((UINT32)1<<24)
+#define TX_HOT_RESET            ((uint32_t)1<<16)
+#define RX_HOT_RESET            ((uint32_t)1<<24)
 
-#define TX_WARM_RESET           ((UINT32)1<<8)
-#define TX_Ux_EXIT              ((UINT32)1<<9)
+#define TX_WARM_RESET           ((uint32_t)1<<8)
+#define TX_Ux_EXIT              ((uint32_t)1<<9)
 // link int flag
 #define LINK_RDY_FLAG           (1<<0)
 #define LINK_RECOV_FLAG         (1<<1)
@@ -92,7 +92,7 @@
 #define HP_PENDING      (2<<19)
 
 #define LINK_PRESENT    (1<<0)
-#define RX_WARM_RESET   ((UINT32)1<<1)
+#define RX_WARM_RESET   ((uint32_t)1<<1)
 #define LINK_BUSY       (1<<2)
 #define LINK_READY      (1<<3)
 
@@ -283,7 +283,7 @@
  *
  * @return    None
  */
-extern void USB30HOST_Init (FunctionalState sta,PUINT8 endpTXbuff , PUINT8 endpRXbuff);
+extern void USB30HOST_Init (FunctionalState sta,uint8_t * endpTXbuff , uint8_t * endpRXbuff);
 /*******************************************************************************
  * @fn     USB30H_Lmp_Init
  *
@@ -303,7 +303,7 @@ extern void USB30H_Lmp_Init(void);
  * @return  0 - success
  *          1 - timeout
  */
-extern UINT8 USB30H_Send_Setup( UINT32 tx_len );
+extern uint8_t USB30H_Send_Setup( uint32_t tx_len );
 
 /*******************************************************************************
  * @fn     USB30H_Send_Status
@@ -314,7 +314,7 @@ extern UINT8 USB30H_Send_Setup( UINT32 tx_len );
  *
  * @return   None
  */
-extern UINT8 USB30H_Send_Status(void);
+extern uint8_t USB30H_Send_Status(void);
 
 /*******************************************************************************
  * @fn     USB30H_Erdy_Status
@@ -328,7 +328,7 @@ extern UINT8 USB30H_Send_Status(void);
  *
  * @return   1 - received ERDY       0 - Not received ERDY
  */
-extern UINT8 USB30H_Erdy_Status( PUINT8 nump, PUINT8 endp  );
+extern uint8_t USB30H_Erdy_Status( uint8_t * nump, uint8_t * endp  );
 
 /*******************************************************************************
  * @fn     USB30H_IN_Data
@@ -345,7 +345,7 @@ extern UINT8 USB30H_Erdy_Status( PUINT8 nump, PUINT8 endp  );
  *                  bit12~13 -    1-ACK   2-NRDY   3-STALL   4-error
  *                  bit0~11 -  packet length
  */
-extern UINT16 USB30H_IN_Data( UINT8 seq_num, PUINT8 packet_num, UINT8 endp_num );
+extern uint16_t USB30H_IN_Data( uint8_t seq_num, uint8_t * packet_num, uint8_t endp_num );
 
 /*******************************************************************************
  * @fn     USB30H_OUT_Data
@@ -359,7 +359,7 @@ extern UINT16 USB30H_IN_Data( UINT8 seq_num, PUINT8 packet_num, UINT8 endp_num )
  *
  * @return   status 1-ACK   2-NRDY   3-STALL   4-error
  */
-extern UINT8 USB30H_OUT_Data( UINT8 seq_num, UINT8 packet_num, UINT8 endp_num, UINT32 tx_len );
+extern uint8_t USB30H_OUT_Data( uint8_t seq_num, uint8_t packet_num, uint8_t endp_num, uint32_t tx_len );
 
 /*******************************************************************************
  * @fn    USB30H_Set_Address
@@ -370,7 +370,7 @@ extern UINT8 USB30H_OUT_Data( UINT8 seq_num, UINT8 packet_num, UINT8 endp_num, U
  *
  * @return   None
  */
-extern void USB30H_Set_Address( UINT32 address );
+extern void USB30H_Set_Address( uint32_t address );
 
 /*******************************************************************************
  * @fn    USB30H_Switch_Powermode
@@ -381,7 +381,7 @@ extern void USB30H_Set_Address( UINT32 address );
  *
  * @return   None
  */
-extern void USB30H_Switch_Powermode( UINT32 pwr_mode );
+extern void USB30H_Switch_Powermode( uint32_t pwr_mode );
 
 
 #endif

@@ -46,44 +46,44 @@ extern "C" {
 
 typedef struct
 {
-    UINT16  OutEndpMaxSize;
-    UINT16  InEndpMaxSize;
-    UINT8   InEndpNum;
-    UINT8   InEndpCount;
-    UINT8   InTog;
-    UINT8   OutEndpNum;
-    UINT8   OutTog;
-    UINT8   OutEndpCount;
+    uint16_t  OutEndpMaxSize;
+    uint16_t  InEndpMaxSize;
+    uint8_t   InEndpNum;
+    uint8_t   InEndpCount;
+    uint8_t   InTog;
+    uint8_t   OutEndpNum;
+    uint8_t   OutTog;
+    uint8_t   OutEndpCount;
 }DEVENDP;
 
 typedef struct  __attribute__((packed))
 {
      DEVENDP DevEndp;
-     UINT8   DeviceStatus;
-     UINT8   DeviceAddress;
-     UINT8   DeviceSpeed;
-     UINT8   DeviceType;
-     UINT8   DeviceEndp0Size;
-     UINT8   DeviceCongValue;
+     uint8_t   DeviceStatus;
+     uint8_t   DeviceAddress;
+     uint8_t   DeviceSpeed;
+     uint8_t   DeviceType;
+     uint8_t   DeviceEndp0Size;
+     uint8_t   DeviceCongValue;
 
  }DEV_INFO_Typedef,*pDEV_INFO_Typedef;
 
 
-extern UINT8 Global_Index;
+extern uint8_t Global_Index;
 extern DEV_INFO_Typedef  thisUsbDev;
 
-void  CopySetupReqPkg( const UINT8 *pReqPkt );
+void  CopySetupReqPkg( const uint8_t *pReqPkt );
 void  USB20HOST_SetBusReset(void);
 void  USB20Host_Init(FunctionalState sta);
-UINT8 USB20HOST_CtrlTransfer(UINT8 *ReqBuf, UINT8 *DataBuf, UINT8 *RetLen );
-UINT8 USB20HOST_ClearEndpStall( UINT8 endp );
-UINT8 USB20HOST_Transact( UINT8 endp_pid, UINT8 toggle,UINT32 timeout);
-UINT8 USB20Host_Enum(UINT8 depth,UINT8 *Databuf);
-UINT8 U20HOST_Enumerate( UINT8 depth,UINT8 *pbuf,UINT8 addr, UINT8 port);
-void USBHS_Analysis_Descr(pDEV_INFO_Typedef pusbdev,PUINT8 pdesc, UINT16 l);
+uint8_t USB20HOST_CtrlTransfer(uint8_t *ReqBuf, uint8_t *DataBuf, uint8_t *RetLen );
+uint8_t USB20HOST_ClearEndpStall( uint8_t endp );
+uint8_t USB20HOST_Transact( uint8_t endp_pid, uint8_t toggle,uint32_t timeout);
+uint8_t USB20Host_Enum(uint8_t depth,uint8_t *Databuf);
+uint8_t U20HOST_Enumerate( uint8_t depth,uint8_t *pbuf,uint8_t addr, uint8_t port);
+void USBHS_Analysis_Descr(pDEV_INFO_Typedef pusbdev,uint8_t * pdesc, uint16_t l);
 
-extern void HubAnalysis_Descr(PHUB_Port_Info portn,PUINT8 pdesc, UINT16 l);
-extern UINT8  USBHS_HUB_Main_Process( UINT8 depth ,UINT8 addr ,UINT8 uplevelport,UINT8 portnum);
+extern void HubAnalysis_Descr(PHUB_Port_Info portn,uint8_t * pdesc, uint16_t l);
+extern uint8_t  USBHS_HUB_Main_Process( uint8_t depth ,uint8_t addr ,uint8_t uplevelport,uint8_t portnum);
 
 
 #ifdef __cplusplus

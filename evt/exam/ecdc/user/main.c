@@ -19,8 +19,8 @@
 #include "ch56x_common.h"
 #define  FREQ_SYS   80000000
 
-UINT32  KeyValue[] = {0x55acd4c5, 0x97d4570e, 0xb89464ba, 0xe4a0556b, 0x84af48fd, 0x51af5d2e, 0xadec514f, 0x9642cadd};
-UINT32  CountValue[] = {0x00000001, 0x00000002, 0x00000003, 0x00000300};
+uint32_t  KeyValue[] = {0x55acd4c5, 0x97d4570e, 0xb89464ba, 0xe4a0556b, 0x84af48fd, 0x51af5d2e, 0xadec514f, 0x9642cadd};
+uint32_t  CountValue[] = {0x00000001, 0x00000002, 0x00000003, 0x00000300};
 
 /*******************************************************************************
  * @fn      DebugInit
@@ -31,10 +31,10 @@ UINT32  CountValue[] = {0x00000001, 0x00000002, 0x00000003, 0x00000300};
  *
  * @return  None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-	UINT32 x;
-	UINT32 t = FREQ_SYS;
+	uint32_t x;
+	uint32_t t = FREQ_SYS;
 	
 	x = 10 * t * 2 / 16 / baudrate;
 	x = ( x + 5 ) / 10;
@@ -70,21 +70,21 @@ int main()
 //	ECDC_Init(MODE_SM4_ECB, ECDCCLK_240MHZ, KEYLENGTH_128BIT, KeyValue, NULL);
 	ECDC_Init(MODE_SM4_CTR, ECDCCLK_240MHZ, KEYLENGTH_128BIT, KeyValue, CountValue);
 
-	UINT32 plaintext[4]={0x11112222, 0x33334444, 0x55556666, 0x77778888},ciphertext[4]={0};
+	uint32_t plaintext[4]={0x11112222, 0x33334444, 0x55556666, 0x77778888},ciphertext[4]={0};
 
 /*Print the encrypted ciphertext*/
 	PRINT("encryption:\n");
 	ECDC_Excute(SINGLEREGISTER_ENCRY, MODE_BIG_ENDIAN);
 	PRINT("%#X \n",R16_ECEC_CTRL);
 	ECDC_SingleRegister( plaintext, ciphertext);
-	for(UINT8 i=0; i<4; i++)
+	for(uint8_t i=0; i<4; i++)
 		printf("%08x\n",ciphertext[i]);
 /*Print the decrypted plaintext*/
 	PRINT("decryption:\n");
 	ECDC_Excute(SINGLEREGISTER_DECRY, MODE_BIG_ENDIAN);
 	PRINT("%#X \n",R16_ECEC_CTRL);
 	ECDC_SingleRegister(ciphertext, plaintext);
-	for(UINT8 i=0; i<4; i++)
+	for(uint8_t i=0; i<4; i++)
 		PRINT("%08x\n",plaintext[i]);
 #endif
 /* RAMX */
@@ -94,21 +94,21 @@ int main()
 //	ECDC_Init(MODE_SM4_ECB, ECDCCLK_240MHZ, KEYLENGTH_128BIT, KeyValue, NULL);
 //	ECDC_Init(MODE_SM4_CTR, ECDCCLK_240MHZ, KEYLENGTH_128BIT, KeyValue, CountValue);
 /*write plaintext*/
-	UINT32 i=0, len=64;
+	uint32_t i=0, len=64;
 	for(i=0; i<len; i++)
-		*(UINT32*)(0x20020000+i*4) = i;
+		*(uint32_t*)(0x20020000+i*4) = i;
 /*Print the encrypted ciphertext*/
 	PRINT("encryption:\n");
 	ECDC_Excute(SELFDMA_ENCRY, MODE_BIG_ENDIAN);
-	ECDC_SelfDMA((UINT32)BA_RAMX, len);
+	ECDC_SelfDMA((uint32_t)BA_RAMX, len);
 	for(i=0; i<len; i++)
-		PRINT("|%#x	%#x\n",(UINT32*)(0x20020000+i*4),*(UINT32*)(0x20020000+i*4));
+		PRINT("|%#x	%#x\n",(uint32_t*)(0x20020000+i*4),*(uint32_t*)(0x20020000+i*4));
 /*Print the decrypted plaintext*/
 	PRINT("decryption:\n");
 	ECDC_Excute(SELFDMA_DECRY, MODE_BIG_ENDIAN);
-	ECDC_SelfDMA((UINT32)BA_RAMX, len);
+	ECDC_SelfDMA((uint32_t)BA_RAMX, len);
 	for(i=0; i<len; i++)
-		PRINT("|%#x	%#x\n",(UINT32*)(0x20020000+i*4),*(UINT32*)(0x20020000+i*4));
+		PRINT("|%#x	%#x\n",(uint32_t*)(0x20020000+i*4),*(uint32_t*)(0x20020000+i*4));
 #endif
 	while(1);
 }

@@ -49,13 +49,13 @@
 #define   RAM_TO_PERIPHERAL_ENCRY   0x04
 #define   RAM_TO_PERIPHERAL_DECRY   0x0c
 
-void ECDC_Init( UINT8 ecdcmode, UINT8 clkmode, UINT8 keylen, PUINT32 pkey, PUINT32 pcount );
-void ECDC_SetKey( PUINT32 pkey, UINT8 keylen );
-void ECDC_SetCount( PUINT32 pcount );
-void ECDC_Excute( UINT8 excutemode, UINT8 endianmode );
-void ECDC_SingleRegister( PUINT32 pWdatbuff, PUINT32 pRdatbuff );
-void ECDC_SelfDMA( UINT32 ram_addr, UINT32 ram_len );
-void ECDC_RloadCount( UINT8 excutemode, UINT8 endianmode, PUINT32 pcount );
+void ECDC_Init( uint8_t ecdcmode, uint8_t clkmode, uint8_t keylen, uint32_t * pkey, uint32_t * pcount );
+void ECDC_SetKey( uint32_t * pkey, uint8_t keylen );
+void ECDC_SetCount( uint32_t * pcount );
+void ECDC_Excute( uint8_t excutemode, uint8_t endianmode );
+void ECDC_SingleRegister( uint32_t * pWdatbuff, uint32_t * pRdatbuff );
+void ECDC_SelfDMA( uint32_t ram_addr, uint32_t ram_len );
+void ECDC_RloadCount( uint8_t excutemode, uint8_t endianmode, uint32_t * pcount );
 
 	
 	

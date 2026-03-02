@@ -38,10 +38,10 @@ extern "C" {
 
 #define UDISKSIZE 1024*4*10
 /* Global Variable */
-extern __attribute__ ((aligned(16))) UINT8  endp0RTbuff[512] __attribute__((section(".DMADATA")));
-extern __attribute__ ((aligned(16))) UINT8  UDisk_In_Buf[UDISKSIZE] __attribute__((section(".DMADATA")));
-extern __attribute__ ((aligned(16))) UINT8  UDisk_Out_Buf[UDISKSIZE] __attribute__((section(".DMADATA")));
-extern UINT8V Link_Sta;
+extern __attribute__ ((aligned(16))) uint8_t  endp0RTbuff[512] __attribute__((section(".DMADATA")));
+extern __attribute__ ((aligned(16))) uint8_t  UDisk_In_Buf[UDISKSIZE] __attribute__((section(".DMADATA")));
+extern __attribute__ ((aligned(16))) uint8_t  UDisk_Out_Buf[UDISKSIZE] __attribute__((section(".DMADATA")));
+extern volatile uint8_t Link_Sta;
 
 typedef struct
 {

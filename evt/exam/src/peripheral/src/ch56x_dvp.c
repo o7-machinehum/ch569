@@ -29,7 +29,7 @@
  *
  * @return  None
  **/
-void DVP_INTCfg( UINT8 s,  UINT8 i )
+void DVP_INTCfg( uint8_t s,  uint8_t i )
 {
     if(s){
     	R8_DVP_INT_EN |= i;
@@ -54,7 +54,7 @@ void DVP_INTCfg( UINT8 s,  UINT8 i )
  *
  * @return  None
  */
-void DVP_Mode( UINT8 s,  DVP_Data_ModeTypeDef i)
+void DVP_Mode( uint8_t s,  DVP_Data_ModeTypeDef i)
 {
 	R8_DVP_CR0 &= ~RB_DVP_MSK_DAT_MOD;   //Restore default mode 8bit mode
 

@@ -23,17 +23,6 @@
 #include "ch56xsfr.h"
 #include "core_riscv.h"
 #include "ch56x_common.h"
-#ifndef uint16_t
-typedef  unsigned short  uint16_t;
-#endif
-
-#ifndef uint8_t
-typedef unsigned char uint8_t ;
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 
 #ifndef __IO

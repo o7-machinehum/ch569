@@ -22,41 +22,41 @@
 #define  TIME_OUT_VALUE         1000
 
 /* Global Variable */
-UINT8  gDiskMaxLun;				    											/* Maximum logical unit number of disk */
-UINT8  gDiskCurLun;	    														/* Current operating logical unit number of the disk */
-UINT32 gDiskCapability;		    												/* Total disk capacity */
-UINT32 gDiskPerSecSize;	    													/* Disk sector size */
-UINT8  gDiskBulkInEp;															/* IN endpoint address of USB mass storage device */
-UINT8  gDiskBulkInTog;															/* USB mass transfer synchronization flag : 0-31 */
-UINT8  gDiskBulkOutEp;															/* OUT endpoint address of USB mass storage device */
-UINT8  gDiskBulkOutTog;															/* USB mass transfer synchronization flag : 0-31 */
-UINT16 gDiskBulkInEpSize;  	    												/* Maximum packet size of IN endpoint of USB mass storage device */
-UINT16 gDiskBulkOutEpSize;  													/* The maximum packet size of the OUT endpoint of the USB mass storage device */
-UINT8  gDiskInterfNumber;														/* Interface number of USB mass storage device */
-UINT8V gDeviceConnectstatus;                                                    /* USB connection status */
-UINT8  gDeviceUsbType = 0;                                                      /* 01--USB2.0&1.1  02--USB3.0*/
-UINT8  gUdisk_flag = 0;
-UINT8V Hot_ret_flag;
-UINT16 U20_ENDP_SIZE;
+uint8_t  gDiskMaxLun;				    											/* Maximum logical unit number of disk */
+uint8_t  gDiskCurLun;	    														/* Current operating logical unit number of the disk */
+uint32_t gDiskCapability;		    												/* Total disk capacity */
+uint32_t gDiskPerSecSize;	    													/* Disk sector size */
+uint8_t  gDiskBulkInEp;															/* IN endpoint address of USB mass storage device */
+uint8_t  gDiskBulkInTog;															/* USB mass transfer synchronization flag : 0-31 */
+uint8_t  gDiskBulkOutEp;															/* OUT endpoint address of USB mass storage device */
+uint8_t  gDiskBulkOutTog;															/* USB mass transfer synchronization flag : 0-31 */
+uint16_t gDiskBulkInEpSize;  	    												/* Maximum packet size of IN endpoint of USB mass storage device */
+uint16_t gDiskBulkOutEpSize;  													/* The maximum packet size of the OUT endpoint of the USB mass storage device */
+uint8_t  gDiskInterfNumber;														/* Interface number of USB mass storage device */
+volatile uint8_t gDeviceConnectstatus;                                                    /* USB connection status */
+uint8_t  gDeviceUsbType = 0;                                                      /* 01--USB2.0&1.1  02--USB3.0*/
+uint8_t  gUdisk_flag = 0;
+volatile uint8_t Hot_ret_flag;
+uint16_t U20_ENDP_SIZE;
 
 __attribute__ ((aligned(16))) BULK_ONLY_CMD   mBOC  __attribute__((section(".DMADATA")));
 
 typedef struct _USB_ENDPOINT_DESCRIPTOR_U30 /*Endpoint descriptor*/
 {
-    UINT8  bLength;
-    UINT8  bDescriptorType;
-    UINT8  bEndpointAddress;
-    UINT8  bmAttributes;
-    UINT8  wMaxPacketSizeL;
-    UINT8  wMaxPacketSizeH;
-    UINT8  bInterval;
+    uint8_t  bLength;
+    uint8_t  bDescriptorType;
+    uint8_t  bEndpointAddress;
+    uint8_t  bmAttributes;
+    uint8_t  wMaxPacketSizeL;
+    uint8_t  wMaxPacketSizeH;
+    uint8_t  bInterval;
 
-    UINT8  bLength1;                //3.0 EndpointCompanion descriptor
-    UINT8  bDescriptorType1;
-    UINT8  bMaxBurst1;
-    UINT8  bmAttributes1;
-    UINT8  wBytesPerInterval_L;
-    UINT8  wBytesPerInterval_H;
+    uint8_t  bLength1;                //3.0 EndpointCompanion descriptor
+    uint8_t  bDescriptorType1;
+    uint8_t  bMaxBurst1;
+    uint8_t  bmAttributes1;
+    uint8_t  wBytesPerInterval_L;
+    uint8_t  wBytesPerInterval_H;
 }USB_ENDP_DESCR_U30, *PUSB_ENDP_DESCR_U30;
 
 typedef struct _USB_CONFIG_DESCRIPTOR_LONG_U30
@@ -67,7 +67,7 @@ typedef struct _USB_CONFIG_DESCRIPTOR_LONG_U30
 }USB_CFG_DESCR_LONG_U30, *PUSB_CFG_DESCR_LONG_U30;
 
 
-UINT8 MS_Init_Hotrst(  UINT8 *pbuf );
+uint8_t MS_Init_Hotrst(  uint8_t *pbuf );
 /*******************************************************************************
 * Function Name  : MS_GetMaxLun
 * Description    : USBThe host obtains the maximum logical unit number
@@ -75,12 +75,12 @@ UINT8 MS_Init_Hotrst(  UINT8 *pbuf );
 * Output         : NULL
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 MS_GetMaxLun( void )
+uint8_t MS_GetMaxLun( void )
 {
-	UINT8  status = 0;
-	UINT8  buf[ 1 ];
-	UINT8  setup_buf[8];
-	UINT16 s;
+	uint8_t  status = 0;
+	uint8_t  buf[ 1 ];
+	uint8_t  setup_buf[8];
+	uint16_t s;
 	/* Populate the SETUP command package */
 	setup_buf[0] = 0xA1;
 	setup_buf[1] = 0xFE;
@@ -144,10 +144,10 @@ UINT8 MS_GetMaxLun( void )
 * Output         : NULL
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 MS_ResetErrorBOC( void )
+uint8_t MS_ResetErrorBOC( void )
 {
-	UINT8  status;
-	UINT8 setup_buf[8];
+	uint8_t  status;
+	uint8_t setup_buf[8];
 	setup_buf[0] = 0x21;
 	setup_buf[1] = 0xFF;
 	setup_buf[2] = 0x00;
@@ -202,9 +202,9 @@ UINT8 MS_ResetErrorBOC( void )
 * Return         : USB_OPERATE_SUCCESS----Mass Storage Device;
 *                  USB_OPERATE_ERROR---other device
 *******************************************************************************/
-UINT8 MS_U30HOST_CofDescrAnalyse( UINT8 *pbuf )
+uint8_t MS_U30HOST_CofDescrAnalyse( uint8_t *pbuf )
 {
-	UINT16 i;
+	uint16_t i;
 
 	/* Analyze Configuration Descriptor */
 	if ( ( (PUSB_CFG_DESCR_LONG_U30)pbuf ) -> itf_descr.bInterfaceClass != 0x08 )
@@ -256,9 +256,9 @@ UINT8 MS_U30HOST_CofDescrAnalyse( UINT8 *pbuf )
 * Return         : USB_OPERATE_SUCCESS----Mass Storage Device;
 *                  USB_OPERATE_ERROR---other device
 *******************************************************************************/
-UINT8 MS_U20HOST_CofDescrAnalyse( UINT8 *pbuf )
+uint8_t MS_U20HOST_CofDescrAnalyse( uint8_t *pbuf )
 {
-	UINT16 i;
+	uint16_t i;
 
 	/* Analyze Configuration Descriptor */
 	if ( ( (PUSB_CFG_DESCR_LONG)pbuf ) -> itf_descr.bInterfaceClass != 0x08 )
@@ -312,11 +312,11 @@ UINT8 MS_U20HOST_CofDescrAnalyse( UINT8 *pbuf )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 MS_U30HOST_BulkInHandle( UINT8 *pDatBuf, UINT32 *pSize )
+uint8_t MS_U30HOST_BulkInHandle( uint8_t *pDatBuf, uint32_t *pSize )
 {
-	UINT16 status = 0;
-	UINT16 len,total_len;
-	UINT8 packnum = 1;
+	uint16_t status = 0;
+	uint16_t len,total_len;
+	uint8_t packnum = 1;
 	total_len = 0;
 
 	while(1)
@@ -332,7 +332,7 @@ UINT8 MS_U30HOST_BulkInHandle( UINT8 *pDatBuf, UINT32 *pSize )
 		{
 			len = *pSize;
 		}
-        USBSSH->UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;
+        USBSSH->UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;
 		len = USB30HOST_INTransaction(gDiskBulkInTog ,&packnum , gDiskBulkInEp , &status);
 		memcpy(pDatBuf,endpRXbuff,len);
 		if( status == 0x3000 )
@@ -364,12 +364,12 @@ UINT8 MS_U30HOST_BulkInHandle( UINT8 *pDatBuf, UINT32 *pSize )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 MS_U30HOST_BulkOutHandle( UINT8 *pDatBuf, UINT32 *pSize )
+uint8_t MS_U30HOST_BulkOutHandle( uint8_t *pDatBuf, uint32_t *pSize )
 {
-	UINT16 len;
-	UINT8* p;
-	UINT8 count = 0;
-    UINT32 timeoutcount = 0;
+	uint16_t len;
+	uint8_t* p;
+	uint8_t count = 0;
+    uint32_t timeoutcount = 0;
 	while(1)
 	{
 		if( gDeviceConnectstatus == USB_INT_DISCONNECT )return USB_INT_DISCONNECT;
@@ -383,7 +383,7 @@ UINT8 MS_U30HOST_BulkOutHandle( UINT8 *pDatBuf, UINT32 *pSize )
 			len = *pSize;
 		}
 
-		p = (UINT8 *)endpTXbuff;
+		p = (uint8_t *)endpTXbuff;
 		memcpy(p , pDatBuf , *pSize);
 
 		do
@@ -415,10 +415,10 @@ UINT8 MS_U30HOST_BulkOutHandle( UINT8 *pDatBuf, UINT32 *pSize )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 Hot_Reset( UINT8 *pdata )
+uint8_t Hot_Reset( uint8_t *pdata )
 {
-    UINT8 s,count;
-    UINT32 time_count = 0;
+    uint8_t s,count;
+    uint32_t time_count = 0;
     count = 0;
     if( gUdisk_flag )
     {
@@ -515,11 +515,11 @@ hot_reset_ag:
 * Output         : None
 * Return         : Return to execution status
 *******************************************************************************/
-UINT8 MS_ScsiCmd_Process( UINT8 *DataBuf )
+uint8_t MS_ScsiCmd_Process( uint8_t *DataBuf )
 {
-	UINT8  status;
-	UINT8  *p,s;
-	UINT32 len,i;
+	uint8_t  status;
+	uint8_t  *p,s;
+	uint32_t len,i;
 
 	p = DataBuf;
 	mBOC.mCBW.mCBW_Sig = USB_BO_CBW_SIG;
@@ -528,7 +528,7 @@ UINT8 MS_ScsiCmd_Process( UINT8 *DataBuf )
 	len = USB_BO_CBW_SIZE;
 	if( gDeviceUsbType == USB_U30_SPEED )
 	{
-		status = MS_U30HOST_BulkOutHandle( (UINT8 *)&mBOC.mCBW, &len );
+		status = MS_U30HOST_BulkOutHandle( (uint8_t *)&mBOC.mCBW, &len );
 		for (i = 0; i < 50; ++i)
 		{
             mDelayuS(1);
@@ -536,7 +536,7 @@ UINT8 MS_ScsiCmd_Process( UINT8 *DataBuf )
 	}
 	else
 	{
-		status = MS_U20HOST_BulkOutHandle( (UINT8 *)&mBOC.mCBW, &len );
+		status = MS_U20HOST_BulkOutHandle( (uint8_t *)&mBOC.mCBW, &len );
 	}
 	if( status == USB_INT_DISCONNECT )											/* If the device is disconnected, return directly */
 	{
@@ -567,11 +567,11 @@ UINT8 MS_ScsiCmd_Process( UINT8 *DataBuf )
 		if( gDeviceUsbType == USB_U30_SPEED )
 		{
 
-			status = MS_U30HOST_BulkOutHandle( (UINT8 *)&mBOC.mCBW, &len );
+			status = MS_U30HOST_BulkOutHandle( (uint8_t *)&mBOC.mCBW, &len );
 		}
 		else
 		{
-			status = MS_U20HOST_BulkOutHandle( (UINT8 *)&mBOC.mCBW, &len );
+			status = MS_U20HOST_BulkOutHandle( (uint8_t *)&mBOC.mCBW, &len );
 		}
 		if( status == USB_INT_DISCONNECT )
 		{
@@ -687,13 +687,13 @@ UINT8 MS_ScsiCmd_Process( UINT8 *DataBuf )
 
 	if( gDeviceUsbType == USB_U30_SPEED )
 	{
-	    status = MS_U30HOST_BulkInHandle( (UINT8 *)&mBOC.mCSW, &len );
+	    status = MS_U30HOST_BulkInHandle( (uint8_t *)&mBOC.mCSW, &len );
 	}
 	else
 	{
-		status = MS_U20HOST_BulkInHandle( (UINT8 *)&mBOC.mCSW, &len );
+		status = MS_U20HOST_BulkInHandle( (uint8_t *)&mBOC.mCSW, &len );
 	}
-	p = (UINT8 *)&mBOC.mCSW;
+	p = (uint8_t *)&mBOC.mCSW;
 #ifdef  MY_DEBUG_PRINTF
 	for( i=0;i!=len;i++ ){
 		printf("%02x ",*p++);
@@ -757,7 +757,7 @@ UINT8 MS_ScsiCmd_Process( UINT8 *DataBuf )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 MS_RequestSense( UINT8 *pbuf )
+uint8_t MS_RequestSense( uint8_t *pbuf )
 {
 	mDelaymS( 10 );
 	if( gDeviceConnectstatus == USB_INT_DISCONNECT )return USB_INT_DISCONNECT;
@@ -781,9 +781,9 @@ UINT8 MS_RequestSense( UINT8 *pbuf )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 MS_DiskInquiry(  UINT8 *pbuf )
+uint8_t MS_DiskInquiry(  uint8_t *pbuf )
 {
-	UINT8 s,retry;
+	uint8_t s,retry;
 	for( retry = 0;retry!=3;retry++ )
 	{
 	    mDelaymS( 100 * (retry+1) );
@@ -813,9 +813,9 @@ UINT8 MS_DiskInquiry(  UINT8 *pbuf )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 MS_DiskInquiry_1(  UINT8 *pbuf )
+uint8_t MS_DiskInquiry_1(  uint8_t *pbuf )
 {
-    UINT8 s;
+    uint8_t s;
     mBOC.mCBW.mCBW_DataLen     = 0x00000024;
     mBOC.mCBW.mCBW_Flag        = 0x80;
     mBOC.mCBW.mCBW_CB_Len      = 0x06;
@@ -837,7 +837,7 @@ UINT8 MS_DiskInquiry_1(  UINT8 *pbuf )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 MS_DiskCapacity( UINT8 *pbuf )
+uint8_t MS_DiskCapacity( uint8_t *pbuf )
 {
 	mBOC.mCBW.mCBW_DataLen     = 0x00000008;
 	mBOC.mCBW.mCBW_Flag 	   = 0x80;
@@ -863,7 +863,7 @@ UINT8 MS_DiskCapacity( UINT8 *pbuf )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 MS_DiskTestReady(  UINT8 *pbuf )
+uint8_t MS_DiskTestReady(  uint8_t *pbuf )
 {
 	mBOC.mCBW.mCBW_DataLen 	   = 0x00;
 	mBOC.mCBW.mCBW_Flag 	   = 0x00;
@@ -887,10 +887,10 @@ UINT8 MS_DiskTestReady(  UINT8 *pbuf )
 * Output         : None
 * Return         : Execution status
 *******************************************************************************/
-UINT8 MS_ReadSector( UINT32 StartLba, UINT16 SectCount, PUINT8 DataBuf )
+uint8_t MS_ReadSector( uint32_t StartLba, uint16_t SectCount, uint8_t * DataBuf )
 {
-    UINT8  err, s;
-    UINT32 len;
+    uint8_t  err, s;
+    uint32_t len;
 
     len = SectCount * gDiskPerSecSize;                                          /* Calculate total read length */
 
@@ -901,10 +901,10 @@ UINT8 MS_ReadSector( UINT32 StartLba, UINT16 SectCount, PUINT8 DataBuf )
         mBOC.mCBW.mCBW_CB_Len = 10;
         mBOC.mCBW.mCBW_CB_Buf[ 0 ] = 0x28;
         mBOC.mCBW.mCBW_CB_Buf[ 1 ] = 0x00;
-        mBOC.mCBW.mCBW_CB_Buf[ 2 ] = (UINT8)( StartLba >> 24 );
-        mBOC.mCBW.mCBW_CB_Buf[ 3 ] = (UINT8)( StartLba >> 16 );
-        mBOC.mCBW.mCBW_CB_Buf[ 4 ] = (UINT8)( StartLba >> 8 );
-        mBOC.mCBW.mCBW_CB_Buf[ 5 ] = (UINT8)( StartLba );
+        mBOC.mCBW.mCBW_CB_Buf[ 2 ] = (uint8_t)( StartLba >> 24 );
+        mBOC.mCBW.mCBW_CB_Buf[ 3 ] = (uint8_t)( StartLba >> 16 );
+        mBOC.mCBW.mCBW_CB_Buf[ 4 ] = (uint8_t)( StartLba >> 8 );
+        mBOC.mCBW.mCBW_CB_Buf[ 5 ] = (uint8_t)( StartLba );
         mBOC.mCBW.mCBW_CB_Buf[ 6 ] = 0x00;
         mBOC.mCBW.mCBW_CB_Buf[ 7 ] = 0x00;
         mBOC.mCBW.mCBW_CB_Buf[ 8 ] = SectCount;
@@ -939,10 +939,10 @@ UINT8 MS_ReadSector( UINT32 StartLba, UINT16 SectCount, PUINT8 DataBuf )
 * Output         : None
 * Return         : None
 *******************************************************************************/
-UINT8 MS_WriteSector( UINT32 StartLba, UINT8 SectCount, PUINT8 DataBuf )
+uint8_t MS_WriteSector( uint32_t StartLba, uint8_t SectCount, uint8_t * DataBuf )
 {
-	UINT8  err, s;
-	UINT32 len;
+	uint8_t  err, s;
+	uint32_t len;
 
 #ifdef  MY_DEBUG_PRINTF
 	printf( "MS_WriteSector:...\n" );
@@ -959,10 +959,10 @@ UINT8 MS_WriteSector( UINT32 StartLba, UINT8 SectCount, PUINT8 DataBuf )
 		mBOC.mCBW.mCBW_CB_Len = 10;
 		mBOC.mCBW.mCBW_CB_Buf[ 0 ] = 0x2A;
 		mBOC.mCBW.mCBW_CB_Buf[ 1 ] = 0x00;
-		mBOC.mCBW.mCBW_CB_Buf[ 2 ] = (UINT8)( StartLba >> 24 );
-		mBOC.mCBW.mCBW_CB_Buf[ 3 ] = (UINT8)( StartLba >> 16 );
-		mBOC.mCBW.mCBW_CB_Buf[ 4 ] = (UINT8)( StartLba >> 8 );
-		mBOC.mCBW.mCBW_CB_Buf[ 5 ] = (UINT8)( StartLba );
+		mBOC.mCBW.mCBW_CB_Buf[ 2 ] = (uint8_t)( StartLba >> 24 );
+		mBOC.mCBW.mCBW_CB_Buf[ 3 ] = (uint8_t)( StartLba >> 16 );
+		mBOC.mCBW.mCBW_CB_Buf[ 4 ] = (uint8_t)( StartLba >> 8 );
+		mBOC.mCBW.mCBW_CB_Buf[ 5 ] = (uint8_t)( StartLba );
 		mBOC.mCBW.mCBW_CB_Buf[ 6 ] = 0x00;
 		mBOC.mCBW.mCBW_CB_Buf[ 7 ] = 0x00;
 		mBOC.mCBW.mCBW_CB_Buf[ 8 ] = SectCount;
@@ -995,9 +995,9 @@ UINT8 MS_WriteSector( UINT32 StartLba, UINT8 SectCount, PUINT8 DataBuf )
 * Return         : USB_OPERATE_SUCCESS---Initialization succeeded;
 *                  USB_OPERATE_ERROR--Initialization error;
 *******************************************************************************/
-UINT8 MS_Init(  UINT8 *pbuf )
+uint8_t MS_Init(  uint8_t *pbuf )
 {
-	UINT8  count, status;
+	uint8_t  count, status;
 	/*******************************Get the maximum logical unit number********************************/
 	status = MS_GetMaxLun(  );
 
@@ -1064,14 +1064,14 @@ UINT8 MS_Init(  UINT8 *pbuf )
 		else
 		{
 			/* Save the current sector size */
-			gDiskPerSecSize = ( ( (UINT32)( *( pbuf + 4 ) ) ) << 24 );
-			gDiskPerSecSize |= ( ( (UINT32)( *( pbuf + 5 ) ) ) << 16 );
-			gDiskPerSecSize |= ( ( (UINT32)( *( pbuf + 6 ) ) ) << 8 ) + ( *( pbuf + 7 ) );
+			gDiskPerSecSize = ( ( (uint32_t)( *( pbuf + 4 ) ) ) << 24 );
+			gDiskPerSecSize |= ( ( (uint32_t)( *( pbuf + 5 ) ) ) << 16 );
+			gDiskPerSecSize |= ( ( (uint32_t)( *( pbuf + 6 ) ) ) << 8 ) + ( *( pbuf + 7 ) );
 
 			/* Save the current number of sectors */
-			gDiskCapability = ( ( (UINT32)( *( pbuf + 0 ) ) ) << 24 );
-			gDiskCapability |= ( ( (UINT32)( *( pbuf + 1 ) ) ) << 16 );
-			gDiskCapability |= ( ( (UINT32)( *( pbuf + 2 ) ) ) << 8 ) + ( *( pbuf + 3 ) );
+			gDiskCapability = ( ( (uint32_t)( *( pbuf + 0 ) ) ) << 24 );
+			gDiskCapability |= ( ( (uint32_t)( *( pbuf + 1 ) ) ) << 16 );
+			gDiskCapability |= ( ( (uint32_t)( *( pbuf + 2 ) ) ) << 8 ) + ( *( pbuf + 3 ) );
 
 			if( gDiskPerSecSize <= 512 ){
 			    gDiskPerSecSize = 512;
@@ -1079,7 +1079,7 @@ UINT8 MS_Init(  UINT8 *pbuf )
 			if( gDiskPerSecSize >=2048 ){
 			    gDiskPerSecSize = 512;
 			}
-			printf("gDiskPerSecSize: %08lx\n",(UINT32)gDiskPerSecSize);
+			printf("gDiskPerSecSize: %08lx\n",(uint32_t)gDiskPerSecSize);
 			printf("gDiskCapability: %08lx\n",gDiskCapability);
 
 			break;
@@ -1117,9 +1117,9 @@ UINT8 MS_Init(  UINT8 *pbuf )
 * Return         : USB_OPERATE_SUCCESS---Initialization succeeded;
 *                  USB_OPERATE_ERROR--Initialization error;
 *******************************************************************************/
-UINT8 MS_Init_Hotrst(  UINT8 *pbuf )
+uint8_t MS_Init_Hotrst(  uint8_t *pbuf )
 {
-    UINT8  count, status;
+    uint8_t  count, status;
 
     /*******************************Get USB disk information(INQUIRY)******************************/
     gDiskCurLun = 0x00;
@@ -1172,47 +1172,47 @@ UINT8 MS_Init_Hotrst(  UINT8 *pbuf )
 * Return         : Returns the current command execution status
 *
 *******************************************************************************/
-UINT8 MS_U20HOST_Bulk_Handle(  UINT8 EndpNum,UINT8 tog, UINT8 *pDatBuf, UINT16 *pSize, UINT8 Pid )
+uint8_t MS_U20HOST_Bulk_Handle(  uint8_t EndpNum,uint8_t tog, uint8_t *pDatBuf, uint16_t *pSize, uint8_t Pid )
 {
-	UINT8 s = 0;
-	UINT8 *p;
+	uint8_t s = 0;
+	uint8_t *p;
 	if( Pid == USB_PID_OUT )
 	{			//send data
-		if( (UINT32)(UINT8 *)pDatBuf < (UINT32)(UINT8 *)MAX_DATA_ADDR )
+		if( (uint32_t)(uint8_t *)pDatBuf < (uint32_t)(uint8_t *)MAX_DATA_ADDR )
 		{
-			p = (UINT8 *)endpTXbuff;
-			R32_UH_TX_DMA = (UINT32)(UINT8 *)endpTXbuff;
-			R32_UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;
+			p = (uint8_t *)endpTXbuff;
+			R32_UH_TX_DMA = (uint32_t)(uint8_t *)endpTXbuff;
+			R32_UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;
 			memcpy( p,pDatBuf,*pSize );
 		}
 		else
 		{
-			R32_UH_TX_DMA = (UINT32)(UINT8 *)pDatBuf;
-			R32_UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;
+			R32_UH_TX_DMA = (uint32_t)(uint8_t *)pDatBuf;
+			R32_UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;
 		}
 		R16_UH_TX_LEN = *pSize;
 	    s = USB20HOST_Transact( USB_PID_OUT << 4 | EndpNum, tog, 1000000 );          //out data,200mS timeout
 	}
 	else if( Pid == USB_PID_IN )
 	{		//recive data
-		if( (UINT32)(UINT8 *)pDatBuf < (UINT32)(UINT8 *)MAX_DATA_ADDR )
+		if( (uint32_t)(uint8_t *)pDatBuf < (uint32_t)(uint8_t *)MAX_DATA_ADDR )
 		{
-			R32_UH_TX_DMA = (UINT32)(UINT8 *)endpTXbuff;
-			R32_UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;
+			R32_UH_TX_DMA = (uint32_t)(uint8_t *)endpTXbuff;
+			R32_UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;
 		}
 		else
 		{
-			R32_UH_TX_DMA = (UINT32)(UINT8 *)endpTXbuff;
-			R32_UH_RX_DMA = (UINT32)(UINT8 *)pDatBuf;
+			R32_UH_TX_DMA = (uint32_t)(uint8_t *)endpTXbuff;
+			R32_UH_RX_DMA = (uint32_t)(uint8_t *)pDatBuf;
 		}
 	    s = USB20HOST_Transact( USB_PID_IN << 4 | EndpNum, tog, 1000000 );          //in data,200mS timeout
 	    if( s == ERR_SUCCESS1 )
 	    {
 	    	*pSize = R16_USB_RX_LEN;
 
-	    	if( (UINT32)(UINT8 *)pDatBuf < (UINT32)(UINT8 *)MAX_DATA_ADDR )
+	    	if( (uint32_t)(uint8_t *)pDatBuf < (uint32_t)(uint8_t *)MAX_DATA_ADDR )
 	    	{
-				p = (UINT8 *)endpRXbuff;
+				p = (uint8_t *)endpRXbuff;
 				memcpy( pDatBuf,p,*pSize );
 	    	}
 	    }
@@ -1230,10 +1230,10 @@ UINT8 MS_U20HOST_Bulk_Handle(  UINT8 EndpNum,UINT8 tog, UINT8 *pDatBuf, UINT16 *
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 MS_U20HOST_BulkOutHandle( UINT8 *pDatBuf, UINT32 *pSize )
+uint8_t MS_U20HOST_BulkOutHandle( uint8_t *pDatBuf, uint32_t *pSize )
 {
-	UINT8 status;
-	UINT16 len;
+	uint8_t status;
+	uint16_t len;
 	while(1)
 	{
 		if( *pSize >= U20_ENDP_SIZE )
@@ -1263,10 +1263,10 @@ UINT8 MS_U20HOST_BulkOutHandle( UINT8 *pDatBuf, UINT32 *pSize )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 MS_U20HOST_BulkInHandle( UINT8 *pDatBuf, UINT32 *pSize )
+uint8_t MS_U20HOST_BulkInHandle( uint8_t *pDatBuf, uint32_t *pSize )
 {
-	UINT8 status;
-	UINT16 len,total_len;
+	uint8_t status;
+	uint16_t len,total_len;
 	total_len = 0;
 	while(1)
 	{

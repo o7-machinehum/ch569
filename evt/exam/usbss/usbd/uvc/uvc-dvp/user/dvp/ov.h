@@ -106,23 +106,23 @@
 #define OV2640_SENSOR_HISTO_HIGH 0x62
 
 /* Function declaration */
-UINT8 OV2640_Init(void);
-void OV2640_Resolution_Mode( UINT8 choice );
-void OV2640_Auto_Exposure(UINT8 level);
-void OV2640_Light_Mode(UINT8 mode);
-void OV2640_Color_Saturation(UINT8 sat);
-void OV2640_Brightness(UINT8 bright);
-void OV2640_Contrast(UINT8 contrast);
-void OV2640_Special_Effects(UINT8 eft);
-void OV2640_Color_Bar(UINT8 sw);
-void OV2640_Window_Set(UINT16 sx,UINT16 sy,UINT16 width,UINT16 height);
-UINT8 OV2640_OutSize_Set(UINT16 width,UINT16 height);
-UINT8 OV2640_ImageWin_Set(UINT16 offx,UINT16 offy,UINT16 width,UINT16 height);
-UINT8 OV2640_ImageSize_Set(UINT16 width,UINT16 height);
-void ov2640_speed_ctrl(UINT8 pclkdiv, UINT8 clkdiv);
+uint8_t OV2640_Init(void);
+void OV2640_Resolution_Mode( uint8_t choice );
+void OV2640_Auto_Exposure(uint8_t level);
+void OV2640_Light_Mode(uint8_t mode);
+void OV2640_Color_Saturation(uint8_t sat);
+void OV2640_Brightness(uint8_t bright);
+void OV2640_Contrast(uint8_t contrast);
+void OV2640_Special_Effects(uint8_t eft);
+void OV2640_Color_Bar(uint8_t sw);
+void OV2640_Window_Set(uint16_t sx,uint16_t sy,uint16_t width,uint16_t height);
+uint8_t OV2640_OutSize_Set(uint16_t width,uint16_t height);
+uint8_t OV2640_ImageWin_Set(uint16_t offx,uint16_t offy,uint16_t width,uint16_t height);
+uint8_t OV2640_ImageSize_Set(uint16_t width,uint16_t height);
+void ov2640_speed_ctrl(uint8_t pclkdiv, uint8_t clkdiv);
 void JPEG_Mode_Init(void);
-void OV2640_Change_Resolution( UINT8 formatindex,UINT8 frameindex );
-void OV2640_Format_Mode( UINT8 choice );
+void OV2640_Change_Resolution( uint8_t formatindex,uint8_t frameindex );
+void OV2640_Format_Mode( uint8_t choice );
 
 
 #endif /* DVP_OV_C_ */

@@ -13,13 +13,13 @@
 #include "usb30_desc.h"
 #include "uvclib.h"
 /* Global Variable */
-UINT8V      Tx_Lmp_Port = 0;
-UINT8V      Link_sta = 0;
-UINT32      SetupLen = 0;
-UINT8       SetupReqCode = 0;
-PUINT8      pDescr;
-__attribute__ ((aligned(16))) UINT8 endp0RTbuff[512] __attribute__((section(".DMADATA")));  //Endpoint 0 data send / receive buffer
-__attribute__ ((aligned(16))) UINT8 endp1RTbuff[1024] __attribute__((section(".DMADATA"))); //Endpoint 1 data send / receive buffer
+volatile uint8_t      Tx_Lmp_Port = 0;
+volatile uint8_t      Link_sta = 0;
+uint32_t      SetupLen = 0;
+uint8_t       SetupReqCode = 0;
+uint8_t *      pDescr;
+__attribute__ ((aligned(16))) uint8_t endp0RTbuff[512] __attribute__((section(".DMADATA")));  //Endpoint 0 data send / receive buffer
+__attribute__ ((aligned(16))) uint8_t endp1RTbuff[1024] __attribute__((section(".DMADATA"))); //Endpoint 1 data send / receive buffer
 
 /*******************************************************************************
  * @fn      USB30D_init
@@ -30,13 +30,13 @@ __attribute__ ((aligned(16))) UINT8 endp1RTbuff[1024] __attribute__((section(".D
  */
 void USB30D_init(FunctionalState sta)
 {
-    UINT16 i, s;
+    uint16_t i, s;
     if(sta)
     {
         USB30_Device_Init();
         USBSS->UEP_CFG = EP0_R_EN | EP0_T_EN  | EP1_T_EN ; // set end point rx/tx enable
-        USBSS->UEP0_DMA = (UINT32)(UINT8 *)endp0RTbuff;
-        USBSS->UEP1_TX_DMA = (UINT32)(UINT8 *)endp1RTbuff;
+        USBSS->UEP0_DMA = (uint32_t)(uint8_t *)endp0RTbuff;
+        USBSS->UEP1_TX_DMA = (uint32_t)(uint8_t *)endp1RTbuff;
         USB30_ISO_Setendp(endp_1|endp_in,ENABLE);
     }
     else
@@ -228,11 +228,11 @@ void LINK_IRQHandler() //USBSS link interrupt service
  *
  * @return  Length
  */
-UINT16 USB30_NonStandardReq()
+uint16_t USB30_NonStandardReq()
 {
     SetupReqCode = UsbSetupBuf->bRequest;
     SetupLen = UsbSetupBuf->wLength;
-    UINT16 len = 0xFFFF;
+    uint16_t len = 0xFFFF;
     /*Upload data*/
     if(UsbSetupBuf->bRequestType & 0x80){
         len = UVC_NonStandardReq(&pDescr);
@@ -258,11 +258,11 @@ UINT16 USB30_NonStandardReq()
  *
  * @return  Length
  */
-UINT16 USB30_StandardReq()
+uint16_t USB30_StandardReq()
 {
     SetupReqCode = UsbSetupBuf->bRequest;
     SetupLen = UsbSetupBuf->wLength;
-    UINT16 len = 0;
+    uint16_t len = 0;
 #if 0
     printf("S:%02x %02x %02x %02x %02x %02x %02x %02x\n", endp0RTbuff[0], endp0RTbuff[1],
             endp0RTbuff[2], endp0RTbuff[3], endp0RTbuff[4], endp0RTbuff[5],
@@ -281,38 +281,38 @@ UINT16 USB30_StandardReq()
                 {
                         case USB_DESCR_TYP_DEVICE:
                                 if(SetupLen>SIZE_DEVICE_DESC) SetupLen  = SIZE_DEVICE_DESC;
-                                pDescr = (PUINT8)DeviceDescriptor;
+                                pDescr = (uint8_t *)DeviceDescriptor;
                                 break;
                         case USB_DESCR_TYP_CONFIG:
                                 if(SetupLen > SIZE_CONFIG_DESC) SetupLen = SIZE_CONFIG_DESC;
-                                pDescr = (PUINT8)ConfigDescriptor;
+                                pDescr = (uint8_t *)ConfigDescriptor;
                                 break;
                         case USB_DESCR_TYP_BOS:
                                 if(SetupLen > SIZE_BOS_DESC) SetupLen = SIZE_BOS_DESC;
-                                pDescr = (PUINT8)BOSDescriptor;
+                                pDescr = (uint8_t *)BOSDescriptor;
                                 break;
                         case    USB_DESCR_TYP_STRING:
                             switch(UsbSetupBuf->wValueL)
                                 {
                                     case USB_DESCR_LANGID_STRING:
                                         if(SetupLen > SIZE_STRING_LANGID) SetupLen = SIZE_STRING_LANGID;
-                                        pDescr = (PUINT8)StringLangID;
+                                        pDescr = (uint8_t *)StringLangID;
                                         break;
                                     case USB_DESCR_VENDOR_STRING:
                                         if(SetupLen > SIZE_STRING_VENDOR) SetupLen = SIZE_STRING_VENDOR;
-                                        pDescr = (PUINT8)StringVendor;
+                                        pDescr = (uint8_t *)StringVendor;
                                         break;
                                     case USB_DESCR_PRODUCT_STRING:
                                         if(SetupLen > SIZE_STRING_PRODUCT) SetupLen = SIZE_STRING_PRODUCT;
-                                        pDescr = (PUINT8)StringProduct;
+                                        pDescr = (uint8_t *)StringProduct;
                                         break;
                                     case USB_DESCR_SERIAL_STRING:
                                         if(SetupLen > SIZE_STRING_SERIAL) SetupLen = SIZE_STRING_SERIAL;
-                                        pDescr = (PUINT8)StringSerial;
+                                        pDescr = (uint8_t *)StringSerial;
                                         break;
                                     case USB_DESCR_OS_STRING:
                                         if(SetupLen >SIZE_STRING_OS) SetupLen = SIZE_STRING_OS;
-                                        pDescr = (PUINT8)OSStringDescriptor;
+                                        pDescr = (uint8_t *)OSStringDescriptor;
                                         break;
                                     default:
                                         len = USB_DESCR_UNSUPPORTED;
@@ -394,10 +394,10 @@ UINT16 USB30_StandardReq()
  *
  * @return  Send length
  */
-UINT16 EP0_IN_Callback(void)
+uint16_t EP0_IN_Callback(void)
 {
 
-    UINT16 len = 0;
+    uint16_t len = 0;
     switch(SetupReqCode)
     {
         case USB_GET_DESCRIPTOR:
@@ -417,23 +417,23 @@ UINT16 EP0_IN_Callback(void)
  *
  * @return  None
  */
-UINT16 EP0_OUT_Callback()
+uint16_t EP0_OUT_Callback()
 {
-    UINT16 rx_len = 0;
-    static UINT8 format = 0;
-    static UINT8 frame = 0;
+    uint16_t rx_len = 0;
+    static uint8_t format = 0;
+    static uint8_t frame = 0;
     USB30_OUT_Status( ENDP_0,NULL, &rx_len, NULL );
 
     /* Switch video format or resolution */
     if(rx_len == 0x1A)
     {
-        if( (format != *(UINT8 *)(endp0RTbuff+2)) || (frame != *(UINT8 *)(endp0RTbuff+3)))
+        if( (format != *(uint8_t *)(endp0RTbuff+2)) || (frame != *(uint8_t *)(endp0RTbuff+3)))
         {
-            format = *(UINT8 *)(endp0RTbuff+2);
-            frame = *(UINT8 *)(endp0RTbuff+3);
+            format = *(uint8_t *)(endp0RTbuff+2);
+            frame = *(uint8_t *)(endp0RTbuff+3);
             Get_Curr[2] = format;
             Get_Curr[3] = frame;
-            Formatchange_flag = *(UINT8 *)(endp0RTbuff+2);
+            Formatchange_flag = *(uint8_t *)(endp0RTbuff+2);
             OV2640_Format_Mode(Formatchange_flag);
             OV2640_Change_Resolution(format,frame);
         }
@@ -534,7 +534,7 @@ void EP7_OUT_Callback()
  *
  * @return  None
  */
-void USB30_ITP_Callback(UINT32 ITPCounter)
+void USB30_ITP_Callback(uint32_t ITPCounter)
 {
 
 }

@@ -17,23 +17,23 @@
 
 /* Function */
 void LINK_IRQHandler( void ) __attribute__((interrupt("WCH-Interrupt-fast")));
-void Analysis_Descr(UINT8 *pdesc, UINT16 len);
+void Analysis_Descr(uint8_t *pdesc, uint16_t len);
 
 /* Global define */
 #define pSetupreq    ((PUSB_SETUP_REQ)endpTXbuff)
 
 /* Global Variable */
-__attribute__ ((aligned(16))) UINT8 endpRXbuff[512] __attribute__((section(".DMADATA"))); //data recive buffer
-__attribute__ ((aligned(16))) UINT8 endpTXbuff[512] __attribute__((section(".DMADATA"))); //data send buffer
-__attribute__ ((aligned(16))) UINT8 Test_Buf[3072] __attribute__((section(".DMADATA")));
+__attribute__ ((aligned(16))) uint8_t endpRXbuff[512] __attribute__((section(".DMADATA"))); //data recive buffer
+__attribute__ ((aligned(16))) uint8_t endpTXbuff[512] __attribute__((section(".DMADATA"))); //data send buffer
+__attribute__ ((aligned(16))) uint8_t Test_Buf[3072] __attribute__((section(".DMADATA")));
 
-UINT8V tx_lmp_port = 0;
-UINT8V device_link_status = 0;              //USBSS link flag
-UINT8V config_value = 0;
-UINT8V gDeviceConnectstatus;                /* USB connection status */
-UINT8  gDeviceClassType;
-UINT8  gDeviceUsbType = 0;                  /* 01--USB2.0&1.1  02--USB3.0*/
-UINT8 AddressNum[127] = {0};
+volatile uint8_t tx_lmp_port = 0;
+volatile uint8_t device_link_status = 0;              //USBSS link flag
+volatile uint8_t config_value = 0;
+volatile uint8_t gDeviceConnectstatus;                /* USB connection status */
+uint8_t  gDeviceClassType;
+uint8_t  gDeviceUsbType = 0;                  /* 01--USB2.0&1.1  02--USB3.0*/
+uint8_t AddressNum[127] = {0};
 
 
 Link_HUBSaveData* Hub_LinkHead;//HUB link head
@@ -159,7 +159,7 @@ Link_HUBSaveData* InitHubLink()
  *
  * @return    None
  */
-void AssignHubData(USB_HUB_SaveData *hubdata ,UINT8 depth,UINT8 uplevelport,UINT8 currentport,USB_HUB_Info hub_info)
+void AssignHubData(USB_HUB_SaveData *hubdata ,uint8_t depth,uint8_t uplevelport,uint8_t currentport,USB_HUB_Info hub_info)
 {
    (*hubdata).Depth = depth;
    (*hubdata).UpLevelPort = uplevelport;
@@ -177,7 +177,7 @@ void AssignHubData(USB_HUB_SaveData *hubdata ,UINT8 depth,UINT8 uplevelport,UINT
  *
  * @return    None
  */
-UINT8 SearchHubData(Link_HUBSaveData* p, USB_HUB_SaveData *HUB_SaveData)
+uint8_t SearchHubData(Link_HUBSaveData* p, USB_HUB_SaveData *HUB_SaveData)
 {
     p = p->next;
     while (p)
@@ -205,7 +205,7 @@ UINT8 SearchHubData(Link_HUBSaveData* p, USB_HUB_SaveData *HUB_SaveData)
  *
  * @return    None
  */
-UINT8 InsertHubData(Link_HUBSaveData* p, USB_HUB_SaveData HUB_SaveData)
+uint8_t InsertHubData(Link_HUBSaveData* p, USB_HUB_SaveData HUB_SaveData)
 {
     Link_HUBSaveData* c = NULL;
     Link_HUBSaveData* temp = p;//Create temporary nodes temp
@@ -241,10 +241,10 @@ UINT8 InsertHubData(Link_HUBSaveData* p, USB_HUB_SaveData HUB_SaveData)
  *
  * @return    None
  */
-UINT8 DeleteHubData(Link_HUBSaveData* p, USB_HUB_SaveData HUB_SaveData)
+uint8_t DeleteHubData(Link_HUBSaveData* p, USB_HUB_SaveData HUB_SaveData)
 {
     Link_HUBSaveData* del = NULL, *temp = p;
-    UINT8 find = 0;
+    uint8_t find = 0;
     //Find the direct precursor node of the target element
     while (temp->next)
     {
@@ -285,7 +285,7 @@ UINT8 DeleteHubData(Link_HUBSaveData* p, USB_HUB_SaveData HUB_SaveData)
  *
  * @return    None
  */
-UINT8 ModifyHubData(Link_HUBSaveData* p, USB_HUB_SaveData oldhubdata, USB_HUB_SaveData newhubdata)
+uint8_t ModifyHubData(Link_HUBSaveData* p, USB_HUB_SaveData oldhubdata, USB_HUB_SaveData newhubdata)
 {
     p = p->next;
     while (p)
@@ -312,10 +312,10 @@ UINT8 ModifyHubData(Link_HUBSaveData* p, USB_HUB_SaveData oldhubdata, USB_HUB_Sa
  *
  * @return    None
  */
-UINT8  Hublink_judgingstructures( USB_HUB_SaveData hubdata )
+uint8_t  Hublink_judgingstructures( USB_HUB_SaveData hubdata )
 {
-    UINT8 ret = 0;
-    UINT8 del_flg = 0;
+    uint8_t ret = 0;
+    uint8_t del_flg = 0;
     Link_HUBSaveData *deletehub = NULL;
     deletehub = Hub_LinkHead;
 
@@ -390,9 +390,9 @@ void Hublink_finesubstructures( USB_HUB_SaveData hubdata )
  *
  * @return    Number of addresses to be set
  */
-UINT8 USB_SetAddressNumber(void)
+uint8_t USB_SetAddressNumber(void)
 {
-    UINT8 i = 0;
+    uint8_t i = 0;
     for (i = DEVICE_ADDR+1; i < 127; i++)
     {
         if( AddressNum[i] == 0 )
@@ -413,7 +413,7 @@ UINT8 USB_SetAddressNumber(void)
  *
  * @return    0 - success 1 - faild
  */
-UINT8 USB_DelAddressNumber(UINT8 addr)
+uint8_t USB_DelAddressNumber(uint8_t addr)
 {
     if( AddressNum[addr] == 1)
     {
@@ -435,13 +435,13 @@ UINT8 USB_DelAddressNumber(UINT8 addr)
  *
  * @return    None
  */
-UINT16 USB30HOST_INTransaction(UINT8 seq_num,UINT8 *recv_packnum ,UINT8 endp_num,UINT16 *status)
+uint16_t USB30HOST_INTransaction(uint8_t seq_num,uint8_t *recv_packnum ,uint8_t endp_num,uint16_t *status)
 {
-    UINT8  packnum = 0;
-    UINT8  nump = 0;
-    UINT16 len;
-    UINT16 num =0;
-    UINT32 i = 0;
+    uint8_t  packnum = 0;
+    uint8_t  nump = 0;
+    uint16_t len;
+    uint16_t num =0;
+    uint32_t i = 0;
 
     num = USB30H_IN_Data(seq_num, recv_packnum, endp_num );
     mDelayuS(200);
@@ -499,11 +499,11 @@ UINT16 USB30HOST_INTransaction(UINT8 seq_num,UINT8 *recv_packnum ,UINT8 endp_num
  *
  * @return    Number of unsent packets remaining
  */
-UINT8 USB30HOST_OUTTransaction(UINT8 seq_num,UINT8 send_packnum ,UINT8 endp_num,UINT32 txlen)
+uint8_t USB30HOST_OUTTransaction(uint8_t seq_num,uint8_t send_packnum ,uint8_t endp_num,uint32_t txlen)
 {
-    UINT8  sta;
-    UINT8  packnump;
-    UINT32 i = 0;
+    uint8_t  sta;
+    uint8_t  packnump;
+    uint32_t i = 0;
 
     sta = USB30H_OUT_Data(seq_num, send_packnum, endp_num, txlen);
     switch(sta&0x07)
@@ -558,16 +558,16 @@ UINT8 USB30HOST_OUTTransaction(UINT8 seq_num,UINT8 send_packnum ,UINT8 endp_num,
  *            bit0~11 - The data stage is device-to-host, and the data length is returned by the device.
  *                      The data stage is host-to-device, and the status value is returned by the device
  */
-UINT16 USB30HOST_CtrlTransaciton(UINT8 *databuf)
+uint16_t USB30HOST_CtrlTransaciton(uint8_t *databuf)
 {
-    UINT8   *pBuf;
-    UINT8   seq_num =0;
-    UINT8   req_nump = 1;
-    UINT16  ReLen;
-    UINT16  txlen=0;
-    UINT16  len = 0;
-    UINT16  trans_len = 0;
-    UINT32  i=0;
+    uint8_t   *pBuf;
+    uint8_t   seq_num =0;
+    uint8_t   req_nump = 1;
+    uint16_t  ReLen;
+    uint16_t  txlen=0;
+    uint16_t  len = 0;
+    uint16_t  trans_len = 0;
+    uint32_t  i=0;
 
     pBuf = databuf;
     ReLen = pSetupreq->wLength;
@@ -576,7 +576,7 @@ UINT16 USB30HOST_CtrlTransaciton(UINT8 *databuf)
     {
       while(ReLen)
       {
-          USBSSH->UH_RX_DMA = (UINT32)pBuf + trans_len ;
+          USBSSH->UH_RX_DMA = (uint32_t)pBuf + trans_len ;
           len = USB30H_IN_Data( seq_num, &req_nump, 0 );                 // req_nump=1, endp=0
           mDelayuS(200);
           switch( len & 0x7000 )
@@ -619,7 +619,7 @@ UINT16 USB30HOST_CtrlTransaciton(UINT8 *databuf)
     {
       while(ReLen)
       {
-         USBSSH->UH_TX_DMA = (UINT32)pBuf  + trans_len;
+         USBSSH->UH_TX_DMA = (uint32_t)pBuf  + trans_len;
          txlen = (ReLen > USBSS_ENDP0_MAXSIZE) ? USBSS_ENDP0_MAXSIZE : ReLen;
          len = USB30H_OUT_Data( seq_num, req_nump, 0 ,txlen);      // nump =1, endp=0
          switch(len & 0x07)
@@ -668,9 +668,9 @@ UINT16 USB30HOST_CtrlTransaciton(UINT8 *databuf)
  *
  * @return    len
  */
-UINT16 GetDEV_Descriptor(void)
+uint16_t GetDEV_Descriptor(void)
 {
-  UINT16 len;
+  uint16_t len;
   memcpy( endpTXbuff , get_dev_descriptor , 8);
   USB30H_Send_Setup( 8 );
   len = USB30HOST_CtrlTransaciton(endpRXbuff);
@@ -685,10 +685,10 @@ UINT16 GetDEV_Descriptor(void)
  *
  * @return    len
  */
-UINT16 GetConfig_Descriptor(PHUB_Port_Info phub,UINT8 depth , UINT8 port)
+uint16_t GetConfig_Descriptor(PHUB_Port_Info phub,uint8_t depth , uint8_t port)
 {
-  UINT16 reallen;
-  UINT16 len;
+  uint16_t reallen;
+  uint16_t len;
 
   memcpy( endpTXbuff , get_cfg_descriptor , 8);
   USB30H_Send_Setup( 8 );
@@ -707,11 +707,11 @@ UINT16 GetConfig_Descriptor(PHUB_Port_Info phub,UINT8 depth , UINT8 port)
   printf("thisUsbDev.DeviceType=%02x\n",thisUsbDev.DeviceType);
   if( thisUsbDev.DeviceType == 0x09 )//HUB processing
   {
-      HubAnalysis_Descr( phub,(UINT8 *)endpRXbuff, pSetupreq->wLength );
+      HubAnalysis_Descr( phub,(uint8_t *)endpRXbuff, pSetupreq->wLength );
   }
   else//Other device processing
   {
-      USBHS_Analysis_Descr( &thisUsbDev,(UINT8 *)endpRXbuff, pSetupreq->wLength );
+      USBHS_Analysis_Descr( &thisUsbDev,(uint8_t *)endpRXbuff, pSetupreq->wLength );
   }
 
   return len;
@@ -726,7 +726,7 @@ UINT16 GetConfig_Descriptor(PHUB_Port_Info phub,UINT8 depth , UINT8 port)
  *
  * @return    None
  */
-void Set_Address(UINT8 addr)
+void Set_Address(uint8_t addr)
 {
   USB30H_Set_Address(0);
   memcpy( endpTXbuff , set_address , 8);
@@ -745,9 +745,9 @@ void Set_Address(UINT8 addr)
  *
  * @return    None
  */
-void U30_RootSetAddress(UINT8 addr)
+void U30_RootSetAddress(uint8_t addr)
 {
-  UINT8 s = 0;
+  uint8_t s = 0;
 
   USB30H_Set_Address(0);
   memcpy( endpTXbuff , set_address , 8);
@@ -789,7 +789,7 @@ void Set_IsochDelay(void)
  */
 void Set_Sel(void)
 {
-    UINT8 buf[6];
+    uint8_t buf[6];
     buf[0] = 0x5f;buf[1] = 0x0a;buf[2] = 0x54;
     buf[3] = 0x08;buf[4] = 0xff;buf[5] = 0x07;
     memcpy( endpTXbuff , set_sel , 8);
@@ -809,7 +809,7 @@ void Set_Sel(void)
  */
 void SetFeatureU1(void)
 {
-  UINT8 buf[8] = {0x00,0x03,0x30,0x00,0x00,0x00,0x00,0x00};
+  uint8_t buf[8] = {0x00,0x03,0x30,0x00,0x00,0x00,0x00,0x00};
 
   memcpy( endpTXbuff , buf , 8);
   USB30H_Send_Setup( 8 );
@@ -825,7 +825,7 @@ void SetFeatureU1(void)
  */
 void SetFeatureU2(void)
 {
-  UINT8 buf[8] = {0x00,0x03,0x31,0x00,0x00,0x00,0x00,0x00};
+  uint8_t buf[8] = {0x00,0x03,0x31,0x00,0x00,0x00,0x00,0x00};
   memcpy( endpTXbuff , buf , 8);
   USB30H_Send_Setup( 8 );
   USB30H_Send_Status();
@@ -856,11 +856,11 @@ void Set_Configuration(void)
  *
  * @return    None
  */
-void Analysis_Descr(UINT8 *pdesc, UINT16 len)
+void Analysis_Descr(uint8_t *pdesc, uint16_t len)
 {
-    UINT8 in_endp_num = 1;
-    UINT8 out_endp_num = 1;
-    UINT16 i;
+    uint8_t in_endp_num = 1;
+    uint8_t out_endp_num = 1;
+    uint16_t i;
     for(i=0;i<len;i++)                                                //Analysis Descriptor
     {
         if((pdesc[i]==0x09)&&(pdesc[i+1]==0x02))
@@ -894,9 +894,9 @@ void Analysis_Descr(UINT8 *pdesc, UINT16 len)
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 USB30HOST_ClearEndpStall( UINT8 endp )
+uint8_t USB30HOST_ClearEndpStall( uint8_t endp )
 {
-    UINT8  setup_buf[8];
+    uint8_t  setup_buf[8];
     setup_buf[0] = 0x02;
     setup_buf[1] = 0x01;
     setup_buf[2] = 0X00;
@@ -921,7 +921,7 @@ UINT8 USB30HOST_ClearEndpStall( UINT8 endp )
 * Output         : None
 * Return         : None
 *******************************************************************************/
-UINT8 U30HOST_CofDescrAnalyse( UINT8 depth,UINT8 *pbuf, UINT8 port )
+uint8_t U30HOST_CofDescrAnalyse( uint8_t depth,uint8_t *pbuf, uint8_t port )
 {
     gDeviceClassType = ( (PUSB_CFG_DESCR_LONG_U30)pbuf ) -> itf_descr.bInterfaceClass;
     if( ( gDeviceClassType <= 0x09 ) || ( gDeviceClassType == 0xFF ) )
@@ -972,10 +972,10 @@ UINT8 U30HOST_CofDescrAnalyse( UINT8 depth,UINT8 *pbuf, UINT8 port )
  *
  * @return    None
  */
-void USB30Host_Enum(UINT8 depth,UINT8 addr, UINT8 port )
+void USB30Host_Enum(uint8_t depth,uint8_t addr, uint8_t port )
 {
-    UINT8 status,i;
-    UINT16 len;
+    uint8_t status,i;
+    uint16_t len;
 
 //============= set address ===================
         U30_RootSetAddress(addr);
@@ -1030,14 +1030,14 @@ void USB30Host_Enum(UINT8 depth,UINT8 addr, UINT8 port )
             status = U30HOST_SetHubDepth( 0 );
             if ( status != USB_INT_SUCCESS )
             {
-                printf( "U30HOST_SetHubDepth_ERROR = %02X\n", (UINT16)status );
+                printf( "U30HOST_SetHubDepth_ERROR = %02X\n", (uint16_t)status );
             }
             for( i=0;i!=ss_hub_info[depth].numofport;i++ )
             {
                 status = U30HOST_GetPortStstus( depth,i+1 );
                 if ( status != USB_INT_SUCCESS )
                 {
-                    printf( "U30HOST_GetPortStstus = %02X\n", (UINT16)status );
+                    printf( "U30HOST_GetPortStstus = %02X\n", (uint16_t)status );
                 }
             }
             for( i=0;i!=ss_hub_info[depth].numofport;i++ )
@@ -1045,7 +1045,7 @@ void USB30Host_Enum(UINT8 depth,UINT8 addr, UINT8 port )
                 status = U30HOST_SetPortFeatrue( i+1 );
                 if ( status != USB_INT_SUCCESS )
                 {
-                    printf( "U30HOST_SetPortFeatrue = %02X\n", (UINT16)status );
+                    printf( "U30HOST_SetPortFeatrue = %02X\n", (uint16_t)status );
                 }
             }
             ss_hub_info[depth].speed = PORT_SS_SPEED;
@@ -1065,9 +1065,9 @@ void USB30Host_Enum(UINT8 depth,UINT8 addr, UINT8 port )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 USB30HSOT_Enumerate_Hotrst( UINT8 *pbuf )
+uint8_t USB30HSOT_Enumerate_Hotrst( uint8_t *pbuf )
 {
-    UINT8 status = 0;
+    uint8_t status = 0;
 
     USB30H_Set_Address( 0 );
     mDelaymS(1);
@@ -1091,10 +1091,10 @@ UINT8 USB30HSOT_Enumerate_Hotrst( UINT8 *pbuf )
  *
  * @return    None
  */
-void USB30_HUBHostEnum(UINT8 depth, UINT8 addr, UINT8 port )
+void USB30_HUBHostEnum(uint8_t depth, uint8_t addr, uint8_t port )
 {
-    UINT8 status,i;
-    UINT16 len;
+    uint8_t status,i;
+    uint16_t len;
 
 //============= set address ===================
         Set_Address(addr);
@@ -1146,7 +1146,7 @@ void USB30_HUBHostEnum(UINT8 depth, UINT8 addr, UINT8 port )
             status = U30HOST_SetHubDepth( (depth)+1 );
             if ( status != USB_INT_SUCCESS )
             {
-                printf( "U30HOST_SetHubDepth_ERROR = %02X\n", (UINT16)status );
+                printf( "U30HOST_SetHubDepth_ERROR = %02X\n", (uint16_t)status );
             }
 
             for( i=0;i!=ss_hub_info[depth].numofport;i++ )
@@ -1154,7 +1154,7 @@ void USB30_HUBHostEnum(UINT8 depth, UINT8 addr, UINT8 port )
                 status = U30HOST_GetPortStstus( depth,i+1 );
                 if ( status != USB_INT_SUCCESS )
                 {
-                    printf( "U30HOST_GetPortStstus = %02X\n", (UINT16)status );
+                    printf( "U30HOST_GetPortStstus = %02X\n", (uint16_t)status );
                 }
             }
 
@@ -1163,7 +1163,7 @@ void USB30_HUBHostEnum(UINT8 depth, UINT8 addr, UINT8 port )
                 status = U30HOST_SetPortFeatrue( i+1 );
                 if ( status != USB_INT_SUCCESS )
                 {
-                    printf( "U30HOST_SetPortFeatrue = %02X\n", (UINT16)status );
+                    printf( "U30HOST_SetPortFeatrue = %02X\n", (uint16_t)status );
                 }
             }
 
@@ -1180,7 +1180,7 @@ void USB30_HUBHostEnum(UINT8 depth, UINT8 addr, UINT8 port )
  *
  * @return    None
  */
-void USB30_link_status(UINT8 s)
+void USB30_link_status(uint8_t s)
 {
     if(s)
     {    //Successfully connected to the device
@@ -1203,7 +1203,7 @@ void USB30_link_status(UINT8 s)
  */
 void LINK_IRQHandler (void)         //USBSSH interrupt service
 {
-    UINT32 temp;
+    uint32_t temp;
     temp = USBSS->LINK_ERR_STATUS;
 
     if( USBSSH->LINK_INT_FLAG & LINK_RECOV_FLAG )
@@ -1295,12 +1295,12 @@ void USBSS_IRQHandler (void)            //USBSSH interrupt service
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U30HOST_GetPortStstus( UINT8 depth,UINT8 port )
+uint8_t U30HOST_GetPortStstus( uint8_t depth,uint8_t port )
 {
-    UINT16  Port_Status_Bits,Port_Change_Field,timeoutcnt;
-    UINT8  status;
-    UINT8 setup_buf[8];
-    UINT8 buf[4];
+    uint16_t  Port_Status_Bits,Port_Change_Field,timeoutcnt;
+    uint8_t  status;
+    uint8_t setup_buf[8];
+    uint8_t buf[4];
     setup_buf[0] = 0xA3;
     setup_buf[1] = 0x00;
     setup_buf[2] = 0x00;
@@ -1342,9 +1342,9 @@ UINT8 U30HOST_GetPortStstus( UINT8 depth,UINT8 port )
     {
 
         Port_Status_Bits = buf[0];
-        Port_Status_Bits |= ((UINT16)buf[1]<<8);
+        Port_Status_Bits |= ((uint16_t)buf[1]<<8);
         Port_Change_Field = buf[2];
-        Port_Change_Field |= ((UINT16)buf[3]<<8);
+        Port_Change_Field |= ((uint16_t)buf[3]<<8);
 
         if( Port_Status_Bits&PORT_CONNECTION )
         {                        //Device connection detected
@@ -1374,10 +1374,10 @@ UINT8 U30HOST_GetPortStstus( UINT8 depth,UINT8 port )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U30HOST_ClearPortFeatrue( UINT8 port ,UINT8 port_status )
+uint8_t U30HOST_ClearPortFeatrue( uint8_t port ,uint8_t port_status )
 {
-    UINT8  status;
-    UINT8 setup_buf[8];
+    uint8_t  status;
+    uint8_t setup_buf[8];
     setup_buf[0] = 0x23;
     setup_buf[1] = 0x01;
     setup_buf[2]  = port_status;
@@ -1407,9 +1407,9 @@ UINT8 U30HOST_ClearPortFeatrue( UINT8 port ,UINT8 port_status )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U30HOST_ClearPortFeatrue_Process( UINT8 depth,UINT8 port )
+uint8_t U30HOST_ClearPortFeatrue_Process( uint8_t depth,uint8_t port )
 {
-    UINT8 status;
+    uint8_t status;
     if( ss_hub_info[depth].portD[port-1].portpchangefield&0x01 )
     {      //Connection status changes
         status = U30HOST_ClearPortFeatrue( port,C_PORT_CONNECTION );
@@ -1451,10 +1451,10 @@ UINT8 U30HOST_ClearPortFeatrue_Process( UINT8 depth,UINT8 port )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U30HOST_GetHubDescr( UINT8 *buf ,UINT16 *len )
+uint8_t U30HOST_GetHubDescr( uint8_t *buf ,uint16_t *len )
 {
-    UINT16 l;
-    UINT8 setup_buf[8];
+    uint16_t l;
+    uint8_t setup_buf[8];
     setup_buf[0] = 0xa0;
     setup_buf[1] = 0x06;
     setup_buf[2]  = 0x00;
@@ -1481,9 +1481,9 @@ UINT8 U30HOST_GetHubDescr( UINT8 *buf ,UINT16 *len )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U30HOST_GetDeviceStstus( void )
+uint8_t U30HOST_GetDeviceStstus( void )
 {
-    UINT8 setup_buf[8];
+    uint8_t setup_buf[8];
     setup_buf[0] = 0x80;
     setup_buf[1] = 0x00;
     setup_buf[2] = 0x00;
@@ -1509,9 +1509,9 @@ UINT8 U30HOST_GetDeviceStstus( void )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U30HOST_SetHubDepth( UINT8 depth )
+uint8_t U30HOST_SetHubDepth( uint8_t depth )
 {
-    UINT8 setup_buf[8];
+    uint8_t setup_buf[8];
     setup_buf[0] = 0x20;
     setup_buf[1] = 0x0c;
     setup_buf[2]  = depth;
@@ -1537,9 +1537,9 @@ UINT8 U30HOST_SetHubDepth( UINT8 depth )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 U30HOST_SetPortFeatrue( UINT8 port )
+uint8_t U30HOST_SetPortFeatrue( uint8_t port )
 {
-    UINT8 setup_buf[8];
+    uint8_t setup_buf[8];
     setup_buf[0] = 0x23;
     setup_buf[1] = 0x03;
     setup_buf[2]  = 0x1b;
@@ -1565,9 +1565,9 @@ UINT8 U30HOST_SetPortFeatrue( UINT8 port )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 USBSS_HUBCheckPortConnect( UINT8 depth,UINT8 port )
+uint8_t USBSS_HUBCheckPortConnect( uint8_t depth,uint8_t port )
 {
-    UINT8 ret;
+    uint8_t ret;
     ret = U30HOST_GetPortStstus( depth,port+1 );
     if( ret != ERR_SUCCESS )return ret;
     /* Determine the current port connection status */
@@ -1616,17 +1616,17 @@ UINT8 USBSS_HUBCheckPortConnect( UINT8 depth,UINT8 port )
 * Output         : None
 * Return         : Returns the current command execution status
 *******************************************************************************/
-UINT8 USBSS_HUBHostEnum( UINT8 depth, UINT8 *Databuf,UINT8 port ,UINT32 route_string)
+uint8_t USBSS_HUBHostEnum( uint8_t depth, uint8_t *Databuf,uint8_t port ,uint32_t route_string)
 {
-    UINT8 ret;
-    UINT16 s;
+    uint8_t ret;
+    uint16_t s;
 
     mDelaymS( 10 );
 
     s = U30HOST_GetPortStstus( depth,port+1 );
     if( s != USB_INT_SUCCESS )
     {
-      printf( "U30HOST_GetPortStstus = %02x,%02x\n", (UINT16)s,port+1 );
+      printf( "U30HOST_GetPortStstus = %02x,%02x\n", (uint16_t)s,port+1 );
       return s;
     }
 
@@ -1685,8 +1685,8 @@ UINT8 USBSS_HUBHostEnum( UINT8 depth, UINT8 *Databuf,UINT8 port ,UINT32 route_st
     ss_hub_info[(depth)+1].devaddr = ss_hub_info[depth].portD[port].addr;   //Root directory address of subordinate HUB
     ss_hub_info[depth].portD[port].status = PORT_INIT;
 
-    USBSSH->UH_TX_DMA = (UINT32)(UINT8 *)endpTXbuff;
-    USBSSH->UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;
+    USBSSH->UH_TX_DMA = (uint32_t)(uint8_t *)endpTXbuff;
+    USBSSH->UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;
 
     return( ERR_SUCCESS );
 
@@ -1701,15 +1701,15 @@ UINT8 USBSS_HUBHostEnum( UINT8 depth, UINT8 *Databuf,UINT8 port ,UINT32 route_st
 *                  route_string --- USB3.0 Route string
 * Return         : Operational state
 *******************************************************************************/
-UINT8  USBSS_HUB_Main_Process( UINT8 depth,UINT8 addr ,UINT8 uplevelport,UINT32 route_string,UINT8 portnum)
+uint8_t  USBSS_HUB_Main_Process( uint8_t depth,uint8_t addr ,uint8_t uplevelport,uint32_t route_string,uint8_t portnum)
 {
-    UINT8 i,ret;
+    uint8_t i,ret;
     USB_HUB_SaveData hubdata;
 
       for( i = 0; i != portnum; i++ )
       {
-          USBSSH->UH_TX_DMA = (UINT32)(UINT8 *)endpTXbuff;
-          USBSSH->UH_RX_DMA = (UINT32)(UINT8 *)endpRXbuff;
+          USBSSH->UH_TX_DMA = (uint32_t)(uint8_t *)endpTXbuff;
+          USBSSH->UH_RX_DMA = (uint32_t)(uint8_t *)endpRXbuff;
 
           ss_hub_info[depth].devaddr = addr;
 

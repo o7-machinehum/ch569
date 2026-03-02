@@ -24,15 +24,15 @@
 #include "hub.h"
 
 /* Global Variable */
-UINT8V U30_Check_Time = 0;
+volatile uint8_t U30_Check_Time = 0;
 
 
 USB_HUB_Info ss_hub_info[SS_HUBNUM];
 USB_HUB_Info hs_hub_info[HS_HUBNUM];
 DEV_INFO_Typedef  thisUsbDev;
-__attribute__ ((aligned(4))) UINT8  RxBuffer[1] ;      // IN, must even address
-__attribute__ ((aligned(4))) UINT8  TxBuffer[1] ;      // OUT, must even address
-__attribute__ ((aligned(16))) UINT8 pNTFS_BUF[512] __attribute__((section(".DMADATA")));
+__attribute__ ((aligned(4))) uint8_t  RxBuffer[1] ;      // IN, must even address
+__attribute__ ((aligned(4))) uint8_t  TxBuffer[1] ;      // OUT, must even address
+__attribute__ ((aligned(16))) uint8_t pNTFS_BUF[512] __attribute__((section(".DMADATA")));
 
 /* Function  */
 void TMR0_IRQHandler( void ) __attribute__((interrupt("WCH-Interrupt-fast")));
@@ -73,10 +73,10 @@ void TMR0_IRQHandler( void )
  *
  * @return    None
  */
-void DebugInit(UINT32 baudrate)
+void DebugInit(uint32_t baudrate)
 {
-	UINT32 x;
-	UINT32 t = FREQ_SYS;
+	uint32_t x;
+	uint32_t t = FREQ_SYS;
 
 	x = 10 * t * 2 / 16 / baudrate;
 	x = ( x + 5 ) / 10;
@@ -115,10 +115,10 @@ void HUB_Init( void )
  */
 int main( )
 {
-    UINT8 s = 0;
-    UINT8 depth = 0;
-    UINT8 ss_rootnumofport;
-    UINT8 hs_rootnumofport;
+    uint8_t s = 0;
+    uint8_t depth = 0;
+    uint8_t ss_rootnumofport;
+    uint8_t hs_rootnumofport;
 
     SystemInit(FREQ_SYS);
     Delay_Init(FREQ_SYS);

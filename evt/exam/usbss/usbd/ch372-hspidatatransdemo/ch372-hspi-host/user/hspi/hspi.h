@@ -39,14 +39,14 @@
 #define DEF_HSPI_UVC_BPACK_LEN     ( DEF_HSPI_DMA_PACK_LEN * DEF_HSPI_UVC_BPACK_NUM )
 
 /******************************************************************************/
-extern volatile UINT8  HSPI_Tx_PackCnt;
-extern volatile UINT8  HSPI_Tx_AddrTog;
-extern volatile UINT8  HSPI_Rx_PackCnt;
-extern volatile UINT8  HSPI_Rx_AddrTog;
+extern volatile uint8_t  HSPI_Tx_PackCnt;
+extern volatile uint8_t  HSPI_Tx_AddrTog;
+extern volatile uint8_t  HSPI_Rx_PackCnt;
+extern volatile uint8_t  HSPI_Rx_AddrTog;
 
-extern volatile UINT8  HSPI_Tx_Status;
-extern volatile UINT32 Pack_Send_Num;
-extern volatile UINT32 Pack_Recv_Num;
+extern volatile uint8_t  HSPI_Tx_Status;
+extern volatile uint32_t Pack_Send_Num;
+extern volatile uint32_t Pack_Recv_Num;
 
 /******************************************************************************/
 extern void HSPI_GPIO_Init( void );

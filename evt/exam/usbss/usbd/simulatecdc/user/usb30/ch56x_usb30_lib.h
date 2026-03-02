@@ -24,23 +24,23 @@ extern "C" {
 #define TX_SWING                (1<<7)
 #define DEEMPH_CFG              (1<<8)
 
-#define POWER_MODE_0            ((UINT32)0x00000000)
-#define POWER_MODE_1            ((UINT32)0x00000001)
-#define POWER_MODE_2            ((UINT32)0x00000002)
-#define POWER_MODE_3            ((UINT32)0x00000003)
+#define POWER_MODE_0            ((uint32_t)0x00000000)
+#define POWER_MODE_1            ((uint32_t)0x00000001)
+#define POWER_MODE_2            ((uint32_t)0x00000002)
+#define POWER_MODE_3            ((uint32_t)0x00000003)
 
 #define LINK_PRESENT            (1<<0)
-#define RX_WARM_RESET           ((UINT32)1<<1)
+#define RX_WARM_RESET           ((uint32_t)1<<1)
 
 #define LINK_TXEQ               (1<<6)
 #define GO_DISABLED             (1<<4)
 #define POLLING_EN              (1<<12)
 
-#define TX_HOT_RESET            ((UINT32)1<<16)
-#define RX_HOT_RESET            ((UINT32)1<<24)
+#define TX_HOT_RESET            ((uint32_t)1<<16)
+#define RX_HOT_RESET            ((uint32_t)1<<24)
 
-#define TX_WARM_RESET           ((UINT32)1<<8)
-#define TX_Ux_EXIT              ((UINT32)1<<9)
+#define TX_WARM_RESET           ((uint32_t)1<<8)
+#define TX_Ux_EXIT              ((uint32_t)1<<9)
 // link int flag
 #define LINK_RDY_FLAG           (1<<0)
 #define LINK_RECOV_FLAG         (1<<1)
@@ -111,13 +111,13 @@ typedef enum _DEVICE_STATE
 /**********standard request command***********/
 typedef struct __PACKED
 {
-    UINT8 bRequestType;
-    UINT8 bRequest;
-    UINT8 wValueL;
-    UINT8 wValueH;
-    UINT8 wIndexL;
-    UINT8 wIndexH;
-    UINT16 wLength;
+    uint8_t bRequestType;
+    uint8_t bRequest;
+    uint8_t wValueL;
+    uint8_t wValueH;
+    uint8_t wIndexL;
+    uint8_t wIndexH;
+    uint16_t wLength;
 } *PUSB_SETUP;
 
 #define UsbSetupBuf     ((PUSB_SETUP)endp0RTbuff)//endpoint 0
@@ -173,7 +173,7 @@ extern void USB30_Device_forceclr();
  *
  * @return   None
  */
-extern UINT8 USB30_Device_Init(void);
+extern uint8_t USB30_Device_Init(void);
 
 /*******************************************************************************
  * @fn      USB30_Lib_Getversion
@@ -182,7 +182,7 @@ extern UINT8 USB30_Device_Init(void);
  *
  * @return   None
  */
-extern UINT8 USB30_Lib_Getversion(void);
+extern uint8_t USB30_Lib_Getversion(void);
 
 /*******************************************************************************
  * @fn      USB30_ISO_Setendp
@@ -191,10 +191,10 @@ extern UINT8 USB30_Lib_Getversion(void);
  *
  * @return   None
  */
-extern void USB30_ISO_Setendp(UINT8 num,FunctionalState Status );
+extern void USB30_ISO_Setendp(uint8_t num,FunctionalState Status );
 
 /*******************************************************************************
- * @fn       USB30_ISO_Setdelay( UINT32 dly )
+ * @fn       USB30_ISO_Setdelay( uint32_t dly )
  *
  * @brief   Set synchronization delay time
  *
@@ -202,7 +202,7 @@ extern void USB30_ISO_Setendp(UINT8 num,FunctionalState Status );
  *
  * @return   None
  */
-extern void USB30_ISO_Setdelay( UINT32 dly );
+extern void USB30_ISO_Setdelay( uint32_t dly );
 
 /*******************************************************************************
  * @fn       USB30_ITP_Enable
@@ -230,7 +230,7 @@ extern void USB30_ITP_Enable(FunctionalState Status);
  *
  * @return   None
  */
-extern void USB30_OUT_Status(UINT8 endp,UINT8 *nump,UINT16 *len,UINT8 *status);
+extern void USB30_OUT_Status(uint8_t endp,uint8_t *nump,uint16_t *len,uint8_t *status);
 
 /*******************************************************************************
  * @fn     USB30_OUT_Set
@@ -243,7 +243,7 @@ extern void USB30_OUT_Status(UINT8 endp,UINT8 *nump,UINT16 *len,UINT8 *status);
  *
  * @return   None
  */
-extern void USB30_OUT_Set(UINT8 endp,UINT8 status,UINT8 nump);
+extern void USB30_OUT_Set(uint8_t endp,uint8_t status,uint8_t nump);
 
 /*******************************************************************************
  * @fn     USB30_OUT_ClearIT
@@ -254,7 +254,7 @@ extern void USB30_OUT_Set(UINT8 endp,UINT8 status,UINT8 nump);
  *
  * @return   None
  */
-extern void USB30_OUT_ClearIT(UINT8 endp);
+extern void USB30_OUT_ClearIT(uint8_t endp);
 
 /*******************************************************************************
  * @fn     USB30_OUT_ClearPendingIT
@@ -265,7 +265,7 @@ extern void USB30_OUT_ClearIT(UINT8 endp);
  *
  * @return   None
  */
-extern void USB30_OUT_ClearPendingIT(UINT8 endp);
+extern void USB30_OUT_ClearPendingIT(uint8_t endp);
 
 /*******************************************************************************
  * @fn     USB30_OUT_ITflag
@@ -276,7 +276,7 @@ extern void USB30_OUT_ClearPendingIT(UINT8 endp);
  *
  * @return   1 - interrupt 0 - non-interrupt
  */
-extern UINT8 USB30_OUT_ITflag(UINT8 endp);
+extern uint8_t USB30_OUT_ITflag(uint8_t endp);
 
 /*******************************************************************************
  * @fn      USB30_IN_Set
@@ -291,7 +291,7 @@ extern UINT8 USB30_OUT_ITflag(UINT8 endp);
  *
  * @return   None
  */
-extern void USB30_IN_Set(UINT8 endp,FunctionalState lpf,UINT8 status,UINT8 nump,UINT16 TxLen);
+extern void USB30_IN_Set(uint8_t endp,FunctionalState lpf,uint8_t status,uint8_t nump,uint16_t TxLen);
 
 /*******************************************************************************
  * @fn     USB30_IN_ClearPendingIT
@@ -302,7 +302,7 @@ extern void USB30_IN_Set(UINT8 endp,FunctionalState lpf,UINT8 status,UINT8 nump,
  *
  * @return   None
  */
-extern void USB30_IN_ClearPendingIT(UINT8 endp);
+extern void USB30_IN_ClearPendingIT(uint8_t endp);
 
 /*******************************************************************************
  * @fn      USB30_IN_ClearIT
@@ -314,7 +314,7 @@ extern void USB30_IN_ClearPendingIT(UINT8 endp);
  *
  * @return   None
  */
-extern void USB30_IN_ClearIT(UINT8 endp);
+extern void USB30_IN_ClearIT(uint8_t endp);
 
 /*******************************************************************************
  * @fn       USB30_IN_ITflagT
@@ -325,7 +325,7 @@ extern void USB30_IN_ClearIT(UINT8 endp);
  *
  * @return   None
  */
-extern UINT8 USB30_IN_ITflag(UINT8 endp);
+extern uint8_t USB30_IN_ITflag(uint8_t endp);
 
 /*******************************************************************************
  * @fn       USB30_IN_Nump
@@ -336,7 +336,7 @@ extern UINT8 USB30_IN_ITflag(UINT8 endp);
  *
  * @return   Remaining number of packets to be sent
  */
-extern UINT8 USB30_IN_Nump(UINT8 endp);
+extern uint8_t USB30_IN_Nump(uint8_t endp);
 
 /*******************************************************************************
  * @fn      USB30_Send_ERDY
@@ -348,7 +348,7 @@ extern UINT8 USB30_IN_Nump(UINT8 endp);
  *
  * @return   None
  */
-extern void USB30_Send_ERDY(UINT8 endp,UINT8 nump);
+extern void USB30_Send_ERDY(uint8_t endp,uint8_t nump);
 
 /*******************************************************************************
  * @fn       USB30_Device_Setaddress
@@ -359,7 +359,7 @@ extern void USB30_Send_ERDY(UINT8 endp,UINT8 nump);
  *
  * @return   None
  */
-extern void USB30_Device_Setaddress( UINT32 address );
+extern void USB30_Device_Setaddress( uint32_t address );
 
 /*******************************************************************************
  * @fn      USB30_IN_Nump
@@ -368,7 +368,7 @@ extern void USB30_Device_Setaddress( UINT32 address );
  *
  * @return  Control the length of data sent by the host when the transmission data stage is OUT
  */
-extern UINT16 USB30_Setup_OutData(void);
+extern uint16_t USB30_Setup_OutData(void);
 
 /*******************************************************************************
  * @fn      USB30_IRQHandler
@@ -386,7 +386,7 @@ extern void USB30_IRQHandler();
  *
  * @return   The length of data sent by the host request device
  */
-extern UINT16 USB30_StandardReq();
+extern uint16_t USB30_StandardReq();
 
 /*******************************************************************************
  * @fn      USB30_NonStandardReq
@@ -395,7 +395,7 @@ extern UINT16 USB30_StandardReq();
  *
  * @return  The length of data sent by the host request device
  */
-extern UINT16 USB30_NonStandardReq();
+extern uint16_t USB30_NonStandardReq();
 
 /*******************************************************************************
  * @fn      EP0_IN_Callback
@@ -404,7 +404,7 @@ extern UINT16 USB30_NonStandardReq();
  *
  * @return  Data length
  */
-extern UINT16 EP0_IN_Callback();
+extern uint16_t EP0_IN_Callback();
 
 /*******************************************************************************
  * @fn      EP0_OUT_Callback
@@ -413,7 +413,7 @@ extern UINT16 EP0_IN_Callback();
  *
  * @return   None
  */
-extern UINT16 EP0_OUT_Callback();
+extern uint16_t EP0_OUT_Callback();
 
 /*******************************************************************************
  * @fn       USB30_Setup_Status
@@ -431,7 +431,7 @@ extern void USB30_Setup_Status();
  *
  * @return   None
  */
-extern void USB30_ITP_Callback(UINT32 ITPCounter);
+extern void USB30_ITP_Callback(uint32_t ITPCounter);
 
 /*******************************************************************************
  * @fn      USB30_switch_pwr_mode
@@ -440,7 +440,7 @@ extern void USB30_ITP_Callback(UINT32 ITPCounter);
  *
  * @return   None
  */
-extern void USB30_Switch_Powermode( UINT8 pwr_mode );
+extern void USB30_Switch_Powermode( uint8_t pwr_mode );
 
 /*******************************************************************************
  * @fn      EPn_IN_Callback()
