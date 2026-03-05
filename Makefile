@@ -83,13 +83,16 @@ $(ELF): $(OBJS)
 	$(LD) $(OBJS) $(LDFLAGS) -o $@ $(USB30_LIB)
 
 $(BIN): $(ELF)
-	$(OBJCOPY) -O binary $< $@
+	$(OBJCOPY) -O binary -R .DMADATA $< $@
 
 $(HEX): $(ELF)
-	$(OBJCOPY) -O ihex $< $@
+	$(OBJCOPY) -O ihex -R .DMADATA $< $@
 
 clean:
 	rm -rf $(BUILD)
+
+flash: all
+	sudo ./wch-ch56x-isp/wch-ch56x-isp -f $(BIN)
 
 print:
 	@echo "APP=$(APP)"

@@ -1,12 +1,23 @@
 # 32-bit High Performance High-speed interface MCU CH569
 EN | [中文](README_zh.md)
 
+### Getting started
+``` bash
+git submodule update --init --recursive --checkout --force
+cd wch-ch56x-isp # Build the ISP tool
+make
+cd ..
+make # Build the firmware
+# Hold the program button on PCB, plug in.
+make flash
+```
+
 ### Overview
 CH569 and CH565 are based on RISC-V3A core, and support the IMAC subset of RISC-V instructions. The chip integrates super-high-speed USB3.0 host and device controller (built-in PHY), Gigabit Ethernet controller, dedicated high-speed SerDes controller (built-in PHY, can drive optical fiber directly), high-speed parallel interface (HSPI), digital video port (DVP), SD/EMMC interface controller and encryption/decryption module. The DMA with width of 128 bits can ensure high-speed transfer of large amounts of data. CH569/CH565 can be widely used in streaming media, instant storage, super-high-speed USB3.0 FIFO, communication extension, security monitor and other applications.
 
 ### System Block Diagram
 <img src="image/frame.jpg" alt="frame" style="zoom:50%;" />
- 
+
 ### Features
 - RISC-V core, 120MHz system clock frequency. Single-cycle multiplication and hardware division. Programmable interrupt controller. Low-power two-stage pipeline;
 - 448KB Code Flash, 32KB DataFlash, 16KB SRAM with width of 32 bits, 32/64/96KB configurable SRAM with width of 128 bits;
