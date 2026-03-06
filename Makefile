@@ -65,7 +65,7 @@ OBJS := \
   $(patsubst %.s,$(BUILD)/%.o,$(SRCS_S))
 
 # ---- rules ----
-.PHONY: all clean print
+.PHONY: all clean print docs flash
 
 all: $(ELF) $(BIN) $(HEX)
 	@$(SIZE) $(ELF)
@@ -93,6 +93,9 @@ clean:
 
 flash: all
 	sudo ./wch-ch56x-isp/wch-ch56x-isp -f $(BIN)
+
+docs:
+	dot -Tpng docs/dataflow.dot -o docs/dataflow.png
 
 print:
 	@echo "APP=$(APP)"

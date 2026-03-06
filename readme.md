@@ -115,3 +115,13 @@ is in `evt/exam/src/`.
 | | `usbss/usbh/host_ss_hub` | USB3.0 host with hub support |
 | | `usbss/usbh/host_ss_udisk` | USB3.0 host U-disk file access |
 
+## TODO
+
+- **Implement a proper KDF for key derivation.** Currently the password is
+  zero-padded to 32 bytes and used directly as the AES-256 key. A short
+  password like `cat` gives an effective 24-bit key. The CH569 has no SHA
+  hardware — the ECDC only supports AES and SM4 (ECB/CTR). A practical
+  approach is to use the ECDC itself as a KDF by iteratively AES-encrypting
+  the password with itself (e.g. 10,000 rounds), making brute-force
+  significantly more expensive.
+

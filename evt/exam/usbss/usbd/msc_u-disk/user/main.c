@@ -88,6 +88,17 @@ int main( void )
         PRINT("Emmc Init Success...\n");
     }
 
+    /* Compute hidden partition size */
+    if( TF_EMMCParam.EMMCSecNum > FRONT_PARTITION_SECTORS )
+        Hidden_Partition_Sectors = TF_EMMCParam.EMMCSecNum - FRONT_PARTITION_SECTORS;
+    else
+        Hidden_Partition_Sectors = 0;
+
+    PRINT("Front partition: %d sectors (%dMB)\n", FRONT_PARTITION_SECTORS,
+          (FRONT_PARTITION_SECTORS / 2048));
+    PRINT("Hidden partition: %d sectors (%dMB)\n", Hidden_Partition_Sectors,
+          (Hidden_Partition_Sectors / 2048));
+
 	/* USB initialization */
     R32_USB_CONTROL = 0;
     PFIC_EnableIRQ(USBSS_IRQn);
@@ -98,13 +109,42 @@ int main( void )
     TMR0_TimerInit( 67000000 );
 	USB30D_init(ENABLE);
 
-    /* Enable Udisk */
-	Udisk_Capability = TF_EMMCParam.EMMCSecNum;
+    /* Enable Udisk — start in LOCKED state showing front partition */
+    Device_State = DEVICE_STATE_LOCKED;
+	Udisk_Capability = FRONT_PARTITION_SECTORS;
     Udisk_Status |= DEF_UDISK_EN_FLAG;
 
 	while(1)
 	{
 	    UDISK_onePack_Deal();
+
+	    /* Check if unlock was triggered — re-enumerate with hidden partition */
+	    if( Device_State == DEVICE_STATE_RENUM )
+	    {
+	        PRINT("Unlocking — re-enumerating USB...\n");
+
+	        /* Disconnect USB */
+	        USB30D_init(DISABLE);
+	        R32_USB_CONTROL = 0;
+	        DelayMs(500);
+
+	        /* Initialize ECDC with derived AES-256 key */
+	        ECDC_Init( MODE_AES_CTR, ECDCCLK_240MHZ, KEYLENGTH_256BIT, AES_Key, CTR_Nonce );
+
+	        /* Switch to hidden partition capacity */
+	        Udisk_Capability = Hidden_Partition_Sectors;
+	        Device_State = DEVICE_STATE_UNLOCKED;
+
+	        /* Re-enumerate USB */
+	        PFIC_EnableIRQ(USBSS_IRQn);
+	        PFIC_EnableIRQ(LINK_IRQn);
+	        PFIC_EnableIRQ(TMR0_IRQn);
+	        R8_TMR0_INTER_EN = RB_TMR_IE_CYC_END;
+	        TMR0_TimerInit( 67000000 );
+	        USB30D_init(ENABLE);
+
+	        PRINT("Unlocked — hidden partition visible (%d sectors)\n", Hidden_Partition_Sectors);
+	    }
 	}
 }
 
