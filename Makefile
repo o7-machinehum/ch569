@@ -30,7 +30,7 @@ MAP   := $(BUILD)/usbdev.map
 
 # ---- arch/defines/includes ----
 ARCH   := -march=rv32imac_zicsr -mabi=ilp32
-DEFS   := -DCH56x=1 -DCH569=1
+DEFS   := -DCH56x=1 -DCH569=1 -DDEBUG=1
 
 INCS := \
   -I$(APP) \
