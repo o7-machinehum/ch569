@@ -1,10 +1,13 @@
-# ========= CH569 USB device demo (lowercase tree) =========
+# ========= CH569 build system =========
+#
+# Usage:
+#   make                     - build src/ (default, USB mass storage app)
+#   make APP=examples/uart_test  - build the UART test example
+#   make flash               - build and flash
+#   make APP=examples/uart_test flash
 
-# ---- demo paths ----
-# APP      := evt/exam/usbss/usbd/ch372device/user
-APP 	 := evt/exam/usbss/usbd/msc_u-disk/user
-USB20DIR := $(APP)/usb20
-USB30DIR := $(APP)/usb30
+# ---- app selection (override on command line) ----
+APP ?= src
 
 # ---- SDK paths ----
 PERIPH_INC := evt/exam/src/peripheral/inc
@@ -23,19 +26,18 @@ SIZE    := $(CROSS)size
 
 # ---- output ----
 BUILD := build
-ELF   := $(BUILD)/usbdev.elf
-BIN   := $(BUILD)/usbdev.bin
-HEX   := $(BUILD)/usbdev.hex
-MAP   := $(BUILD)/usbdev.map
+ELF   := $(BUILD)/firmware.elf
+BIN   := $(BUILD)/firmware.bin
+HEX   := $(BUILD)/firmware.hex
+MAP   := $(BUILD)/firmware.map
 
-# ---- arch/defines/includes ----
-ARCH   := -march=rv32imac_zicsr -mabi=ilp32
-DEFS   := -DCH56x=1 -DCH569=1 -DDEBUG=1
+# ---- arch/defines ----
+ARCH := -march=rv32imac_zicsr -mabi=ilp32
+DEFS := -DCH56x=1 -DCH569=1 -DDEBUG=1
 
+# ---- includes (always include app dir + SDK) ----
 INCS := \
   -I$(APP) \
-  -I$(USB20DIR) \
-  -I$(USB30DIR) \
   -I$(PERIPH_INC) \
   -I$(RVMSIS_DIR)
 
@@ -46,15 +48,13 @@ ASFLAGS := $(ARCH) -x assembler-with-cpp -g3
 LDFLAGS := $(ARCH) -T$(LDSCRIPT) -nostartfiles \
            -Wl,--gc-sections -Wl,-Map,$(MAP)
 
-# Vendor USB30 library (exists in your tree)
-USB30_LIB := $(USB30DIR)/libch56x_usb30_device_lib.a
+# ---- per-app config (included if present) ----
+# Apps can provide app.mk to add extra sources, includes, libs, etc.
+-include $(APP)/app.mk
 
 # ---- sources ----
-SRCS_C := \
-  $(APP)/main.c \
-  $(APP)/sw_udisk.c \
-  $(USB20DIR)/ch56x_usb20.c \
-  $(USB30DIR)/ch56x_usb30.c \
+SRCS_C += \
+  $(wildcard $(APP)/*.c) \
   $(RVMSIS_DIR)/core_riscv.c \
   $(wildcard $(PERIPH_SRC)/*.c)
 
@@ -65,7 +65,7 @@ OBJS := \
   $(patsubst %.s,$(BUILD)/%.o,$(SRCS_S))
 
 # ---- rules ----
-.PHONY: all clean print
+.PHONY: all clean flash
 
 all: $(ELF) $(BIN) $(HEX)
 	@$(SIZE) $(ELF)
@@ -80,7 +80,7 @@ $(BUILD)/%.o: %.s
 
 $(ELF): $(OBJS)
 	@mkdir -p $(BUILD)
-	$(LD) $(OBJS) $(LDFLAGS) -o $@ $(USB30_LIB)
+	$(LD) $(OBJS) $(LDFLAGS) -o $@ $(LIBS)
 
 $(BIN): $(ELF)
 	$(OBJCOPY) -O binary -R .DMADATA $< $@
@@ -93,9 +93,3 @@ clean:
 
 flash: all
 	sudo ./wch-ch56x-isp/wch-ch56x-isp -f $(BIN)
-
-print:
-	@echo "APP=$(APP)"
-	@echo "STARTUP_S=$(STARTUP_S)"
-	@echo "LDSCRIPT=$(LDSCRIPT)"
-	@echo "USB30_LIB=$(USB30_LIB)"
